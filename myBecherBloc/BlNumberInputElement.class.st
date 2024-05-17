@@ -5,12 +5,13 @@ Class {
 		'plus',
 		'minus',
 		'inputValue',
-		'value'
+		'value',
+		'inputLabel'
 	],
 	#category : #'myBecherBloc-Input'
 }
 
-{ #category : #'as yet unclassified' }
+{ #category : #example }
 BlNumberInputElement class >> openInput [
 	<script>
 	| space anInput |
@@ -32,21 +33,38 @@ BlNumberInputElement >> backgroundPaint [
 ]
 
 { #category : #buttons }
+BlNumberInputElement >> changeValueTo: aValue [
+
+	inputValue text: aValue asString asRopedText.
+	inputValue text attributes:
+		{ (BlTextForegroundAttribute paint: Color white) }.
+	inputValue text fontSize: 30
+]
+
+{ #category : #buttons }
+BlNumberInputElement >> createCircle [
+
+	| circle |
+	circle := BlElement new
+		          background: Color black;
+		          border: (BlBorder paint: Color pink width: 2);
+		          layout: BlFrameLayout new;
+		          geometry: BlCircleGeometry new.
+	^ circle
+]
+
+{ #category : #buttons }
 BlNumberInputElement >> decreaseInput [
 
-value > 0 ifTrue: [ 
-	value := value - 1 ].
-inputValue removeFromParent.
-inputValue := self initializeInputValue: value asString.
-
+	value > 0 ifTrue: [ value := value - 1 ].
+	self changeValueTo: value
 ]
 
 { #category : #buttons }
 BlNumberInputElement >> increaseInput [
 
-value := value + 1.
-inputValue removeFromParent .
-inputValue:= self initializeInputValue: value asString.
+	value := value + 1.
+	self changeValueTo: value
 ]
 
 { #category : #initialization }
@@ -62,16 +80,7 @@ BlNumberInputElement >> initialize [
 	minus := self initializeMinusButton.
 	inputValue := self initializeInputValue.
 	value := inputValue text asString asNumber.
-	self initializeInputText 
-]
-
-{ #category : #initialization }
-BlNumberInputElement >> initializeInputText [
-
-	| input |
-	input := BlTextInputElement new.
-	self addChild: input.
-	^ input 
+	self label: 'Input'
 ]
 
 { #category : #initialization }
@@ -83,25 +92,26 @@ BlNumberInputElement >> initializeInputValue [
 { #category : #initialization }
 BlNumberInputElement >> initializeInputValue: aValue [
 
-| ivalue|
-ivalue := BlInputValueElement new.
-ivalue  text: aValue asRopedText.
-ivalue text attributes:  { (BlTextForegroundAttribute paint: Color white)}.
-ivalue text fontSize: 30.
-self addChild: ivalue.
+	| ivalue |
+	
+	ivalue := BlTextElement new.
+	ivalue constraintsDo: [ :c |
+		c frame horizontal alignCenter.
+		c frame vertical alignCenter ].
+	ivalue text: aValue asRopedText.
+	ivalue text attributes:
+		{ (BlTextForegroundAttribute paint: Color white) }.
+	ivalue text fontSize: 30.
+	self addChild: ivalue.
 
-^ivalue
+	^ ivalue
 ]
 
 { #category : #buttons }
 BlNumberInputElement >> initializeMinusButton [
 
 	| circle |
-	circle := BlElement new
-		          background: Color black;
-		          border: (BlBorder paint: Color pink width: 2);
-		          layout: BlFrameLayout new;
-		          geometry: BlCircleGeometry new.
+	circle := self createCircle.
 	circle constraintsDo: [ :c |
 		c frame horizontal alignLeft.
 		c frame vertical alignCenter ].
@@ -119,19 +129,14 @@ BlNumberInputElement >> initializeMinusButton [
 
 	circle addChild: minus.
 	self addChild: circle.
-
-	^ circle
+	
 ]
 
 { #category : #buttons }
 BlNumberInputElement >> initializePlusButton [
 
 	| circle |
-	circle := BlElement new
-		          background: Color black;
-		          border: (BlBorder paint: Color pink width: 2);
-		          layout: BlFrameLayout new;
-		          geometry: BlCircleGeometry new.
+	circle := self createCircle.
 	circle constraintsDo: [ :c |
 		c frame horizontal alignRight.
 		c frame vertical alignCenter ].
@@ -149,7 +154,6 @@ BlNumberInputElement >> initializePlusButton [
 	circle addChild: plus.
 	self addChild: circle.
 
-	^ circle
 ]
 
 { #category : #buttons }
@@ -159,23 +163,26 @@ BlNumberInputElement >> inputExtent [
 ]
 
 { #category : #accessing }
-BlNumberInputElement >> minus [
-	^ minus
+BlNumberInputElement >> label [
+
+	^ inputLabel 
 ]
 
-{ #category : #buttons }
-BlNumberInputElement >> openInput: anInput [
-	| space |
-	space := BlSpace new.
-	space root
-		background: Color purple ;
-		layout: BlFlowLayout horizontal.
-	anInput transformDo: [ :c |
-		c translateBy: 200@200
-		 ].
-	space root addChild: anInput  .
-	space show.
-	^ anInput 
+{ #category : #initialization }
+BlNumberInputElement >> label: aString [
+
+	inputLabel := BlTextElement new.
+	inputLabel text: (aString asRopedText attributes:
+			 { (BlTextForegroundAttribute paint: Color white) }).
+	inputLabel text fontSize: 25.
+	inputLabel constraintsDo: [ :c | c frame horizontal alignCenter ].
+	inputLabel transformDo: [ :t | t translateBy: 0 @ 10 ].
+	self addChild: inputLabel
+]
+
+{ #category : #accessing }
+BlNumberInputElement >> minus [
+	^ minus
 ]
 
 { #category : #accessing }
