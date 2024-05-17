@@ -1,7 +1,7 @@
 Class {
 	#name : #BlCleanSliderHandler,
 	#superclass : #BlCustomEventHandler,
-	#category : #myBecherBloc
+	#category : #'myBecherBloc-slider'
 }
 
 { #category : #'event management' }

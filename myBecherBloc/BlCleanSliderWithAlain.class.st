@@ -24,7 +24,7 @@ Class {
 		'sliderHandle',
 		'handlePushedPoint'
 	],
-	#category : #myBecherBloc
+	#category : #'myBecherBloc-slider'
 }
 
 { #category : #testing }

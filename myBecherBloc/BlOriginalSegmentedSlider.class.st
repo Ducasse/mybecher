@@ -30,7 +30,7 @@ Class {
 		'barThickness',
 		'isHorizontal'
 	],
-	#category : #myBecherBloc
+	#category : #'myBecherBloc-slider'
 }
 
 { #category : #testing }
