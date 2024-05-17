@@ -35,10 +35,16 @@ BlNumberInputElement >> backgroundPaint [
 { #category : #buttons }
 BlNumberInputElement >> changeValueTo: aValue [
 
-	inputValue text: aValue asString asRopedText.
-	inputValue text attributes:
-		{ (BlTextForegroundAttribute paint: Color white) }.
-	inputValue text fontSize: 30
+	inputValue text: (self configuredString: aValue asString).
+	inputValue text fontSize: 30.
+	value := aValue
+]
+
+{ #category : #buttons }
+BlNumberInputElement >> configuredString: aString [
+
+	^ aString asRopedText attributes: { (BlTextForegroundAttribute paint: Color white) }.
+	
 ]
 
 { #category : #buttons }
@@ -56,15 +62,13 @@ BlNumberInputElement >> createCircle [
 { #category : #buttons }
 BlNumberInputElement >> decreaseInput [
 
-	value > 0 ifTrue: [ value := value - 1 ].
-	self changeValueTo: value
+	value > 0 ifTrue: [ self changeValueTo: value - 1 ]
 ]
 
 { #category : #buttons }
 BlNumberInputElement >> increaseInput [
 
-	value := value + 1.
-	self changeValueTo: value
+	self changeValueTo: value + 1
 ]
 
 { #category : #initialization }
@@ -78,33 +82,24 @@ BlNumberInputElement >> initialize [
 	self border: (BlBorder paint: Color pink).
 	self initializePlusButton.
 	self initializeMinusButton.
-	inputValue := self initializeInputValue.
-	value := inputValue text asString asNumber.
+	self initializeInputValue: 20.
+	self value: 20.
+
 	self label: 'Input'
-]
-
-{ #category : #initialization }
-BlNumberInputElement >> initializeInputValue [
-
-	^ self initializeInputValue: '20'
 ]
 
 { #category : #initialization }
 BlNumberInputElement >> initializeInputValue: aValue [
 
-	| ivalue |
-	
-	ivalue := BlTextElement new.
-	ivalue constraintsDo: [ :c |
+	inputValue := BlTextElement new.
+	inputValue constraintsDo: [ :c |
 		c frame horizontal alignCenter.
 		c frame vertical alignCenter ].
-	ivalue text: aValue asRopedText.
-	ivalue text attributes:
-		{ (BlTextForegroundAttribute paint: Color white) }.
-	ivalue text fontSize: 30.
-	self addChild: ivalue.
+	self changeValueTo: aValue.
+	self addChild: inputValue
+	
 
-	^ ivalue
+
 ]
 
 { #category : #buttons }
@@ -117,8 +112,7 @@ BlNumberInputElement >> initializeMinusButton [
 		c frame vertical alignCenter ].
 	circle transformDo: [ :t | t translateBy: 15 @ 0 ].
 
-	minus := BlTextElement new text: ('-' asRopedText attributes:
-			          { (BlTextForegroundAttribute paint: Color white) }).
+	minus := BlTextElement new text: (self configuredString: '-').
 	minus text fontSize: 80.
 	minus constraintsDo: [ :c |
 		c frame horizontal alignCenter.
@@ -142,8 +136,7 @@ BlNumberInputElement >> initializePlusButton [
 		c frame vertical alignCenter ].
 	circle transformDo: [ :t | t translateBy: -15 @ 0 ].
 
-	plus := BlTextElement new text: ('+' asRopedText attributes:
-			         { (BlTextForegroundAttribute paint: Color white) }).
+	plus := BlTextElement new text: (self configuredString: '+').
 	plus text fontSize: 55.
 	plus constraintsDo: [ :c |
 		c frame horizontal alignCenter.
@@ -156,7 +149,7 @@ BlNumberInputElement >> initializePlusButton [
 
 ]
 
-{ #category : #buttons }
+{ #category : #accessing }
 BlNumberInputElement >> inputExtent [ 
 
 	^ 300@120
@@ -194,4 +187,10 @@ BlNumberInputElement >> plus [
 BlNumberInputElement >> value [
 
 	^ value
+]
+
+{ #category : #initialization }
+BlNumberInputElement >> value: anInteger [
+
+	value := anInteger 
 ]

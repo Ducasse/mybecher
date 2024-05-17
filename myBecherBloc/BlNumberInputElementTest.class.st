@@ -27,8 +27,9 @@ BlNumberInputElementTest >> testValueCantBeNegative [
 
 	| inputElem value |
 	inputElem := BlNumberInputElement new.
-	value := (inputElem initializeInputValue: '0') text asString asNumber.
+	inputElem changeValueTo: 0.
 	BlSpace simulateClickOn: inputElem minus.
+	value := inputElem value. 
 	self assert: value equals: 0
 ]
 
