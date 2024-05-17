@@ -76,8 +76,8 @@ BlNumberInputElement >> initialize [
 	self geometry: (BlRoundedRectangleGeometry cornerRadius: 20).
 	self layout: BlFrameLayout new.
 	self border: (BlBorder paint: Color pink).
-	plus := self initializePlusButton.
-	minus := self initializeMinusButton.
+	self initializePlusButton.
+	self initializeMinusButton.
 	inputValue := self initializeInputValue.
 	value := inputValue text asString asNumber.
 	self label: 'Input'
