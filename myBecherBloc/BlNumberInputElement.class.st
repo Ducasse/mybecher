@@ -83,8 +83,6 @@ BlNumberInputElement >> initialize [
 	self initializePlusButton.
 	self initializeMinusButton.
 	self initializeInputValue: 20.
-	self value: 20.
-
 	self label: 'Input'
 ]
 
@@ -165,8 +163,7 @@ BlNumberInputElement >> label [
 BlNumberInputElement >> label: aString [
 
 	inputLabel := BlTextElement new.
-	inputLabel text: (aString asRopedText attributes:
-			 { (BlTextForegroundAttribute paint: Color white) }).
+	inputLabel text: (self configuredString: aString).
 	inputLabel text fontSize: 25.
 	inputLabel constraintsDo: [ :c | c frame horizontal alignCenter ].
 	inputLabel transformDo: [ :t | t translateBy: 0 @ 10 ].
