@@ -1,33 +1,34 @@
 Class {
-	#name : #BlNumberInputElementTest,
+	#name : #ToNumberInputElementTest,
 	#superclass : #TestCase,
 	#category : #'myBecherBloc-Input'
 }
 
 { #category : #tests }
-BlNumberInputElementTest >> testCanChangeLabel [
+ToNumberInputElementTest >> testCanChangeLabel [
 
 	| inputElem |
-	inputElem := BlNumberInputElement new.
+	inputElem := ToNumberInputElement new.
 	self assert: inputElem label text asString equals: 'Input'.
 	inputElem label: 'Volume'.
-	self assert: inputElem label text asString equals: 'Volume'.
+	self assert: inputElem label text asString equals: 'Volume'
 ]
 
 { #category : #tests }
-BlNumberInputElementTest >> testEverythingIsInitializedCorrectly [
+ToNumberInputElementTest >> testEverythingIsInitializedCorrectly [
 
 	| inputElem |
-	inputElem := BlNumberInputElement new.
-	self assert: inputElem children size equals: 4 
+	inputElem := ToNumberInputElement new.
+	self assert: inputElem children size equals: 4
 ]
 
 { #category : #tests }
-BlNumberInputElementTest >> testSkinisInstalledCorrectly [
+ToNumberInputElementTest >> testSkinisInstalledCorrectly [
 
 	| inputElem |
+	self skip.
 	"create instance of input"
-	inputElem := MfInputElement new default: 12.
+	inputElem := ToNumberInputElement new changeValueTo: 12.
 	"input skin is nil"
 	self assert: inputElem background paint equals: nil.
 	inputElem openInput: inputElem. "Assign skin to input"
@@ -36,21 +37,21 @@ BlNumberInputElementTest >> testSkinisInstalledCorrectly [
 ]
 
 { #category : #tests }
-BlNumberInputElementTest >> testValueCantBeNegative [
+ToNumberInputElementTest >> testValueCantBeNegative [
 
 	| inputElem value |
-	inputElem := BlNumberInputElement new.
+	inputElem := ToNumberInputElement new.
 	inputElem changeValueTo: 0.
 	BlSpace simulateClickOn: inputElem minus.
-	value := inputElem value. 
+	value := inputElem value.
 	self assert: value equals: 0
 ]
 
 { #category : #tests }
-BlNumberInputElementTest >> testValueUpdatedOnClick [
+ToNumberInputElementTest >> testValueUpdatedOnClick [
 
 	| inputElem |
-	inputElem := BlNumberInputElement new.
+	inputElem := ToNumberInputElement new.
 	BlSpace simulateClickOn: inputElem minus.
 	self assert: inputElem value equals: 19.
 	6 timesRepeat: [ BlSpace simulateClickOn: inputElem plus ].

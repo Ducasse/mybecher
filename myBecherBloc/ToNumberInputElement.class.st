@@ -1,6 +1,6 @@
 Class {
-	#name : #BlNumberInputElement,
-	#superclass : #BlElement,
+	#name : #ToNumberInputElement,
+	#superclass : #ToElement,
 	#instVars : [
 		'plus',
 		'minus',
@@ -12,7 +12,7 @@ Class {
 }
 
 { #category : #example }
-BlNumberInputElement class >> openInput [
+ToNumberInputElement class >> openInput [
 	<script>
 	| space anInput |
 	anInput := self new.
@@ -26,14 +26,34 @@ BlNumberInputElement class >> openInput [
 	^ anInput
 ]
 
+{ #category : #example }
+ToNumberInputElement class >> openInputWithSkin [
+
+	<script>
+	| space anInput |
+	anInput := self new.
+	anInput defaultSkin: anInput newRawSkin.
+	space := BlSpace new.
+	space root
+		background: Color purple;
+		layout: BlFlowLayout horizontal.
+	anInput transformDo: [ :c | c translateBy: 200 @ 200 ].
+	space root addChild: anInput.
+	space toTheme: ToInputElementTheme new.
+	space applyAllSkinInstallers.
+
+	space show.
+	^ anInput
+]
+
 { #category : #initialization }
-BlNumberInputElement >> backgroundPaint [
+ToNumberInputElement >> backgroundPaint [
 
 	^ Color black
 ]
 
 { #category : #buttons }
-BlNumberInputElement >> changeValueTo: aValue [
+ToNumberInputElement >> changeValueTo: aValue [
 
 	inputValue text: (self configuredString: aValue asString).
 	inputValue text fontSize: 30.
@@ -41,14 +61,14 @@ BlNumberInputElement >> changeValueTo: aValue [
 ]
 
 { #category : #buttons }
-BlNumberInputElement >> configuredString: aString [
+ToNumberInputElement >> configuredString: aString [
 
 	^ aString asRopedText attributes: { (BlTextForegroundAttribute paint: Color white) }.
 	
 ]
 
 { #category : #buttons }
-BlNumberInputElement >> createCircle [
+ToNumberInputElement >> createCircle [
 
 	| circle |
 	circle := BlElement new
@@ -60,19 +80,19 @@ BlNumberInputElement >> createCircle [
 ]
 
 { #category : #buttons }
-BlNumberInputElement >> decreaseInput [
+ToNumberInputElement >> decreaseInput [
 
 	value > 0 ifTrue: [ self changeValueTo: value - 1 ]
 ]
 
 { #category : #buttons }
-BlNumberInputElement >> increaseInput [
+ToNumberInputElement >> increaseInput [
 
 	self changeValueTo: value + 1
 ]
 
 { #category : #initialization }
-BlNumberInputElement >> initialize [
+ToNumberInputElement >> initialize [
 
 	super initialize.
 	self size: self inputExtent.
@@ -83,12 +103,11 @@ BlNumberInputElement >> initialize [
 	self initializePlusButton.
 	self initializeMinusButton.
 	self initializeInputValue: 20.
-	self label: 'Input'.
-	self defaultSkin: self newRawSkin.
+	self label: 'Input'
 ]
 
 { #category : #initialization }
-BlNumberInputElement >> initializeInputValue: aValue [
+ToNumberInputElement >> initializeInputValue: aValue [
 
 	inputValue := BlTextElement new.
 	inputValue constraintsDo: [ :c |
@@ -102,7 +121,7 @@ BlNumberInputElement >> initializeInputValue: aValue [
 ]
 
 { #category : #buttons }
-BlNumberInputElement >> initializeMinusButton [
+ToNumberInputElement >> initializeMinusButton [
 
 	| circle |
 	circle := self createCircle.
@@ -126,7 +145,7 @@ BlNumberInputElement >> initializeMinusButton [
 ]
 
 { #category : #buttons }
-BlNumberInputElement >> initializePlusButton [
+ToNumberInputElement >> initializePlusButton [
 
 	| circle |
 	circle := self createCircle.
@@ -149,19 +168,19 @@ BlNumberInputElement >> initializePlusButton [
 ]
 
 { #category : #accessing }
-BlNumberInputElement >> inputExtent [ 
+ToNumberInputElement >> inputExtent [ 
 
 	^ 300@120
 ]
 
 { #category : #accessing }
-BlNumberInputElement >> label [
+ToNumberInputElement >> label [
 
 	^ inputLabel 
 ]
 
 { #category : #initialization }
-BlNumberInputElement >> label: aString [
+ToNumberInputElement >> label: aString [
 
 	inputLabel := BlTextElement new.
 	inputLabel text: (self configuredString: aString).
@@ -172,23 +191,23 @@ BlNumberInputElement >> label: aString [
 ]
 
 { #category : #accessing }
-BlNumberInputElement >> minus [
+ToNumberInputElement >> minus [
 	^ minus
 ]
 
 { #category : #accessing }
-BlNumberInputElement >> plus [
+ToNumberInputElement >> plus [
 	^ plus
 ]
 
 { #category : #evaluating }
-BlNumberInputElement >> value [
+ToNumberInputElement >> value [
 
 	^ value
 ]
 
 { #category : #initialization }
-BlNumberInputElement >> value: anInteger [
+ToNumberInputElement >> value: anInteger [
 
 	value := anInteger 
 ]
