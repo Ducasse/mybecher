@@ -1,6 +1,6 @@
 Class {
 	#name : #ToInputElementSkin,
-	#superclass : #ToRawSkin,
+	#superclass : #ToBasicMooflooSkin,
 	#category : #'myBecherBloc-Input'
 }
 
@@ -13,15 +13,8 @@ ToInputElementSkin >> installLookEvent: anEvent [
 		e border: (BlBorder
 				 paint: (e valueOfTokenNamed: #'color-border')
 				 width: (e valueOfTokenNamed: #'line-width')).
-		e background: e backgroundPaint ]
-]
-
-{ #category : #'event handling' }
-ToInputElementSkin >> pressedLookEvent: anEvent [
-	"Change the color of the widget when clicking on it"
-
-	super pressedLookEvent: anEvent.
-	anEvent elementDo: [ :e |
-		e plus background: Color blue.
-		e minus background: Color red ]
+		e background: Color red.
+		e geometry: (BlRoundedRectangleGeometry cornerRadius: 20).
+		e plus parent background: Color blue.
+		e minus parent background: Color red ]
 ]

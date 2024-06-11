@@ -12,44 +12,17 @@ Class {
 }
 
 { #category : #example }
-ToNumberInputElement class >> openInput [
-	<script>
-	| space anInput |
-	anInput := self new.
-	space := BlSpace new.
-	space root
-		background: Color purple;
-		layout: BlFlowLayout horizontal.
-	anInput transformDo: [ :c | c translateBy: 200 @ 200 ].
-	space root addChild: anInput.
-	space show.
-	^ anInput
-]
-
-{ #category : #example }
 ToNumberInputElement class >> openInputWithSkin [
 
 	<script>
 	| space anInput |
-	anInput := self new.
-	anInput defaultSkin: anInput newRawSkin.
 	space := BlSpace new.
-	space root
-		background: Color purple;
-		layout: BlFlowLayout horizontal.
-	anInput transformDo: [ :c | c translateBy: 200 @ 200 ].
-	space root addChild: anInput.
-	space toTheme: ToInputElementTheme new.
-	space applyAllSkinInstallers.
+	space toTheme: ToMooflooTheme new.
+	anInput := self new position: 200 @ 200.
 
+	space root addChild: anInput.
 	space show.
 	^ anInput
-]
-
-{ #category : #initialization }
-ToNumberInputElement >> backgroundPaint [
-
-	^ Color black
 ]
 
 { #category : #buttons }
@@ -95,29 +68,26 @@ ToNumberInputElement >> increaseInput [
 ToNumberInputElement >> initialize [
 
 	super initialize.
-	self size: self inputExtent.
-	self background: self backgroundPaint.
-	self geometry: (BlRoundedRectangleGeometry cornerRadius: 20).
-	self layout: BlFrameLayout new.
+	self constraintsDo: [ :c |
+		c vertical fitContent.
+		c horizontal fitContent ].
+	self padding: (BlInsets all: 30).
+	self layout: BlLinearLayout horizontal.
 	self border: (BlBorder paint: Color pink).
-	self initializePlusButton.
+	self label: 'Input'.
 	self initializeMinusButton.
 	self initializeInputValue: 20.
-	self label: 'Input'
+	self initializePlusButton
 ]
 
 { #category : #initialization }
 ToNumberInputElement >> initializeInputValue: aValue [
 
 	inputValue := BlTextElement new.
-	inputValue constraintsDo: [ :c |
-		c frame horizontal alignCenter.
-		c frame vertical alignCenter ].
+	inputValue constraintsDo: [ :c | c linear vertical alignCenter ].
 	self changeValueTo: aValue.
+	inputValue padding: (BlInsets all: 50).
 	self addChild: inputValue
-	
-
-
 ]
 
 { #category : #buttons }
@@ -125,10 +95,7 @@ ToNumberInputElement >> initializeMinusButton [
 
 	| circle |
 	circle := self createCircle.
-	circle constraintsDo: [ :c |
-		c frame horizontal alignLeft.
-		c frame vertical alignCenter ].
-	circle transformDo: [ :t | t translateBy: 15 @ 0 ].
+	circle constraintsDo: [ :c | c linear vertical alignCenter ].
 
 	minus := BlTextElement new text: (self configuredString: '-').
 	minus text fontSize: 80.
@@ -138,10 +105,9 @@ ToNumberInputElement >> initializeMinusButton [
 	circle
 		addEventHandlerOn: BlMouseDownEvent
 		do: [ :e | self decreaseInput ].
-
+	circle padding: (BlInsets all: 50).
 	circle addChild: minus.
-	self addChild: circle.
-	
+	self addChild: circle
 ]
 
 { #category : #buttons }
@@ -149,10 +115,7 @@ ToNumberInputElement >> initializePlusButton [
 
 	| circle |
 	circle := self createCircle.
-	circle constraintsDo: [ :c |
-		c frame horizontal alignRight.
-		c frame vertical alignCenter ].
-	circle transformDo: [ :t | t translateBy: -15 @ 0 ].
+	circle constraintsDo: [ :c | c linear vertical alignCenter ].
 
 	plus := BlTextElement new text: (self configuredString: '+').
 	plus text fontSize: 55.
@@ -162,9 +125,9 @@ ToNumberInputElement >> initializePlusButton [
 	circle
 		addEventHandlerOn: BlMouseDownEvent
 		do: [ :e | self increaseInput ].
+	circle padding: (BlInsets all: 50).
 	circle addChild: plus.
-	self addChild: circle.
-
+	self addChild: circle
 ]
 
 { #category : #accessing }
@@ -185,14 +148,28 @@ ToNumberInputElement >> label: aString [
 	inputLabel := BlTextElement new.
 	inputLabel text: (self configuredString: aString).
 	inputLabel text fontSize: 25.
-	inputLabel constraintsDo: [ :c | c frame horizontal alignCenter ].
-	inputLabel transformDo: [ :t | t translateBy: 0 @ 10 ].
+	inputLabel constraintsDo: [ :c |
+		c ignoreByLayout.
+		c ignored horizontal alignCenter ].
+	inputLabel padding: (BlInsets all: 10).
 	self addChild: inputLabel
 ]
 
 { #category : #accessing }
 ToNumberInputElement >> minus [
 	^ minus
+]
+
+{ #category : #'instance creation' }
+ToNumberInputElement >> newMooflooSkin [
+
+	^ ToInputElementSkin new
+]
+
+{ #category : #'instance creation' }
+ToNumberInputElement >> newRawSkin [
+
+	^ ToInputElementSkin new
 ]
 
 { #category : #accessing }

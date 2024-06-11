@@ -80,11 +80,14 @@ BlNumberInputElement >> initialize [
 	self geometry: (BlRoundedRectangleGeometry cornerRadius: 20).
 	self layout: BlFrameLayout new.
 	self border: (BlBorder paint: Color pink).
-	self initializePlusButton.
+	self label: 'Input'.
 	self initializeMinusButton.
 	self initializeInputValue: 20.
-	self label: 'Input'.
-	self defaultSkin: self newRawSkin.
+	self initializePlusButton.
+	
+	
+	
+	self defaultSkin: self newRawSkin
 ]
 
 { #category : #initialization }
