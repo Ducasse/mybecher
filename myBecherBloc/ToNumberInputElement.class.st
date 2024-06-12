@@ -132,6 +132,7 @@ ToNumberInputElement >> initializePlusButton [
 		do: [ :e | self increaseInput ].
 	plus padding: (BlInsets all: 50).
 	plus addChild: text.
+	
 	self addChild: plus
 ]
 
