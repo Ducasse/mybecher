@@ -1,6 +1,6 @@
 Class {
-	#name : #BlNumberInputElement,
-	#superclass : #BlElement,
+	#name : 'BlNumberInputElement',
+	#superclass : 'BlElement',
 	#instVars : [
 		'plus',
 		'minus',
@@ -8,10 +8,12 @@ Class {
 		'value',
 		'inputLabel'
 	],
-	#category : #'myBecherBloc-Input'
+	#category : 'myBecherBloc-Input',
+	#package : 'myBecherBloc',
+	#tag : 'Input'
 }
 
-{ #category : #example }
+{ #category : 'example' }
 BlNumberInputElement class >> openInput [
 	<script>
 	| space anInput |
@@ -26,13 +28,13 @@ BlNumberInputElement class >> openInput [
 	^ anInput
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 BlNumberInputElement >> backgroundPaint [
 
 	^ Color black
 ]
 
-{ #category : #buttons }
+{ #category : 'buttons' }
 BlNumberInputElement >> changeValueTo: aValue [
 
 	inputValue text: (self configuredString: aValue asString).
@@ -40,14 +42,14 @@ BlNumberInputElement >> changeValueTo: aValue [
 	value := aValue
 ]
 
-{ #category : #buttons }
+{ #category : 'buttons' }
 BlNumberInputElement >> configuredString: aString [
 
 	^ aString asRopedText attributes: { (BlTextForegroundAttribute paint: Color white) }.
 	
 ]
 
-{ #category : #buttons }
+{ #category : 'buttons' }
 BlNumberInputElement >> createCircle [
 
 	| circle |
@@ -59,19 +61,19 @@ BlNumberInputElement >> createCircle [
 	^ circle
 ]
 
-{ #category : #buttons }
+{ #category : 'buttons' }
 BlNumberInputElement >> decreaseInput [
 
 	value > 0 ifTrue: [ self changeValueTo: value - 1 ]
 ]
 
-{ #category : #buttons }
+{ #category : 'buttons' }
 BlNumberInputElement >> increaseInput [
 
 	self changeValueTo: value + 1
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 BlNumberInputElement >> initialize [
 
 	super initialize.
@@ -90,7 +92,7 @@ BlNumberInputElement >> initialize [
 	self defaultSkin: self newRawSkin
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 BlNumberInputElement >> initializeInputValue: aValue [
 
 	inputValue := BlTextElement new.
@@ -104,7 +106,7 @@ BlNumberInputElement >> initializeInputValue: aValue [
 
 ]
 
-{ #category : #buttons }
+{ #category : 'buttons' }
 BlNumberInputElement >> initializeMinusButton [
 
 	| circle |
@@ -128,7 +130,7 @@ BlNumberInputElement >> initializeMinusButton [
 	
 ]
 
-{ #category : #buttons }
+{ #category : 'buttons' }
 BlNumberInputElement >> initializePlusButton [
 
 	| circle |
@@ -151,19 +153,19 @@ BlNumberInputElement >> initializePlusButton [
 
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 BlNumberInputElement >> inputExtent [ 
 
 	^ 300@120
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 BlNumberInputElement >> label [
 
 	^ inputLabel 
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 BlNumberInputElement >> label: aString [
 
 	inputLabel := BlTextElement new.
@@ -174,23 +176,23 @@ BlNumberInputElement >> label: aString [
 	self addChild: inputLabel
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 BlNumberInputElement >> minus [
 	^ minus
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 BlNumberInputElement >> plus [
 	^ plus
 ]
 
-{ #category : #evaluating }
+{ #category : 'evaluating' }
 BlNumberInputElement >> value [
 
 	^ value
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 BlNumberInputElement >> value: anInteger [
 
 	value := anInteger 

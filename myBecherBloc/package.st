@@ -1,1 +1,1 @@
-Package { #name : #myBecherBloc }
+Package { #name : 'myBecherBloc' }

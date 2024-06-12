@@ -1,10 +1,12 @@
 Class {
-	#name : #ToNumberInputElementTest,
-	#superclass : #TestCase,
-	#category : #'myBecherBloc-Input'
+	#name : 'ToNumberInputElementTest',
+	#superclass : 'TestCase',
+	#category : 'myBecherBloc-Input',
+	#package : 'myBecherBloc',
+	#tag : 'Input'
 }
 
-{ #category : #tests }
+{ #category : 'tests' }
 ToNumberInputElementTest >> testCanChangeLabel [
 
 	| inputElem |
@@ -14,7 +16,7 @@ ToNumberInputElementTest >> testCanChangeLabel [
 	self assert: inputElem label text asString equals: 'Volume'
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 ToNumberInputElementTest >> testEverythingIsInitializedCorrectly [
 
 	| inputElem |
@@ -22,7 +24,7 @@ ToNumberInputElementTest >> testEverythingIsInitializedCorrectly [
 	self assert: inputElem children size equals: 4
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 ToNumberInputElementTest >> testSkinisInstalledCorrectly [
 
 	| inputElem |
@@ -36,7 +38,7 @@ ToNumberInputElementTest >> testSkinisInstalledCorrectly [
 	self assert: inputElem background paint color equals: Color black
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 ToNumberInputElementTest >> testValueCantBeNegative [
 
 	| inputElem value |
@@ -47,7 +49,7 @@ ToNumberInputElementTest >> testValueCantBeNegative [
 	self assert: value equals: 0
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 ToNumberInputElementTest >> testValueUpdatedOnClick [
 
 	| inputElem |

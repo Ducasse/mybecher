@@ -1,6 +1,6 @@
 Class {
-	#name : #BlCleanSliderWithAlain,
-	#superclass : #BlElement,
+	#name : 'BlCleanSliderWithAlain',
+	#superclass : 'BlElement',
 	#instVars : [
 		'minValue',
 		'maxValue',
@@ -24,10 +24,12 @@ Class {
 		'sliderHandle',
 		'handlePushedPoint'
 	],
-	#category : #'myBecherBloc-slider'
+	#category : 'myBecherBloc-slider',
+	#package : 'myBecherBloc',
+	#tag : 'slider'
 }
 
-{ #category : #testing }
+{ #category : 'testing' }
 BlCleanSliderWithAlain class >> alainVisual1 [
 
 	<script>
@@ -46,7 +48,7 @@ BlCleanSliderWithAlain class >> alainVisual1 [
 	bl inspect
 ]
 
-{ #category : #testing }
+{ #category : 'testing' }
 BlCleanSliderWithAlain class >> alainVisual2 [
 
 	<script>
@@ -70,37 +72,37 @@ BlCleanSliderWithAlain class >> alainVisual2 [
 	bl2 inspect.
 ]
 
-{ #category : #building }
+{ #category : 'building' }
 BlCleanSliderWithAlain class >> backgroundDefaultColor [
 
 	^ Color gray
 ]
 
-{ #category : #building }
+{ #category : 'building' }
 BlCleanSliderWithAlain class >> barDefaultColor [
 
 	^ Color blue 
 ]
 
-{ #category : #building }
+{ #category : 'building' }
 BlCleanSliderWithAlain class >> defaultMaxPixelDistance [
 
 	^ 25
 ]
 
-{ #category : #building }
+{ #category : 'building' }
 BlCleanSliderWithAlain class >> interactionDefaultColor [
 
 	^ Color pink alpha: 0.5
 ]
 
-{ #category : #building }
+{ #category : 'building' }
 BlCleanSliderWithAlain class >> interactorDefaultColor [
 
 	^ Color red 
 ]
 
-{ #category : #testing }
+{ #category : 'testing' }
 BlCleanSliderWithAlain class >> visualTest1 [
 
 	<script>
@@ -117,7 +119,7 @@ BlCleanSliderWithAlain class >> visualTest1 [
 	^ val
 ]
 
-{ #category : #testing }
+{ #category : 'testing' }
 BlCleanSliderWithAlain class >> visualTest2 [
 
 	<script>
@@ -136,7 +138,7 @@ BlCleanSliderWithAlain class >> visualTest2 [
 	^ val
 ]
 
-{ #category : #testing }
+{ #category : 'testing' }
 BlCleanSliderWithAlain class >> visualTest3 [
 
 	<script>
@@ -155,7 +157,7 @@ BlCleanSliderWithAlain class >> visualTest3 [
 	^ val
 ]
 
-{ #category : #testing }
+{ #category : 'testing' }
 BlCleanSliderWithAlain class >> visualTestVertical1 [
 
 	<script>
@@ -174,25 +176,25 @@ BlCleanSliderWithAlain class >> visualTestVertical1 [
 	^ val
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 BlCleanSliderWithAlain >> barThickness: anObject [
 
 	barThickness := anObject
 ]
 
-{ #category : #'main configuration' }
+{ #category : 'main configuration' }
 BlCleanSliderWithAlain >> beHorizontal [  
 
 	self horizontal: true
 ]
 
-{ #category : #'main configuration' }
+{ #category : 'main configuration' }
 BlCleanSliderWithAlain >> beVertical [ 
 
 	self horizontal: false
 ]
 
-{ #category : #'private - building' }
+{ #category : 'private - building' }
 BlCleanSliderWithAlain >> buildDefaultHandle [
 
 	| bl pt |
@@ -205,7 +207,7 @@ BlCleanSliderWithAlain >> buildDefaultHandle [
 	^ bl
 ]
 
-{ #category : #build }
+{ #category : 'build' }
 BlCleanSliderWithAlain >> buildForeground [ 
 
 	self id: #sliderInteractionForeground.
@@ -213,7 +215,7 @@ BlCleanSliderWithAlain >> buildForeground [
 	self background: self class interactionDefaultColor.
 ]
 
-{ #category : #build }
+{ #category : 'build' }
 BlCleanSliderWithAlain >> buildHorizontalBackground [
 
 	| bgElt |
@@ -229,7 +231,7 @@ BlCleanSliderWithAlain >> buildHorizontalBackground [
 	self sliderBackground: bgElt
 ]
 
-{ #category : #build }
+{ #category : 'build' }
 BlCleanSliderWithAlain >> buildHorizontalBar [
 
 	| bar |
@@ -246,7 +248,7 @@ BlCleanSliderWithAlain >> buildHorizontalBar [
 	self sliderBar: bar
 ]
 
-{ #category : #build }
+{ #category : 'build' }
 BlCleanSliderWithAlain >> buildHorizontalHandle [ 
 
 	| handle pt |
@@ -260,7 +262,7 @@ BlCleanSliderWithAlain >> buildHorizontalHandle [
 	self sliderHandle: handle
 ]
 
-{ #category : #'private - building' }
+{ #category : 'private - building' }
 BlCleanSliderWithAlain >> buildHorizontalSlider [
 
 	self buildForeground.
@@ -269,7 +271,7 @@ BlCleanSliderWithAlain >> buildHorizontalSlider [
 	self buildHorizontalHandle
 ]
 
-{ #category : #'changing state' }
+{ #category : 'changing state' }
 BlCleanSliderWithAlain >> buildOrientation [
 
 	self removeAllShapes.
@@ -280,14 +282,14 @@ BlCleanSliderWithAlain >> buildOrientation [
 	self initializeEventHandlers
 ]
 
-{ #category : #'api - slider' }
+{ #category : 'api - slider' }
 BlCleanSliderWithAlain >> buildSlider [
 
 	self buildOrientation.
 
 ]
 
-{ #category : #'private - building' }
+{ #category : 'private - building' }
 BlCleanSliderWithAlain >> buildVerticalBackground [
 
 	
@@ -307,7 +309,7 @@ BlCleanSliderWithAlain >> buildVerticalBackground [
 
 ]
 
-{ #category : #'private - building' }
+{ #category : 'private - building' }
 BlCleanSliderWithAlain >> buildVerticalBar [
 
 	| bar |
@@ -326,7 +328,7 @@ BlCleanSliderWithAlain >> buildVerticalBar [
 	
 ]
 
-{ #category : #'private - building' }
+{ #category : 'private - building' }
 BlCleanSliderWithAlain >> buildVerticalHandle [
 
 	| handle pt |
@@ -340,7 +342,7 @@ BlCleanSliderWithAlain >> buildVerticalHandle [
 	self sliderHandle: handle
 ]
 
-{ #category : #'private - building' }
+{ #category : 'private - building' }
 BlCleanSliderWithAlain >> buildVerticalSlider [
 
 	self buildForeground.
@@ -349,13 +351,13 @@ BlCleanSliderWithAlain >> buildVerticalSlider [
 	self buildVerticalHandle
 ]
 
-{ #category : #'changing state' }
+{ #category : 'changing state' }
 BlCleanSliderWithAlain >> changedCurrentValue: aValue [
 
 ^self changedCurrentValue: aValue withSlider: false
 ]
 
-{ #category : #'changing state' }
+{ #category : 'changing state' }
 BlCleanSliderWithAlain >> changedCurrentValue: aValue withSlider: aBool [
 
 	| v color |
@@ -382,7 +384,7 @@ BlCleanSliderWithAlain >> changedCurrentValue: aValue withSlider: aBool [
 	self sliderBar background: color
 ]
 
-{ #category : #'changing state' }
+{ #category : 'changing state' }
 BlCleanSliderWithAlain >> changedHandlePosition: v [
 
 	self isHorizontal 
@@ -394,7 +396,7 @@ BlCleanSliderWithAlain >> changedHandlePosition: v [
 				sl position: sl constraints position x @ v ] ]
 ]
 
-{ #category : #private }
+{ #category : 'private' }
 BlCleanSliderWithAlain >> cleanSliderParts [
 
 	sliderBackground := nil.
@@ -402,7 +404,7 @@ BlCleanSliderWithAlain >> cleanSliderParts [
 	sliderHandle := nil
 ]
 
-{ #category : #private }
+{ #category : 'private' }
 BlCleanSliderWithAlain >> colorForValue: aValue [
 
 	| i |
@@ -418,13 +420,13 @@ BlCleanSliderWithAlain >> colorForValue: aValue [
 			^list at: i ]
 ]
 
-{ #category : #private }
+{ #category : 'private' }
 BlCleanSliderWithAlain >> currentValue [
 
 	^ currentValue
 ]
 
-{ #category : #private }
+{ #category : 'private' }
 BlCleanSliderWithAlain >> currentValue: aNumber [
 
 	(aNumber <= maxValue and: [ aNumber >= minValue ]) ifFalse: [
@@ -433,13 +435,13 @@ BlCleanSliderWithAlain >> currentValue: aNumber [
 	self changedCurrentValue: aNumber
 ]
 
-{ #category : #'api - slider' }
+{ #category : 'api - slider' }
 BlCleanSliderWithAlain >> decrementValue [
 
 	self decrementValue: self stepValue.
 ]
 
-{ #category : #'api - slider' }
+{ #category : 'api - slider' }
 BlCleanSliderWithAlain >> decrementValue: aValue [
 
 	| tmp |
@@ -447,37 +449,37 @@ BlCleanSliderWithAlain >> decrementValue: aValue [
 	tmp < self maxValue ifTrue: [ self validatedValue: tmp ]
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 BlCleanSliderWithAlain >> disabledRebuilding [
 
 	^ disabledRebuilding
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 BlCleanSliderWithAlain >> disabledRebuilding: anObject [
 
 	disabledRebuilding := anObject
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 BlCleanSliderWithAlain >> endColor: anObject [
 
 	endColor := anObject
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 BlCleanSliderWithAlain >> enumeratedColors [
 
 	^ enumeratedColors
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 BlCleanSliderWithAlain >> enumeratedColors: anObject [
 
 	enumeratedColors := anObject
 ]
 
-{ #category : #'api - values' }
+{ #category : 'api - values' }
 BlCleanSliderWithAlain >> enumeratedValues [
 	"since the enumerated value are derived from min, max and step, we lazy initialize it."
 	
@@ -487,37 +489,37 @@ BlCleanSliderWithAlain >> enumeratedValues [
 	^ enumeratedValues
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 BlCleanSliderWithAlain >> enumeratedValues: anObject [
 
 	enumeratedValues := anObject
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 BlCleanSliderWithAlain >> handlePushedPoint [
 
 	^ handlePushedPoint
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 BlCleanSliderWithAlain >> handlePushedPoint: anObject [
 
 	handlePushedPoint := anObject
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 BlCleanSliderWithAlain >> horizontal: aBoolean [
 
 	isHorizontal := aBoolean 
 ]
 
-{ #category : #'api - slider' }
+{ #category : 'api - slider' }
 BlCleanSliderWithAlain >> incrementValue [
 
 	self incrementValue: self stepValue
 ]
 
-{ #category : #'api - slider' }
+{ #category : 'api - slider' }
 BlCleanSliderWithAlain >> incrementValue: aValue [
 
 	| tmp |
@@ -525,19 +527,19 @@ BlCleanSliderWithAlain >> incrementValue: aValue [
 	tmp < self maxValue ifTrue: [ self validatedValue: tmp ]
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 BlCleanSliderWithAlain >> initColor [
 
 	^ initColor
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 BlCleanSliderWithAlain >> initColor: anObject [
 
 	initColor := anObject
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 BlCleanSliderWithAlain >> initialize [
 
 	super initialize.
@@ -555,7 +557,7 @@ BlCleanSliderWithAlain >> initialize [
 	maxPixelDistance := self class defaultMaxPixelDistance
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 BlCleanSliderWithAlain >> initializeEventHandlers [
 
 	self isSliderBuilt ifFalse: [
@@ -569,44 +571,44 @@ BlCleanSliderWithAlain >> initializeEventHandlers [
 
 ]
 
-{ #category : #private }
+{ #category : 'private' }
 BlCleanSliderWithAlain >> is: aValue near: aValue2 [
 
 	^(aValue - aValue2) abs < self maxPixelDistance
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 BlCleanSliderWithAlain >> isHorizontal [ 
 
 	^ isHorizontal 
 ]
 
-{ #category : #'private - building' }
+{ #category : 'private - building' }
 BlCleanSliderWithAlain >> isSliderBuilt [
 	"if no interactor, no slider"
 
 	^ self sliderHandle isNotNil
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 BlCleanSliderWithAlain >> maxPixelDistance [
 
 	^ maxPixelDistance 
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 BlCleanSliderWithAlain >> maxPixelDistance: anObject [
 
 	maxPixelDistance := anObject
 ]
 
-{ #category : #'api - values' }
+{ #category : 'api - values' }
 BlCleanSliderWithAlain >> maxValue [
 
 	^ maxValue
 ]
 
-{ #category : #'api - values' }
+{ #category : 'api - values' }
 BlCleanSliderWithAlain >> maxValue: anObject [
 	"when we change the maxValue, we are rebuilding the enumerated values and slider"
 
@@ -615,13 +617,13 @@ BlCleanSliderWithAlain >> maxValue: anObject [
 	self isSliderBuilt ifTrue: [ self rebuildSlider ]
 ]
 
-{ #category : #'api - values' }
+{ #category : 'api - values' }
 BlCleanSliderWithAlain >> minValue [
 
 	^ minValue
 ]
 
-{ #category : #'api - values' }
+{ #category : 'api - values' }
 BlCleanSliderWithAlain >> minValue: anObject [
 
 	minValue := anObject.
@@ -630,7 +632,7 @@ BlCleanSliderWithAlain >> minValue: anObject [
 	self isSliderBuilt ifTrue: [ self rebuildSlider ]
 ]
 
-{ #category : #'api - values' }
+{ #category : 'api - values' }
 BlCleanSliderWithAlain >> nearestValue: aValue [
 
 	| val minResult tmp tmp2 |
@@ -647,7 +649,7 @@ BlCleanSliderWithAlain >> nearestValue: aValue [
 	^ val
 ]
 
-{ #category : #'api - transformations' }
+{ #category : 'api - transformations' }
 BlCleanSliderWithAlain >> pointToValue: point [
 
 	^ self isHorizontal 
@@ -655,7 +657,7 @@ BlCleanSliderWithAlain >> pointToValue: point [
 		  ifFalse: [ self pointToYValue: point ]
 ]
 
-{ #category : #'api - transformations' }
+{ #category : 'api - transformations' }
 BlCleanSliderWithAlain >> pointToXValue: point [
 
 	| facteur valeur |
@@ -667,7 +669,7 @@ BlCleanSliderWithAlain >> pointToXValue: point [
 	^ valeur
 ]
 
-{ #category : #'api - transformations' }
+{ #category : 'api - transformations' }
 BlCleanSliderWithAlain >> pointToYValue: point [
 
 	| facteur valeur |
@@ -679,21 +681,21 @@ BlCleanSliderWithAlain >> pointToYValue: point [
 	^ valeur
 ]
 
-{ #category : #private }
+{ #category : 'private' }
 BlCleanSliderWithAlain >> proportionOf: aValue [
 	| i |
 	i := self enumeratedValues indexOf: aValue.
 	^ (i/self enumeratedValues size)
 ]
 
-{ #category : #'private - building' }
+{ #category : 'private - building' }
 BlCleanSliderWithAlain >> rebuildSlider [
 
 	self disabledRebuilding ifTrue: [ ^ self ].
 	self buildOrientation
 ]
 
-{ #category : #private }
+{ #category : 'private' }
 BlCleanSliderWithAlain >> removeAllShapes [
 
 	| list |
@@ -703,14 +705,14 @@ BlCleanSliderWithAlain >> removeAllShapes [
 	self cleanSliderParts
 ]
 
-{ #category : #private }
+{ #category : 'private' }
 BlCleanSliderWithAlain >> removeAllSliderEventHandlers [
 	self removeEventHandler: eventHandler.
 	eventHandler := nil.
 	
 ]
 
-{ #category : #private }
+{ #category : 'private' }
 BlCleanSliderWithAlain >> removeEventHandler [
 
 	eventHandler ifNil: [ ^ self ].
@@ -721,26 +723,26 @@ BlCleanSliderWithAlain >> removeEventHandler [
 	
 ]
 
-{ #category : #'api - slider' }
+{ #category : 'api - slider' }
 BlCleanSliderWithAlain >> setMaxValue [
 
 	self setValue: self maxValue.
 ]
 
-{ #category : #'api - slider' }
+{ #category : 'api - slider' }
 BlCleanSliderWithAlain >> setMinValue [
 
 	self setValue: self minValue
 ]
 
-{ #category : #'api - slider' }
+{ #category : 'api - slider' }
 BlCleanSliderWithAlain >> setValue: aValue [
 
 	(aValue < self maxValue and: [ aValue > self minValue ]) ifTrue: [
 		self validatedValue: aValue ].
 ]
 
-{ #category : #'api - bounds' }
+{ #category : 'api - bounds' }
 BlCleanSliderWithAlain >> size: aValue [
 
 	super size: aValue.
@@ -748,31 +750,31 @@ BlCleanSliderWithAlain >> size: aValue [
 	self isSliderBuilt ifTrue: [ self rebuildSlider ]
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 BlCleanSliderWithAlain >> sliderBackground [
 
 	^ sliderBackground
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 BlCleanSliderWithAlain >> sliderBackground: anObject [
 
 	sliderBackground := anObject
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 BlCleanSliderWithAlain >> sliderBar [
 
 	^ sliderBar
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 BlCleanSliderWithAlain >> sliderBar: anObject [
 
 	sliderBar := anObject
 ]
 
-{ #category : #'events - bar' }
+{ #category : 'events - bar' }
 BlCleanSliderWithAlain >> sliderBarClicked: event [
 
 	| tmp val |
@@ -781,19 +783,19 @@ BlCleanSliderWithAlain >> sliderBarClicked: event [
 	self validatedValue: val.
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 BlCleanSliderWithAlain >> sliderHandle [
 
 	^ sliderHandle
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 BlCleanSliderWithAlain >> sliderHandle: anObject [
 
 	sliderHandle := anObject
 ]
 
-{ #category : #'events - interactor' }
+{ #category : 'events - interactor' }
 BlCleanSliderWithAlain >> sliderHandleMoved: event [
 
 	| val tmp v |
@@ -815,7 +817,7 @@ BlCleanSliderWithAlain >> sliderHandleMoved: event [
 	self currentValue: val
 ]
 
-{ #category : #'events - interactor' }
+{ #category : 'events - interactor' }
 BlCleanSliderWithAlain >> sliderHandlePushed: event [
 
 	| value pt1 pt2 |
@@ -828,7 +830,7 @@ BlCleanSliderWithAlain >> sliderHandlePushed: event [
 		self handlePushedPoint: event position copy ]
 ]
 
-{ #category : #'events - interactor' }
+{ #category : 'events - interactor' }
 BlCleanSliderWithAlain >> sliderHandleReleased: event [
 
 	self handlePushedPoint ifNil: [ ^ self ].
@@ -836,7 +838,7 @@ BlCleanSliderWithAlain >> sliderHandleReleased: event [
 	self validatedValue: currentValue
 ]
 
-{ #category : #private }
+{ #category : 'private' }
 BlCleanSliderWithAlain >> sliderParts [
 
 	| oc |
@@ -847,13 +849,13 @@ BlCleanSliderWithAlain >> sliderParts [
 	^ oc
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 BlCleanSliderWithAlain >> sliderPixelMargin [
 
 	^ sliderPixelMargin 
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 BlCleanSliderWithAlain >> sliderPixelMargin: anObject [
 
 	sliderPixelMargin := anObject.
@@ -861,26 +863,26 @@ BlCleanSliderWithAlain >> sliderPixelMargin: anObject [
 		self rebuildSlider ]
 ]
 
-{ #category : #'api - values' }
+{ #category : 'api - values' }
 BlCleanSliderWithAlain >> stepValue [
 
 	^ stepValue
 ]
 
-{ #category : #'api - values' }
+{ #category : 'api - values' }
 BlCleanSliderWithAlain >> stepValue: anObject [
 
 	stepValue := anObject.
 	enumeratedValues := nil.
 ]
 
-{ #category : #'api - values' }
+{ #category : 'api - values' }
 BlCleanSliderWithAlain >> validatedValue [
 
 	^ validatedValue
 ]
 
-{ #category : #'api - values' }
+{ #category : 'api - values' }
 BlCleanSliderWithAlain >> validatedValue: aValue [
 
 	currentValue := aValue.
@@ -889,19 +891,19 @@ BlCleanSliderWithAlain >> validatedValue: aValue [
 	self validatedValueCallback ifNotNil: [ :e | e value: validatedValue ]
 ]
 
-{ #category : #private }
+{ #category : 'private' }
 BlCleanSliderWithAlain >> validatedValueCallback [
 
 	^ validatedValueCallback
 ]
 
-{ #category : #'api - values' }
+{ #category : 'api - values' }
 BlCleanSliderWithAlain >> validatedValueCallback: anObject [
 
 	validatedValueCallback := anObject
 ]
 
-{ #category : #'api - transformations' }
+{ #category : 'api - transformations' }
 BlCleanSliderWithAlain >> valueToCoord: aValue [
 
 	^ self isHorizontal 
@@ -909,7 +911,7 @@ BlCleanSliderWithAlain >> valueToCoord: aValue [
 		  ifFalse: [ self valueToY: aValue ]
 ]
 
-{ #category : #'api - transformations' }
+{ #category : 'api - transformations' }
 BlCleanSliderWithAlain >> valueToX: aValue [
 
 	| current total coeff |
@@ -920,7 +922,7 @@ BlCleanSliderWithAlain >> valueToX: aValue [
 	  + (self sliderBackground constraints horizontal resizer size * coeff roundTo: 1)
 ]
 
-{ #category : #'api - transformations' }
+{ #category : 'api - transformations' }
 BlCleanSliderWithAlain >> valueToY: aValue [
 
 	| valeurCourante valeurTotale facteur |
@@ -933,13 +935,13 @@ BlCleanSliderWithAlain >> valueToY: aValue [
 			   roundTo: 1)
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 BlCleanSliderWithAlain >> widgetSize [
 
 	^ widgetSize
 ]
 
-{ #category : #private }
+{ #category : 'private' }
 BlCleanSliderWithAlain >> widgetSize: anObject [
 
 	widgetSize := anObject

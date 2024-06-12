@@ -1,10 +1,12 @@
 Class {
-	#name : #ToMooflooTheme,
-	#superclass : #ToTheme,
-	#category : #'myBecherBloc-Input'
+	#name : 'ToMooflooTheme',
+	#superclass : 'ToTheme',
+	#category : 'myBecherBloc-Input',
+	#package : 'myBecherBloc',
+	#tag : 'Input'
 }
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 ToMooflooTheme class >> defaultTokenProperties [
 	"define here token properties of the widget theme"
 
@@ -15,8 +17,8 @@ ToMooflooTheme class >> defaultTokenProperties [
 		   value: Color lightGreen) }
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 ToMooflooTheme >> newSkinInstanceFor: anElement [
 
-	^ anElement newMooflooSkin
+	^ anElement newMooflodSkin
 ]

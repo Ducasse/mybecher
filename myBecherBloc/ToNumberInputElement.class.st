@@ -1,6 +1,6 @@
 Class {
-	#name : #ToNumberInputElement,
-	#superclass : #ToElement,
+	#name : 'ToNumberInputElement',
+	#superclass : 'ToElement',
 	#instVars : [
 		'plus',
 		'minus',
@@ -8,10 +8,12 @@ Class {
 		'value',
 		'inputLabel'
 	],
-	#category : #'myBecherBloc-Input'
+	#category : 'myBecherBloc-Input',
+	#package : 'myBecherBloc',
+	#tag : 'Input'
 }
 
-{ #category : #example }
+{ #category : 'example' }
 ToNumberInputElement class >> openInputWithSkin [
 
 	<script>
@@ -25,7 +27,7 @@ ToNumberInputElement class >> openInputWithSkin [
 	^ anInput
 ]
 
-{ #category : #buttons }
+{ #category : 'buttons' }
 ToNumberInputElement >> changeValueTo: aValue [
 
 	inputValue text: (self configuredString: aValue asString).
@@ -33,14 +35,14 @@ ToNumberInputElement >> changeValueTo: aValue [
 	value := aValue
 ]
 
-{ #category : #buttons }
+{ #category : 'buttons' }
 ToNumberInputElement >> configuredString: aString [
 
 	^ aString asRopedText attributes: { (BlTextForegroundAttribute paint: Color white) }.
 	
 ]
 
-{ #category : #buttons }
+{ #category : 'buttons' }
 ToNumberInputElement >> createCircle [
 
 	| circle |
@@ -52,19 +54,19 @@ ToNumberInputElement >> createCircle [
 	^ circle
 ]
 
-{ #category : #buttons }
+{ #category : 'buttons' }
 ToNumberInputElement >> decreaseInput [
 
 	value > 0 ifTrue: [ self changeValueTo: value - 1 ]
 ]
 
-{ #category : #buttons }
+{ #category : 'buttons' }
 ToNumberInputElement >> increaseInput [
 
 	self changeValueTo: value + 1
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 ToNumberInputElement >> initialize [
 
 	super initialize.
@@ -80,7 +82,7 @@ ToNumberInputElement >> initialize [
 	self initializePlusButton
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 ToNumberInputElement >> initializeInputValue: aValue [
 
 	inputValue := BlTextElement new.
@@ -90,7 +92,7 @@ ToNumberInputElement >> initializeInputValue: aValue [
 	self addChild: inputValue
 ]
 
-{ #category : #buttons }
+{ #category : 'buttons' }
 ToNumberInputElement >> initializeMinusButton [
 
 	| circle |
@@ -110,7 +112,7 @@ ToNumberInputElement >> initializeMinusButton [
 	self addChild: circle
 ]
 
-{ #category : #buttons }
+{ #category : 'buttons' }
 ToNumberInputElement >> initializePlusButton [
 
 	| circle |
@@ -130,19 +132,19 @@ ToNumberInputElement >> initializePlusButton [
 	self addChild: circle
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 ToNumberInputElement >> inputExtent [ 
 
 	^ 300@120
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 ToNumberInputElement >> label [
 
 	^ inputLabel 
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 ToNumberInputElement >> label: aString [
 
 	inputLabel := BlTextElement new.
@@ -155,35 +157,35 @@ ToNumberInputElement >> label: aString [
 	self addChild: inputLabel
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 ToNumberInputElement >> minus [
 	^ minus
 ]
 
-{ #category : #'instance creation' }
-ToNumberInputElement >> newMooflooSkin [
+{ #category : 'instance creation' }
+ToNumberInputElement >> newMooflodSkin [
 
 	^ ToInputElementSkin new
 ]
 
-{ #category : #'instance creation' }
+{ #category : 'instance creation' }
 ToNumberInputElement >> newRawSkin [
 
 	^ ToInputElementSkin new
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 ToNumberInputElement >> plus [
 	^ plus
 ]
 
-{ #category : #evaluating }
+{ #category : 'evaluating' }
 ToNumberInputElement >> value [
 
 	^ value
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 ToNumberInputElement >> value: anInteger [
 
 	value := anInteger 

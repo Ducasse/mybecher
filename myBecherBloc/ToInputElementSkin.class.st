@@ -1,10 +1,12 @@
 Class {
-	#name : #ToInputElementSkin,
-	#superclass : #ToBasicMooflooSkin,
-	#category : #'myBecherBloc-Input'
+	#name : 'ToInputElementSkin',
+	#superclass : 'ToBasicMooflodSkin',
+	#category : 'myBecherBloc-Input',
+	#package : 'myBecherBloc',
+	#tag : 'Input'
 }
 
-{ #category : #'event handling' }
+{ #category : 'event handling' }
 ToInputElementSkin >> installLookEvent: anEvent [
 	"when installing the skin, changes the properties of widget mentionned down here"
 

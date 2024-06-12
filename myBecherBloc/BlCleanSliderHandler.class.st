@@ -1,47 +1,49 @@
 Class {
-	#name : #BlCleanSliderHandler,
-	#superclass : #BlCustomEventHandler,
-	#category : #'myBecherBloc-slider'
+	#name : 'BlCleanSliderHandler',
+	#superclass : 'BlCustomEventHandler',
+	#category : 'myBecherBloc-slider',
+	#package : 'myBecherBloc',
+	#tag : 'slider'
 }
 
-{ #category : #'event management' }
+{ #category : 'event management' }
 BlCleanSliderHandler >> clickEvent: anEvent [
 
 	self sliderBarClicked: anEvent
 ]
 
-{ #category : #'event management' }
+{ #category : 'event management' }
 BlCleanSliderHandler >> dragEndEvent: anEvent [
 
 	self sliderHandleReleased: anEvent
 	
 ]
 
-{ #category : #'event management' }
+{ #category : 'event management' }
 BlCleanSliderHandler >> eventsToHandle [
 	^ { BlMouseDownEvent . BlDragEndEvent . BlMouseUpEvent . BlMouseMoveEvent . BlClickEvent}
 ]
 
-{ #category : #'event management' }
+{ #category : 'event management' }
 BlCleanSliderHandler >> mouseDownEvent: anEvent [
 
 	self sliderHandlePushed: anEvent
 	
 ]
 
-{ #category : #'event management' }
+{ #category : 'event management' }
 BlCleanSliderHandler >> mouseMoveEvent: anEvent [
 
 	self sliderHandleMoved: anEvent.
 ]
 
-{ #category : #'event management' }
+{ #category : 'event management' }
 BlCleanSliderHandler >> mouseUpEvent: anEvent [
 
 	self sliderHandleReleased: anEvent
 ]
 
-{ #category : #actions }
+{ #category : 'actions' }
 BlCleanSliderHandler >> sliderBarClicked: event [
 
 	| tmp val slider |
@@ -51,7 +53,7 @@ BlCleanSliderHandler >> sliderBarClicked: event [
 	slider validatedValue: val.
 ]
 
-{ #category : #actions }
+{ #category : 'actions' }
 BlCleanSliderHandler >> sliderHandleMoved: event [
 
 	| val tmp v slider |
@@ -76,7 +78,7 @@ BlCleanSliderHandler >> sliderHandleMoved: event [
 	slider currentValue: val
 ]
 
-{ #category : #actions }
+{ #category : 'actions' }
 BlCleanSliderHandler >> sliderHandlePushed: event [
 
 	| value pt1 pt2 slider |
@@ -90,7 +92,7 @@ BlCleanSliderHandler >> sliderHandlePushed: event [
 		slider  handlePushedPoint: event position copy ]
 ]
 
-{ #category : #actions }
+{ #category : 'actions' }
 BlCleanSliderHandler >> sliderHandleReleased: event [
 
 	| slider |

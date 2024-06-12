@@ -1,10 +1,12 @@
 Class {
-	#name : #BlNumberInputElementTest,
-	#superclass : #TestCase,
-	#category : #'myBecherBloc-Input'
+	#name : 'BlNumberInputElementTest',
+	#superclass : 'TestCase',
+	#category : 'myBecherBloc-Input',
+	#package : 'myBecherBloc',
+	#tag : 'Input'
 }
 
-{ #category : #tests }
+{ #category : 'tests' }
 BlNumberInputElementTest >> testCanChangeLabel [
 
 	| inputElem |
@@ -14,7 +16,7 @@ BlNumberInputElementTest >> testCanChangeLabel [
 	self assert: inputElem label text asString equals: 'Volume'.
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 BlNumberInputElementTest >> testEverythingIsInitializedCorrectly [
 
 	| inputElem |
@@ -22,7 +24,7 @@ BlNumberInputElementTest >> testEverythingIsInitializedCorrectly [
 	self assert: inputElem children size equals: 4 
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 BlNumberInputElementTest >> testSkinisInstalledCorrectly [
 
 	| inputElem |
@@ -35,7 +37,7 @@ BlNumberInputElementTest >> testSkinisInstalledCorrectly [
 	self assert: inputElem background paint color equals: Color black
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 BlNumberInputElementTest >> testValueCantBeNegative [
 
 	| inputElem value |
@@ -46,7 +48,7 @@ BlNumberInputElementTest >> testValueCantBeNegative [
 	self assert: value equals: 0
 ]
 
-{ #category : #tests }
+{ #category : 'tests' }
 BlNumberInputElementTest >> testValueUpdatedOnClick [
 
 	| inputElem |

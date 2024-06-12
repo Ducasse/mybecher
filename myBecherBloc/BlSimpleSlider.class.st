@@ -1,6 +1,6 @@
 Class {
-	#name : #BlSimpleSlider,
-	#superclass : #BlElement,
+	#name : 'BlSimpleSlider',
+	#superclass : 'BlElement',
 	#instVars : [
 		'widgetSize',
 		'handle',
@@ -16,10 +16,12 @@ Class {
 		'marginThickness',
 		'marginLength'
 	],
-	#category : #'myBecherBloc-slider'
+	#category : 'myBecherBloc-slider',
+	#package : 'myBecherBloc',
+	#tag : 'slider'
 }
 
-{ #category : #testing }
+{ #category : 'testing' }
 BlSimpleSlider class >> alainVisual1 [
 
 	<script>
@@ -36,75 +38,75 @@ BlSimpleSlider class >> alainVisual1 [
 	bl inspect
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 BlSimpleSlider class >> beHorizontal [
 
 	^ self new beHorizontal 
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 BlSimpleSlider class >> beVertical [ 
 	
 	^ self new beVertical 
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 BlSimpleSlider >> bar [
 	^ bar
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 BlSimpleSlider >> bar: aBlElement [ 
 	bar := aBlElement
 ]
 
-{ #category : #'api - bounds' }
+{ #category : 'api - bounds' }
 BlSimpleSlider >> barDefaultColor [ 
 
 	^ Color lightGray 
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 BlSimpleSlider >> barLength [
 
 	^ barLength
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 BlSimpleSlider >> barLength: aNumber [
 
 	barLength := aNumber.
 	self rebuild
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 BlSimpleSlider >> barThickness [ 
 
 	^ barThickness 
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 BlSimpleSlider >> barThickness: aNumber [
 
 	barThickness := aNumber.
 	self rebuild
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 BlSimpleSlider >> beHorizontal [
 
 	self horizontal: true.
 	self buildHorizontal
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 BlSimpleSlider >> beVertical [
 
 	self horizontal: false.
 	self buildVertical
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : 'as yet unclassified' }
 BlSimpleSlider >> buildHorizontal [
 
 	widgetSize y > widgetSize x ifTrue: [
@@ -113,7 +115,7 @@ BlSimpleSlider >> buildHorizontal [
 	self initializeParts
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : 'as yet unclassified' }
 BlSimpleSlider >> buildVertical [
 
 	widgetSize y > widgetSize x ifFalse: [
@@ -123,38 +125,38 @@ BlSimpleSlider >> buildVertical [
 	self initializeParts
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 BlSimpleSlider >> coloredBar [ 
 
 	^ coloredBar 
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 BlSimpleSlider >> coloredBar: aBlElement [
 
 	coloredBar := aBlElement 
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : 'as yet unclassified' }
 BlSimpleSlider >> coloredBarDefaultColor [
 
 	^ Color red
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 BlSimpleSlider >> currentValue [ 
 
 	^ currentValue 
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 BlSimpleSlider >> currentValue: aNumber [
 
 	(aNumber < self minValue or: [ aNumber > self maxValue ]) ifTrue: [ ^ self ].
 	currentValue := aNumber
 ]
 
-{ #category : #'api - bounds' }
+{ #category : 'api - bounds' }
 BlSimpleSlider >> defaultBar [
 
 	| size |
@@ -169,25 +171,25 @@ BlSimpleSlider >> defaultBar [
 		  yourself
 ]
 
-{ #category : #'api - bounds' }
+{ #category : 'api - bounds' }
 BlSimpleSlider >> defaultBarLength [
 
 	^ 200
 ]
 
-{ #category : #'api - bounds' }
+{ #category : 'api - bounds' }
 BlSimpleSlider >> defaultBarThickness [
 
 	^ 10
 ]
 
-{ #category : #'api - bounds' }
+{ #category : 'api - bounds' }
 BlSimpleSlider >> defaultColor [ 
 
 	^ Color lightRed 
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : 'as yet unclassified' }
 BlSimpleSlider >> defaultColoredBar [
 
 	| size |
@@ -202,7 +204,7 @@ BlSimpleSlider >> defaultColoredBar [
 		  yourself
 ]
 
-{ #category : #'api - bounds' }
+{ #category : 'api - bounds' }
 BlSimpleSlider >> defaultHandle [
 
 	| size elt offset |
@@ -226,25 +228,25 @@ BlSimpleSlider >> defaultHandle [
 	^ elt
 ]
 
-{ #category : #'api - bounds' }
+{ #category : 'api - bounds' }
 BlSimpleSlider >> defaultMargin [
 
 	^ 10
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : 'as yet unclassified' }
 BlSimpleSlider >> defaultMarginLength [ 
 
 	^ 10
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : 'as yet unclassified' }
 BlSimpleSlider >> defaultMarginThickness [
 
 	^ 10
 ]
 
-{ #category : #'api - bounds' }
+{ #category : 'api - bounds' }
 BlSimpleSlider >> defaultSize [
 	"self bar size maybe"
 	^ (self isHorizontal
@@ -253,29 +255,29 @@ BlSimpleSlider >> defaultSize [
 	  + (2 * self defaultMargin)
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 BlSimpleSlider >> handle [
 	^ handle
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 BlSimpleSlider >> handle: aBlElement [ 
 	handle := aBlElement
 ]
 
-{ #category : #'api - bounds' }
+{ #category : 'api - bounds' }
 BlSimpleSlider >> handleDefaultColor [ 
 
 	^ Color red
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 BlSimpleSlider >> horizontal: aBoolean [
 
 	isHorizontal := aBoolean 
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 BlSimpleSlider >> initialize [
 
 	super initialize.
@@ -287,7 +289,7 @@ BlSimpleSlider >> initialize [
 	self initializeParts
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 BlSimpleSlider >> initializeParts [
 
 	self bar: self defaultBar.
@@ -305,7 +307,7 @@ BlSimpleSlider >> initializeParts [
 	
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 BlSimpleSlider >> initializeSizes [ 
 
 	barLength := self defaultBarLength.
@@ -314,7 +316,7 @@ BlSimpleSlider >> initializeSizes [
 	marginThickness := self defaultMarginThickness.
 ]
 
-{ #category : #initialization }
+{ #category : 'initialization' }
 BlSimpleSlider >> initializeValues [ 
 
 	self minValue: 0.
@@ -322,63 +324,63 @@ BlSimpleSlider >> initializeValues [
 	self currentValue: 0
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 BlSimpleSlider >> isHorizontal [ 
 
 	^ isHorizontal 
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 BlSimpleSlider >> marginLength [
 
 	^ marginLength
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 BlSimpleSlider >> marginLength: aNumber [
 
 	marginLength := aNumber.
 	self rebuild
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 BlSimpleSlider >> marginThickness [ 
 
 	^ marginThickness 
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 BlSimpleSlider >> marginThickness: aNumber [
 
 	marginThickness := aNumber.
 	self rebuild
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 BlSimpleSlider >> maxValue [
 
 	^ maxValue
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 BlSimpleSlider >> maxValue: aNumber [
 
 	maxValue := aNumber
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 BlSimpleSlider >> minValue [ 
 
 	^ minValue 
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 BlSimpleSlider >> minValue: aNumber [
 
 	minValue := aNumber 
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : 'as yet unclassified' }
 BlSimpleSlider >> moveHandleTo: aPosition [
 
 	| newPos |
@@ -402,7 +404,7 @@ BlSimpleSlider >> moveHandleTo: aPosition [
 	self updateValue
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : 'as yet unclassified' }
 BlSimpleSlider >> positionDefaultBar [
 
 	self isHorizontal
@@ -412,13 +414,13 @@ BlSimpleSlider >> positionDefaultBar [
 				self defaultMarginThickness @ self defaultMarginLength  ]
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : 'as yet unclassified' }
 BlSimpleSlider >> positionDefaultColoredBar [
 
 	self positionDefaultBar
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : 'as yet unclassified' }
 BlSimpleSlider >> positionDefaultHandle [
 
 	self isHorizontal
@@ -426,13 +428,13 @@ BlSimpleSlider >> positionDefaultHandle [
 		ifFalse: [ handle position: widgetSize x / 2 @ (self defaultMargin + barLength) ]
 ]
 
-{ #category : #building }
+{ #category : 'building' }
 BlSimpleSlider >> rebuild [ 
 
 	self isHorizontal ifTrue: [ self buildHorizontal ] ifFalse: [ self buildVertical ]
 ]
 
-{ #category : #removing }
+{ #category : 'removing' }
 BlSimpleSlider >> removeParts [
 
 	self removeChildren. 
@@ -440,7 +442,7 @@ BlSimpleSlider >> removeParts [
 	handle := nil
 ]
 
-{ #category : #'api - bounds' }
+{ #category : 'api - bounds' }
 BlSimpleSlider >> size: aValue [
 	"just to keep the widgset size"
 
@@ -452,20 +454,20 @@ BlSimpleSlider >> size: aValue [
 	"
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 BlSimpleSlider >> stepValue [
 
 	^ stepValue 
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 BlSimpleSlider >> stepValue: aNumber [
 
 	stepValue := aNumber 
 	
 ]
 
-{ #category : #'as yet unclassified' }
+{ #category : 'as yet unclassified' }
 BlSimpleSlider >> updateColoredBar [
 
 	self isHorizontal
@@ -481,14 +483,14 @@ BlSimpleSlider >> updateColoredBar [
 				barThickness @ (bar position x + barLength - handle position y) ]
 ]
 
-{ #category : #protocol }
+{ #category : 'protocol' }
 BlSimpleSlider >> updateValue [
 
 	| value |
 	value := self valueAtCoord: handle position.
 ]
 
-{ #category : #'api - transformations' }
+{ #category : 'api - transformations' }
 BlSimpleSlider >> valueAtCoord: aPoint [
 
 	^ self isHorizontal
@@ -496,7 +498,7 @@ BlSimpleSlider >> valueAtCoord: aPoint [
 		  ifFalse: [ self valueAtY: aPoint  ]
 ]
 
-{ #category : #'api - transformations' }
+{ #category : 'api - transformations' }
 BlSimpleSlider >> valueAtX: aPoint [
 
 	| dist valueDiff value coeff |
@@ -510,7 +512,7 @@ BlSimpleSlider >> valueAtX: aPoint [
 	 value asFloat traceCr
 ]
 
-{ #category : #'api - transformations' }
+{ #category : 'api - transformations' }
 BlSimpleSlider >> valueAtY: aPoint [
 
 	| dist valueDiff value coeff |
@@ -524,13 +526,13 @@ BlSimpleSlider >> valueAtY: aPoint [
 	value asFloat traceCr
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 BlSimpleSlider >> widgetSize [ 
 
 	^ widgetSize 
 ]
 
-{ #category : #accessing }
+{ #category : 'accessing' }
 BlSimpleSlider >> widgetSize: aNumber [
 
 	widgetSize := aNumber.
