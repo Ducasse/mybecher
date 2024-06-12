@@ -20,7 +20,7 @@ ToNumberInputElement class >> openInputWithSkin [
 	<script>
 	| space anInput |
 	space := BlSpace new.
-	space toTheme: ToMooflodTheme new.
+	space toTheme: MfMooflodTheme new.
 	anInput := self new position: 200 @ 200.
 	space root addChild: anInput.
 	space show.
@@ -56,16 +56,18 @@ ToNumberInputElement >> createCircle [
 
 { #category : 'buttons' }
 ToNumberInputElement >> decreaseInput [
-
-	(validateValueBlock value: value) 
-		ifTrue: [ self changeValueTo: value - 1 ]
+	
+	(validateValueBlock value: value - 1) ifTrue: [
+		value := value - 1.
+		self changeValueTo: value ]
 ]
 
 { #category : 'buttons' }
 ToNumberInputElement >> increaseInput [
 
-	(validateValueBlock value: value) 
-		ifTrue: [ self changeValueTo: value + 1 ]
+	(validateValueBlock value: value + 1) ifTrue: [
+		value := value + 1.
+		self changeValueTo: value ]
 ]
 
 { #category : 'initialization' }
@@ -89,6 +91,7 @@ ToNumberInputElement >> initialize [
 ToNumberInputElement >> initializeInputValue: aValue [
 
 	inputValue := BlTextElement new.
+	inputValue size: 30 @ 30.
 	inputValue constraintsDo: [ :c | c linear vertical alignCenter ].
 	self changeValueTo: aValue.
 	inputValue padding: (BlInsets all: 50).
