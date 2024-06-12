@@ -6,7 +6,8 @@ Class {
 		'minus',
 		'inputValue',
 		'value',
-		'inputLabel'
+		'inputLabel',
+		'validateValueBlock'
 	],
 	#category : 'myBecherBloc-Input',
 	#package : 'myBecherBloc',
@@ -19,7 +20,7 @@ ToNumberInputElement class >> openInputWithSkin [
 	<script>
 	| space anInput |
 	space := BlSpace new.
-	space toTheme: ToMooflooTheme new.
+	space toTheme: ToMooflodTheme new.
 	anInput := self new position: 200 @ 200.
 
 	space root addChild: anInput.
@@ -57,13 +58,15 @@ ToNumberInputElement >> createCircle [
 { #category : 'buttons' }
 ToNumberInputElement >> decreaseInput [
 
-	value > 0 ifTrue: [ self changeValueTo: value - 1 ]
+	(validateValueBlock value: value) 
+		ifTrue: [ self changeValueTo: value - 1 ]
 ]
 
 { #category : 'buttons' }
 ToNumberInputElement >> increaseInput [
 
-	self changeValueTo: value + 1
+	(validateValueBlock value: value) 
+		ifTrue: [ self changeValueTo: value + 1 ]
 ]
 
 { #category : 'initialization' }
@@ -76,6 +79,7 @@ ToNumberInputElement >> initialize [
 	self padding: (BlInsets all: 30).
 	self layout: BlLinearLayout horizontal.
 	self border: (BlBorder paint: Color pink).
+	self validateValueBlock: [ :v | v between: 1 and: 25 ].
 	self label: 'Input'.
 	self initializeMinusButton.
 	self initializeInputValue: 20.
@@ -177,6 +181,18 @@ ToNumberInputElement >> newRawSkin [
 { #category : 'accessing' }
 ToNumberInputElement >> plus [
 	^ plus
+]
+
+{ #category : 'accessing' }
+ToNumberInputElement >> validateValueBlock [
+
+	^ validateValueBlock
+]
+
+{ #category : 'evaluating' }
+ToNumberInputElement >> validateValueBlock: aBlock [
+
+	validateValueBlock := aBlock
 ]
 
 { #category : 'evaluating' }

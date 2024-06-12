@@ -1,5 +1,5 @@
 Class {
-	#name : 'ToMooflooTheme',
+	#name : 'ToMooflodTheme',
 	#superclass : 'ToTheme',
 	#category : 'myBecherBloc-Input',
 	#package : 'myBecherBloc',
@@ -7,7 +7,7 @@ Class {
 }
 
 { #category : 'accessing' }
-ToMooflooTheme class >> defaultTokenProperties [
+ToMooflodTheme class >> defaultTokenProperties [
 	"define here token properties of the widget theme"
 
 	^ super defaultTokenProperties
@@ -18,7 +18,7 @@ ToMooflooTheme class >> defaultTokenProperties [
 ]
 
 { #category : 'accessing' }
-ToMooflooTheme >> newSkinInstanceFor: anElement [
+ToMooflodTheme >> newSkinInstanceFor: anElement [
 
 	^ anElement newMooflodSkin
 ]
