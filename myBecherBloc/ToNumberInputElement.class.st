@@ -22,7 +22,6 @@ ToNumberInputElement class >> openInputWithSkin [
 	space := BlSpace new.
 	space toTheme: ToMooflodTheme new.
 	anInput := self new position: 200 @ 200.
-
 	space root addChild: anInput.
 	space show.
 	^ anInput
@@ -99,41 +98,41 @@ ToNumberInputElement >> initializeInputValue: aValue [
 { #category : 'buttons' }
 ToNumberInputElement >> initializeMinusButton [
 
-	| circle |
-	circle := self createCircle.
-	circle constraintsDo: [ :c | c linear vertical alignCenter ].
+	| text |
+	minus := self createCircle.
+	minus constraintsDo: [ :c | c linear vertical alignCenter ].
 
-	minus := BlTextElement new text: (self configuredString: '-').
-	minus text fontSize: 80.
-	minus constraintsDo: [ :c |
+	text := BlTextElement new text: (self configuredString: '-').
+	text text fontSize: 80.
+	text constraintsDo: [ :c |
 		c frame horizontal alignCenter.
 		c frame vertical alignCenter ].
-	circle
+	minus
 		addEventHandlerOn: BlMouseDownEvent
 		do: [ :e | self decreaseInput ].
-	circle padding: (BlInsets all: 50).
-	circle addChild: minus.
-	self addChild: circle
+	minus padding: (BlInsets all: 50).
+	minus addChild: text.
+	self addChild: minus
 ]
 
 { #category : 'buttons' }
 ToNumberInputElement >> initializePlusButton [
 
-	| circle |
-	circle := self createCircle.
-	circle constraintsDo: [ :c | c linear vertical alignCenter ].
+	| text |
+	plus := self createCircle.
+	plus constraintsDo: [ :c | c linear vertical alignCenter ].
 
-	plus := BlTextElement new text: (self configuredString: '+').
-	plus text fontSize: 55.
-	plus constraintsDo: [ :c |
+	text := BlTextElement new text: (self configuredString: '+').
+	text text fontSize: 55.
+	text constraintsDo: [ :c |
 		c frame horizontal alignCenter.
 		c frame vertical alignCenter ].
-	circle
+	plus
 		addEventHandlerOn: BlMouseDownEvent
 		do: [ :e | self increaseInput ].
-	circle padding: (BlInsets all: 50).
-	circle addChild: plus.
-	self addChild: circle
+	plus padding: (BlInsets all: 50).
+	plus addChild: text.
+	self addChild: plus
 ]
 
 { #category : 'accessing' }
@@ -168,12 +167,6 @@ ToNumberInputElement >> minus [
 
 { #category : 'instance creation' }
 ToNumberInputElement >> newMooflodSkin [
-
-	^ ToInputElementSkin new
-]
-
-{ #category : 'instance creation' }
-ToNumberInputElement >> newRawSkin [
 
 	^ ToInputElementSkin new
 ]

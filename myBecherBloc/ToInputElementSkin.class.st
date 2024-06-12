@@ -17,6 +17,6 @@ ToInputElementSkin >> installLookEvent: anEvent [
 				 width: (e valueOfTokenNamed: #'line-width')).
 		e background: Color red.
 		e geometry: (BlRoundedRectangleGeometry cornerRadius: 20).
-		e plus parent background: Color blue.
-		e minus parent background: Color red ]
+		e plus background: Color blue.
+		e minus background: Color red ]
 ]
