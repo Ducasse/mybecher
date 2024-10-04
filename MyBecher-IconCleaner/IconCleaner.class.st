@@ -10,6 +10,14 @@ Class {
 }
 
 { #category : 'as yet unclassified' }
+IconCleaner >> copyIconsInTempThatAreNotInSource [
+
+	self iconsInTempThatAreNotInSource do: [ :each |
+		FileSystem / tempTarget / each copyTo:
+			FileSystem / (source , each) ]
+]
+
+{ #category : 'as yet unclassified' }
 IconCleaner >> duplicatesGIconsInSeparateFolder [
 
 	(FileSystem / tempTarget) ensureDeleteAll.
@@ -26,6 +34,15 @@ IconCleaner >> duplicatesGIconsInSeparateFolder [
 		b := b copyFrom: 'glamorous' size + 1 to: b size.
 		b := b uncapitalized.
 		g renameTo: b ]
+]
+
+{ #category : 'as yet unclassified' }
+IconCleaner >> iconsInTempThatAreNotInSource [
+
+	
+	^ (( FileSystem / tempTarget) allFiles collect: [ :each | each basename ])
+		difference: 
+	(( FileSystem / source) allFiles collect: [ :each | each basename ])
 ]
 
 { #category : 'as yet unclassified' }
