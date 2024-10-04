@@ -14,6 +14,34 @@ IconCleaner new
 	copyIconsFromTempToSourceButOnlyThoseThatAreNotInSource;
 	removeIconsWithSimilarContents
 ```
+
+
+```
+IconCleaner new
+	source: '/Users/ducasse/Test2/pharo-icon-packs/png-scale1.0/';
+	duplicatesGIconsInSeparateFolder;
+	copyIconsFromTempToSourceButOnlyThoseThatAreNotInSource;
+	removeIconsWithSimilarContents.
+	
+
+IconCleaner new
+	source: '/Users/ducasse/Test2/pharo-icon-packs/png-scale1.5/';
+	duplicatesGIconsInSeparateFolder;
+	copyIconsFromTempToSourceButOnlyThoseThatAreNotInSource;
+	removeIconsWithSimilarContents.
+	
+IconCleaner new
+	source: '/Users/ducasse/Test2/pharo-icon-packs/png-scale2.0/';
+	duplicatesGIconsInSeparateFolder;
+	copyIconsFromTempToSourceButOnlyThoseThatAreNotInSource;
+	removeIconsWithSimilarContents.
+	
+IconCleaner new
+	source: '/Users/ducasse/Test2/pharo-icon-packs/svg/';
+	duplicatesGIconsInSeparateFolder;
+	copyIconsFromTempToSourceButOnlyThoseThatAreNotInSource;
+	removeIconsWithSimilarContents.
+```
 "
 Class {
 	#name : 'IconCleaner',
@@ -94,4 +122,10 @@ IconCleaner >> initialize [
 IconCleaner >> removeIconsWithSimilarContents [
 
 	self iconsWithSimilarContents do: [ :each | (FileSystem / tempTarget / each ) delete ]
+]
+
+{ #category : 'initialization' }
+IconCleaner >> source: aString [
+
+	source := aString
 ]
