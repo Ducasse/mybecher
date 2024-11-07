@@ -1,9 +1,9 @@
 Class {
 	#name : 'ToNumberInputElementTest',
-	#superclass : 'TestCase',
-	#category : 'myBecherBloc-Input',
+	#superclass : 'ToParameterizedHostTest',
+	#category : 'myBecherBloc-Input skin',
 	#package : 'myBecherBloc',
-	#tag : 'Input'
+	#tag : 'Input skin'
 }
 
 { #category : 'tests' }
@@ -28,13 +28,14 @@ ToNumberInputElementTest >> testEverythingIsInitializedCorrectly [
 ToNumberInputElementTest >> testSkinisInstalledCorrectly [
 
 	| inputElem |
-	self skip.
 	"create instance of input"
 	inputElem := ToNumberInputElement new changeValueTo: 12.
 	"input skin is nil"
 	self assert: inputElem background paint equals: nil.
-	inputElem openInput: inputElem. "Assign skin to input"
+	inputElem defaultRawSkin: ToInputElementSkin new.
 	"Now the input widget has background defined"
+	self waitTestingSpaces.
+	self applyAllEnqueuedStates.
 	self assert: inputElem background paint color equals: Color black
 ]
 

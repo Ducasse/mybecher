@@ -1,16 +1,17 @@
 Class {
 	#name : 'ToInputElementSkin',
 	#superclass : 'ToBasicMooflodSkin',
-	#category : 'myBecherBloc-Input',
+	#category : 'myBecherBloc-Input skin',
 	#package : 'myBecherBloc',
-	#tag : 'Input'
+	#tag : 'Input skin'
 }
 
 { #category : 'event handling' }
-ToInputElementSkin >> installLookEvent: anEvent [
+ToInputElementSkin >> installSkinEvent: anEvent [
 	"when installing the skin, changes the properties of widget mentionned down here"
 
-	super installLookEvent: anEvent.
+	self halt.
+	super installSkinEvent: anEvent.
 	anEvent elementDo: [ :e |
 		e border: (BlBorder
 				 paint: (e valueOfTokenNamed: #'color-border')

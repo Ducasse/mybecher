@@ -9,9 +9,9 @@ Class {
 		'inputLabel',
 		'validateValueBlock'
 	],
-	#category : 'myBecherBloc-Input',
+	#category : 'myBecherBloc-Input skin',
 	#package : 'myBecherBloc',
-	#tag : 'Input'
+	#tag : 'Input skin'
 }
 
 { #category : 'example' }
@@ -172,6 +172,12 @@ ToNumberInputElement >> minus [
 { #category : 'instance creation' }
 ToNumberInputElement >> newMooflodSkin [
 
+	^ ToInputElementSkin new
+]
+
+{ #category : 'instance creation' }
+ToNumberInputElement >> newRawSkin [
+	self halt.
 	^ ToInputElementSkin new
 ]
 

@@ -1,9 +1,9 @@
 Class {
 	#name : 'ToMooflodTheme',
 	#superclass : 'ToTheme',
-	#category : 'myBecherBloc-Input',
+	#category : 'myBecherBloc-Input skin',
 	#package : 'myBecherBloc',
-	#tag : 'Input'
+	#tag : 'Input skin'
 }
 
 { #category : 'accessing' }
