@@ -22,6 +22,8 @@ CavroisWindower >> initialize [
 	super initialize.
 	classToolMapping := Dictionary new.
 	self initializeMapping.
+	profiles := OrderedCollection new. 
+	"should probably be another dictionary with profile names as key"
 ]
 
 { #category : 'initialization' }
@@ -76,6 +78,8 @@ CavroisWindower >> profileFromWindows [
 		
 	(allWindows select: [ :each | each class isKindOf: SpWindow ])
 		 do: [ :each | profile add: (self placeHolderFromSpWindow: each) ].
+	profiles add: profile.
+	^ profile
 ]
 
 { #category : 'accessing' }
