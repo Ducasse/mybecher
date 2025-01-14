@@ -25,8 +25,18 @@ WindowConfiguration >> extent: aPoint [
 ]
 
 { #category : 'accessing' }
+WindowConfiguration >> kind [
+	^ kind
+]
+
+{ #category : 'accessing' }
 WindowConfiguration >> kind: aClass [ 
 	kind := aClass
+]
+
+{ #category : 'accessing' }
+WindowConfiguration >> position [
+	^ position
 ]
 
 { #category : 'accessing' }

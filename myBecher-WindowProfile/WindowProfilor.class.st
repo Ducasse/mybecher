@@ -27,8 +27,8 @@ WindowProfilor >> configurationFromSystemWindow: aSystemWindow [
 	
 	^ WindowConfiguration new 
 		extent: aSystemWindow extent;
-		position: aSystemWindow position;
-		kind: aSystemWindow model class; 
+		position: aSystemWindow bounds origin;
+		kind: aSystemWindow model class name; 
 		yourself 
 ]
 

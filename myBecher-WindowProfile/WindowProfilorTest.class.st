@@ -8,8 +8,13 @@ Class {
 { #category : 'tests' }
 WindowProfilorTest >> testProfileFromSystemWindow [
 
-	| prof configuration |
+	| prof configuration transcript |
 	prof := WindowProfilor new.
-	configuration := prof configurationFromSystemWindow: ( Transcript open extent: 400@666; yourself ).
+	transcript := Transcript open extent: 400@666; yourself.
+	configuration := prof configurationFromSystemWindow: transcript.
 	self assert:  configuration  extent equals: 400@666.
+	self assert:  configuration  position equals: 180.0@106.0.
+	self assert:  configuration  kind equals: #ThreadSafeTranscript.
+	transcript delete
+	
 ]
