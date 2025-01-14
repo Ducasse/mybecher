@@ -14,6 +14,19 @@ Class {
 	#package : 'myBecher-WindowProfile'
 }
 
+{ #category : 'as yet unclassified' }
+WindowConfiguration class >> exampleTranscript [
+
+	^ self new 
+		extent: 400@666;
+		position: 180.0@106.0;
+		kind: #Transcript;
+		yourself
+
+
+	
+]
+
 { #category : 'accessing' }
 WindowConfiguration >> extent [
 	^ extent

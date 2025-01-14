@@ -6,7 +6,7 @@ A WindowConfiguration is a description of the window on the screen (extent, posi
 
 "
 Class {
-	#name : 'WindowProfilor',
+	#name : 'CavroisWindower',
 	#superclass : 'Object',
 	#instVars : [
 		'profiles',
@@ -17,13 +17,13 @@ Class {
 }
 
 { #category : 'as yet unclassified' }
-WindowProfilor >> collectSystemWindows: aCollection [ 
+CavroisWindower >> collectSystemWindows: aCollection [ 
 	
 	aCollection do: [ :e | self profileFromSystemWindow: e ]
 ]
 
 { #category : 'as yet unclassified' }
-WindowProfilor >> configurationFromSystemWindow: aSystemWindow [ 
+CavroisWindower >> configurationFromSystemWindow: aSystemWindow [ 
 	
 	^ WindowConfiguration new 
 		extent: aSystemWindow extent;
@@ -32,8 +32,32 @@ WindowProfilor >> configurationFromSystemWindow: aSystemWindow [
 		yourself 
 ]
 
+{ #category : 'initialization' }
+CavroisWindower >> initialize [ 
+
+	super initialize.
+	classToolMapping := Dictionary new.
+	self initializeMapping.
+]
+
+{ #category : 'initialization' }
+CavroisWindower >> initializeMapping [
+
+	classToolMapping at: #ThreadSafeTranscript put: #Transcript.
+	
+	
+]
+
 { #category : 'as yet unclassified' }
-WindowProfilor >> profileFromSystemWindow: aSystemWindow [ 
+CavroisWindower >> mapFor: aString [ 
+	"return the key associated to the configuration"
+	
+	
+	^ classToolMapping at: aString ifAbsent: [ #Unknown ]
+]
+
+{ #category : 'as yet unclassified' }
+CavroisWindower >> profileFromSystemWindow: aSystemWindow [ 
 	
 	^ WindowConfiguration new 
 		extent: aSystemWindow extent;
@@ -43,6 +67,6 @@ WindowProfilor >> profileFromSystemWindow: aSystemWindow [
 ]
 
 { #category : 'accessing' }
-WindowProfilor >> profiles [
+CavroisWindower >> profiles [
 	^ profiles ifNil: [ profiles := OrderedCollection new  ]
 ]

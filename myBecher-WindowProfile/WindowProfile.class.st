@@ -5,8 +5,21 @@ Class {
 	#name : 'WindowProfile',
 	#superclass : 'Object',
 	#instVars : [
-		'configurations'
+		'configurationDictionary'
 	],
 	#category : 'myBecher-WindowProfile',
 	#package : 'myBecher-WindowProfile'
 }
+
+{ #category : 'accessing' }
+WindowProfile >> configurationFor: aKey [
+
+
+]
+
+{ #category : 'initialization' }
+WindowProfile >> initialize [ 
+	
+	super initialize.
+	configurationDictionary := Dictionary new
+]
