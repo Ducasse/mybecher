@@ -6,7 +6,7 @@ A place holder is a description of the window on the screen (extent, position, k
 
 "
 Class {
-	#name : 'CavroisWindower',
+	#name : 'CavroisWindowManager',
 	#superclass : 'Object',
 	#instVars : [
 		'profiles',
@@ -17,7 +17,7 @@ Class {
 }
 
 { #category : 'initialization' }
-CavroisWindower >> initialize [ 
+CavroisWindowManager >> initialize [ 
 
 	super initialize.
 	classToolMapping := Dictionary new.
@@ -27,16 +27,17 @@ CavroisWindower >> initialize [
 ]
 
 { #category : 'initialization' }
-CavroisWindower >> initializeMapping [
+CavroisWindowManager >> initializeMapping [
 
 	classToolMapping at: #ThreadSafeTranscript put: #Transcript.
 	classToolMapping at: #StPlaygroundPresenter put: #Playground.
+	classToolMapping at: #ClyFullBrowserMorph put: #Calypso.
 	
 	
 ]
 
 { #category : 'internals' }
-CavroisWindower >> mapFor: aString [ 
+CavroisWindowManager >> mapFor: aString [ 
 	"return the key associated to the configuration"
 	
 	
@@ -44,9 +45,9 @@ CavroisWindower >> mapFor: aString [
 ]
 
 { #category : 'as yet unclassified' }
-CavroisWindower >> placeHolderFromSpWindow: aSpWindowPresenter [ 
+CavroisWindowManager >> placeHolderFromSpWindow: aSpWindowPresenter [ 
 	
-	^ CavroisWindowPlaceHolder new
+	^ CavWindowPlaceHolder new
 			extent: aSpWindowPresenter extent ;
 			position: aSpWindowPresenter bounds origin;
 			kind: (self mapFor: aSpWindowPresenter model presenter class name); 
@@ -55,9 +56,9 @@ CavroisWindower >> placeHolderFromSpWindow: aSpWindowPresenter [
 ]
 
 { #category : 'as yet unclassified' }
-CavroisWindower >> placeHolderFromSystemWindow: aSystemWindow [ 
-	
-	^ CavroisWindowPlaceHolder new 
+CavroisWindowManager >> placeHolderFromSystemWindow: aSystemWindow [ 
+
+	^ CavWindowPlaceHolder new 
 		extent: aSystemWindow extent;
 		position: aSystemWindow bounds origin;
 		kind: (self mapFor: aSystemWindow model class name); 
@@ -65,24 +66,28 @@ CavroisWindower >> placeHolderFromSystemWindow: aSystemWindow [
 ]
 
 { #category : 'as yet unclassified' }
-CavroisWindower >> profileFromWindows [
+CavroisWindowManager >> profileFromWindows [
+	"self new profileFromWindows"
 	
 	| profile allWindows |
-	profile := CavroisWindowProfile new named: 'current'.
+	
+	5 timesRepeat: [ 
+		Smalltalk garbageCollect ].
+	
+	profile := CavWindowProfile new named: 'current'.
 	
 	allWindows := World windowsSatisfying: [:w | w isCollapsed not].
 	
 	"for old tools such trranscript"
 	(allWindows select: [ :each | each class = SystemWindow ])
 		 do: [ :each | profile add: (self placeHolderFromSystemWindow: each) ].
-		
-	(allWindows select: [ :each | each class isKindOf: SpWindow ])
+	(allWindows select: [ :each | each isKindOf: SpWindow ])
 		 do: [ :each | profile add: (self placeHolderFromSpWindow: each) ].
 	profiles add: profile.
 	^ profile
 ]
 
 { #category : 'accessing' }
-CavroisWindower >> profiles [
+CavroisWindowManager >> profiles [
 	^ profiles ifNil: [ profiles := OrderedCollection new  ]
 ]

@@ -2,7 +2,7 @@
 A WindowConfiguration is a description of the window on the screen (extent, position, kind, strategy)
 "
 Class {
-	#name : 'CavroisWindowPlaceHolder',
+	#name : 'CavWindowPlaceHolder',
 	#superclass : 'Object',
 	#instVars : [
 		'extent',
@@ -15,7 +15,7 @@ Class {
 }
 
 { #category : 'as yet unclassified' }
-CavroisWindowPlaceHolder class >> exampleTranscript [
+CavWindowPlaceHolder class >> exampleTranscript [
 
 	^ self new 
 		extent: 400@666;
@@ -28,31 +28,38 @@ CavroisWindowPlaceHolder class >> exampleTranscript [
 ]
 
 { #category : 'accessing' }
-CavroisWindowPlaceHolder >> extent [
+CavWindowPlaceHolder >> extent [
 	^ extent
 ]
 
 { #category : 'accessing' }
-CavroisWindowPlaceHolder >> extent: aPoint [ 
+CavWindowPlaceHolder >> extent: aPoint [ 
 	extent := aPoint
 ]
 
 { #category : 'accessing' }
-CavroisWindowPlaceHolder >> kind [
+CavWindowPlaceHolder >> kind [
 	^ kind
 ]
 
 { #category : 'accessing' }
-CavroisWindowPlaceHolder >> kind: aClass [ 
+CavWindowPlaceHolder >> kind: aClass [ 
 	kind := aClass
 ]
 
 { #category : 'accessing' }
-CavroisWindowPlaceHolder >> position [
+CavWindowPlaceHolder >> position [
 	^ position
 ]
 
 { #category : 'accessing' }
-CavroisWindowPlaceHolder >> position: aPoint [ 
+CavWindowPlaceHolder >> position: aPoint [ 
 	position := aPoint
+]
+
+{ #category : 'printing' }
+CavWindowPlaceHolder >> printOn: aStream [
+
+	super printOn: aStream.
+	aStream nextPutAll: '(', self kind, ')'
 ]

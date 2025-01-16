@@ -2,7 +2,7 @@
 I'm a collection of window configuration (extent, position, kind)
 "
 Class {
-	#name : 'CavroisWindowProfile',
+	#name : 'CavWindowProfile',
 	#superclass : 'Object',
 	#instVars : [
 		'profileName',
@@ -14,18 +14,18 @@ Class {
 }
 
 { #category : 'adding' }
-CavroisWindowProfile >> add: aCavroisWindowPlaceHolder [ 
+CavWindowProfile >> add: aCavroisWindowPlaceHolder [ 
 	placeHolders add: aCavroisWindowPlaceHolder 
 ]
 
 { #category : 'accessing' }
-CavroisWindowProfile >> configurationFor: aKey [
+CavWindowProfile >> configurationFor: aKey [
 
 
 ]
 
 { #category : 'initialization' }
-CavroisWindowProfile >> initialize [ 
+CavWindowProfile >> initialize [ 
 	
 	super initialize.
 	placeholderDictionary := Dictionary new.
@@ -34,6 +34,6 @@ CavroisWindowProfile >> initialize [
 ]
 
 { #category : 'instance creation' }
-CavroisWindowProfile >> named: aString [ 
+CavWindowProfile >> named: aString [ 
 	profileName := aString
 ]

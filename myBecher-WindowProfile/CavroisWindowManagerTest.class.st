@@ -1,15 +1,15 @@
 Class {
-	#name : 'CavroisWindowerTest',
+	#name : 'CavroisWindowManagerTest',
 	#superclass : 'TestCase',
 	#category : 'myBecher-WindowProfile',
 	#package : 'myBecher-WindowProfile'
 }
 
 { #category : 'tests' }
-CavroisWindowerTest >> testConfigurationFromSpWindow [
+CavroisWindowManagerTest >> testConfigurationFromSpWindow [
 
 	| prof configuration play |
-	prof := CavroisWindower new.
+	prof := CavroisWindowManager new.
 	play := StPlaygroundPresenter new open.
 	configuration := prof placeHolderFromSpWindow: play window.
 	self assert:  configuration  extent equals: (700.0@500.0).
@@ -19,10 +19,10 @@ CavroisWindowerTest >> testConfigurationFromSpWindow [
 ]
 
 { #category : 'tests' }
-CavroisWindowerTest >> testConfigurationFromSystemWindow [
+CavroisWindowManagerTest >> testConfigurationFromSystemWindow [
 
 	| prof configuration transcript |
-	prof := CavroisWindower new.
+	prof := CavroisWindowManager new.
 	transcript := Transcript open
 							extent: (447.0@300.0) ; 
 							bounds: ((699.0@460.0) corner: (1146.0@760.0)); 
@@ -36,9 +36,9 @@ CavroisWindowerTest >> testConfigurationFromSystemWindow [
 ]
 
 { #category : 'tests' }
-CavroisWindowerTest >> testMappingClassToKind [
+CavroisWindowManagerTest >> testMappingClassToKind [
 
 	| prof |
-	prof := CavroisWindower new.
+	prof := CavroisWindowManager new.
 	self assert: (prof mapFor: 'ThreadSafeTranscript') equals: #Transcript
 ]
