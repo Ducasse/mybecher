@@ -40,5 +40,5 @@ CavroisWindowManagerTest >> testMappingClassToKind [
 
 	| prof |
 	prof := CavroisWindowManager new.
-	self assert: (prof mapFor: 'ThreadSafeTranscript') equals: #Transcript
+	self assert: (prof kindFor: 'ThreadSafeTranscript') equals: #Transcript
 ]

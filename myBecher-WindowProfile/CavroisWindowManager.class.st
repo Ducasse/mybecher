@@ -20,9 +20,24 @@ Class {
 		'profiles',
 		'classToolMapping'
 	],
+	#classVars : [
+		'Current'
+	],
 	#category : 'myBecher-WindowProfile',
 	#package : 'myBecher-WindowProfile'
 }
+
+{ #category : 'accessing' }
+CavroisWindowManager class >> current [ 
+
+	^ Current ifNil: [ Current := self new ]
+]
+
+{ #category : 'accessing' }
+CavroisWindowManager class >> reset [  
+
+	Current := nil
+]
 
 { #category : 'initialization' }
 CavroisWindowManager >> initialize [ 
@@ -47,55 +62,53 @@ CavroisWindowManager >> initializeMapping [
 ]
 
 { #category : 'internals' }
-CavroisWindowManager >> mapFor: aString [ 
+CavroisWindowManager >> kindFor: aString [ 
 	"return the key associated to the configuration"
 	
 	
 	^ classToolMapping at: aString ifAbsent: [ #Unknown ]
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'operations' }
 CavroisWindowManager >> placeHolderFromSpWindow: aSpWindowPresenter [ 
 	
 	^ CavWindowPlaceHolder new
 			extent: aSpWindowPresenter extent ;
 			position: aSpWindowPresenter bounds origin;
-			kind: (self mapFor: aSpWindowPresenter model presenter class name); 
+			kind: (self kindFor: aSpWindowPresenter model presenter class name); 
 			yourself
 			
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'operations' }
 CavroisWindowManager >> placeHolderFromSystemWindow: aSystemWindow [ 
 
 	^ CavWindowPlaceHolder new 
 		extent: aSystemWindow extent;
 		position: aSystemWindow bounds origin;
-		kind: (self mapFor: aSystemWindow model class name); 
+		kind: (self kindFor: aSystemWindow model class name); 
 		yourself 
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'operations' }
 CavroisWindowManager >> placePresenter: aStPlayground [ 
 	
-	| placeHolder window |
-	placeHolder := self profiles first placeHolderFor: (self mapFor: (aStPlayground class name)).
-	window := aStPlayground open. 
-	window hide.
-	window extent: placeHolder extent. 
-	window initialPosition: placeHolder position.
-	window show.
-	
+	| placeHolder |
+	placeHolder := self profiles first placeHolderFor: (self kindFor: (aStPlayground class name)).
+	aStPlayground position: placeHolder position.
+	aStPlayground extent: placeHolder extent.
+	aStPlayground open. 
+
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'operations' }
 CavroisWindowManager >> profileFor: aString [ 
 	"may be a dict should be better"	
 
 	^ self profiles detect: [ :each | each kind = aString ]
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'operations' }
 CavroisWindowManager >> profileFromWindows [
 	"self new profileFromWindows"
 	
