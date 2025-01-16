@@ -37,3 +37,11 @@ CavWindowProfile >> initialize [
 CavWindowProfile >> named: aString [ 
 	profileName := aString
 ]
+
+{ #category : 'as yet unclassified' }
+CavWindowProfile >> placeHolderFor: aString [ 
+	
+	"we use use a dictionary"
+	
+	^ placeHolders detect: [ :each | each kind = aString ]
+]

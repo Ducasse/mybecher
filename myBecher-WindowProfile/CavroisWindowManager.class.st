@@ -31,7 +31,9 @@ CavroisWindowManager >> initializeMapping [
 
 	classToolMapping at: #ThreadSafeTranscript put: #Transcript.
 	classToolMapping at: #StPlaygroundPresenter put: #Playground.
+	classToolMapping at: #StPlayground put: #Playground.
 	classToolMapping at: #ClyFullBrowserMorph put: #Calypso.
+	classToolMapping at: #IceTipRepositoriesBrowser put: #IcebergBrowser.
 	
 	
 ]
@@ -63,6 +65,26 @@ CavroisWindowManager >> placeHolderFromSystemWindow: aSystemWindow [
 		position: aSystemWindow bounds origin;
 		kind: (self mapFor: aSystemWindow model class name); 
 		yourself 
+]
+
+{ #category : 'as yet unclassified' }
+CavroisWindowManager >> placePresenter: aStPlayground [ 
+	
+	| placeHolder window |
+	placeHolder := self profiles first placeHolderFor: (self mapFor: (aStPlayground class name)).
+	window := aStPlayground open. 
+	window hide.
+	window extent: placeHolder extent. 
+	window initialPosition: placeHolder position.
+	window show.
+	
+]
+
+{ #category : 'as yet unclassified' }
+CavroisWindowManager >> profileFor: aString [ 
+	"may be a dict should be better"	
+
+	^ self profiles detect: [ :each | each kind = aString ]
 ]
 
 { #category : 'as yet unclassified' }
