@@ -12,6 +12,15 @@ CavroisWindowManager new profileFromWindows; placePresenter: IceTipRepositoriesB
 ```
 
 should place the iceberg to the same place. 
+
+```
+CavroisWindowManager current reset; profileFromWindows.
+
+CavroisWindowManager current
+	placePresenter: IceTipRepositoriesBrowser new.
+```
+
+
 "
 Class {
 	#name : 'CavroisWindowManager',
@@ -94,7 +103,8 @@ CavroisWindowManager >> placeHolderFromSystemWindow: aSystemWindow [
 CavroisWindowManager >> placePresenter: aStPlayground [ 
 	
 	| placeHolder |
-	placeHolder := self profiles first placeHolderFor: (self kindFor: (aStPlayground class name)).
+	placeHolder := self profiles first 
+		placeHolderFor: (self kindFor: aStPlayground class name).
 	aStPlayground position: placeHolder position.
 	aStPlayground extent: placeHolder extent.
 	aStPlayground open. 
@@ -132,5 +142,11 @@ CavroisWindowManager >> profileFromWindows [
 
 { #category : 'accessing' }
 CavroisWindowManager >> profiles [
-	^ profiles ifNil: [ profiles := OrderedCollection new  ]
+	^ profiles ifNil: [ self reset  ]
+]
+
+{ #category : 'internals' }
+CavroisWindowManager >> reset [
+
+	profiles := OrderedCollection new
 ]
