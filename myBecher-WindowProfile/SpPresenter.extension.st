@@ -3,7 +3,7 @@ Extension { #name : 'SpPresenter' }
 { #category : '*myBecher-WindowProfile' }
 SpPresenter >> initialPosition [
 
-	^ position
+	^ self position
 ]
 
 { #category : '*myBecher-WindowProfile' }
