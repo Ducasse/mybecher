@@ -42,3 +42,23 @@ CavroisWindowManagerTest >> testMappingClassToKind [
 	prof := CavroisWindowManager new.
 	self assert: (prof kindFor: 'ThreadSafeTranscript') equals: #Transcript
 ]
+
+{ #category : 'tests' }
+CavroisWindowManagerTest >> testPresenterHasCorrectAPI [
+
+	| pres win |
+	pres := SpPresenter new.
+	pres layout: SpBoxLayout new. 
+	pres position:  100@100.
+	pres extent: 200@333.
+	
+	self assert: pres initialPosition equals: 100@100.
+	self assert: pres extent equals: 200@333.
+	"this test is key because else we cannot pass to the window 
+	the size and position we want. "
+	
+	win := pres open.
+	self assert: win extent equals: 200@333.
+	self assert: win bounds origin equals: 100@100.
+	"here we see that the size and position are not honored"
+]
