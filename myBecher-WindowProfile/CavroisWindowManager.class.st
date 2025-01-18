@@ -53,21 +53,9 @@ CavroisWindowManager >> initialize [
 
 	super initialize.
 	classToolMapping := Dictionary new.
-	self initializeMapping.
+	
 	profiles := OrderedCollection new. 
 	"should probably be another dictionary with profile names as key"
-]
-
-{ #category : 'initialization' }
-CavroisWindowManager >> initializeMapping [
-
-	classToolMapping at: #ThreadSafeTranscript put: #Transcript.
-	classToolMapping at: #StPlaygroundPresenter put: #Playground.
-	classToolMapping at: #StPlayground put: #Playground.
-	classToolMapping at: #ClyFullBrowserMorph put: #Calypso.
-	classToolMapping at: #IceTipRepositoriesBrowser put: #IcebergBrowser.
-	
-	
 ]
 
 { #category : 'internals' }
@@ -84,7 +72,7 @@ CavroisWindowManager >> placeHolderFromSpWindow: aSpWindowPresenter [
 	^ CavWindowPlaceHolder new
 			extent: aSpWindowPresenter extent ;
 			position: aSpWindowPresenter bounds origin;
-			kind: (self kindFor: aSpWindowPresenter model presenter class name); 
+			kind: aSpWindowPresenter model presenter class name; 
 			yourself
 			
 ]
@@ -95,7 +83,7 @@ CavroisWindowManager >> placeHolderFromSystemWindow: aSystemWindow [
 	^ CavWindowPlaceHolder new 
 		extent: aSystemWindow extent;
 		position: aSystemWindow bounds origin;
-		kind: (self kindFor: aSystemWindow model class name); 
+		kind: aSystemWindow model class name; 
 		yourself 
 ]
 
@@ -104,7 +92,7 @@ CavroisWindowManager >> placePresenter: aStPlayground [
 	
 	| placeHolder |
 	placeHolder := self profiles first 
-		placeHolderFor: (self kindFor: aStPlayground class name).
+		placeHolderFor: aStPlayground class name.
 	aStPlayground position: placeHolder position.
 	aStPlayground extent: placeHolder extent.
 	aStPlayground open. 
