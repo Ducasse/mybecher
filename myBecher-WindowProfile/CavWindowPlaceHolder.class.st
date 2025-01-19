@@ -8,7 +8,8 @@ Class {
 		'extent',
 		'kind',
 		'position',
-		'strategy'
+		'strategy',
+		'count'
 	],
 	#category : 'myBecher-WindowProfile',
 	#package : 'myBecher-WindowProfile'
@@ -28,6 +29,11 @@ CavWindowPlaceHolder class >> exampleTranscript [
 ]
 
 { #category : 'accessing' }
+CavWindowPlaceHolder >> count [
+	^ count
+]
+
+{ #category : 'accessing' }
 CavWindowPlaceHolder >> extent [
 	^ extent
 ]
@@ -37,14 +43,33 @@ CavWindowPlaceHolder >> extent: aPoint [
 	extent := aPoint
 ]
 
+{ #category : 'initialization' }
+CavWindowPlaceHolder >> increment [ 
+	
+	count := count + 1
+]
+
+{ #category : 'initialization' }
+CavWindowPlaceHolder >> initialize [
+
+	super initialize. 
+	strategy := CavStackingStrategy new.
+	"count is counting the number of opened window.
+	not really nice but let us get started."
+	count := 0.	
+
+]
+
 { #category : 'accessing' }
 CavWindowPlaceHolder >> kind [
+
 	^ kind
 ]
 
 { #category : 'accessing' }
-CavWindowPlaceHolder >> kind: aClass [ 
-	kind := aClass
+CavWindowPlaceHolder >> kind: anObject [
+
+	kind := anObject
 ]
 
 { #category : 'accessing' }
@@ -61,5 +86,23 @@ CavWindowPlaceHolder >> position: aPoint [
 CavWindowPlaceHolder >> printOn: aStream [
 
 	super printOn: aStream.
-	aStream nextPutAll: '(', self kind, ')'
+	aStream nextPutAll: '(', kind, ' ', self strategy class name, ')'
+]
+
+{ #category : 'printing' }
+CavWindowPlaceHolder >> resetCount [ 
+	 
+	count := 0.
+]
+
+{ #category : 'accessing' }
+CavWindowPlaceHolder >> strategy [ 
+
+	^ strategy
+]
+
+{ #category : 'accessing' }
+CavWindowPlaceHolder >> strategy: aStrategy [
+
+	strategy := aStrategy
 ]

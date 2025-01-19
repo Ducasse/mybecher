@@ -5,32 +5,38 @@ A profile is set of window configurations also called place holders
 A place holder is a description of the window on the screen (extent, position, kind, strategy)
 
 
-open iceberg then 
+### Record 
 
 ```
-CavroisWindowManager new profileFromWindows; placePresenter: IceTipRepositoriesBrowser new
-```
-
-should place the iceberg to the same place. 
-
-```
+CavroisWindowManager reset. 
 CavroisWindowManager current reset; profileFromWindows.
+```
 
+### Place
+
+```
 CavroisWindowManager current
 	placePresenter: IceTipRepositoriesBrowser new.
-	
+		
 CavroisWindowManager current
 	placePresenter: StPlaygroundPresenter new.	
 ```
 
+### Trying with strategy
 
+```
+(CavroisWindowManager current profile first placeHolderFor: IceTipRepositoriesBrowser name)
+	strategy: CavStackingStrategy new
+
+```
 "
 Class {
 	#name : 'CavroisWindowManager',
 	#superclass : 'Object',
 	#instVars : [
 		'profiles',
-		'classToolMapping'
+		'classToolMapping',
+		'strategy'
 	],
 	#classVars : [
 		'Current'
@@ -59,6 +65,7 @@ CavroisWindowManager >> initialize [
 	
 	profiles := OrderedCollection new. 
 	"should probably be another dictionary with profile names as key"
+	strategy := CavStackingStrategy new.
 ]
 
 { #category : 'internals' }
@@ -72,11 +79,14 @@ CavroisWindowManager >> kindFor: aString [
 { #category : 'operations' }
 CavroisWindowManager >> placeHolderFromSpWindow: aSpWindowPresenter [ 
 	
-	^ CavWindowPlaceHolder new
+	| placeHolder |
+	placeHolder := CavWindowPlaceHolder new
 			extent: aSpWindowPresenter extent ;
 			position: aSpWindowPresenter bounds origin;
 			kind: aSpWindowPresenter model presenter class name; 
-			yourself
+			yourself.
+	self setDefaultStrategyTo: placeHolder.
+	^ placeHolder 
 			
 ]
 
@@ -94,10 +104,10 @@ CavroisWindowManager >> placeHolderFromSystemWindow: aSystemWindow [
 CavroisWindowManager >> placePresenter: aStPlayground [ 
 	
 	| placeHolder |
-	placeHolder := self profiles first 
-		placeHolderFor: aStPlayground class name.
+	placeHolder := self profiles first placeHolderFor: aStPlayground class name.
 	aStPlayground position: placeHolder position.
 	aStPlayground extent: placeHolder extent.
+	placeHolder strategy placeWindow: aStPlayground.
 	aStPlayground open. 
 
 ]
@@ -140,4 +150,11 @@ CavroisWindowManager >> profiles [
 CavroisWindowManager >> reset [
 
 	profiles := OrderedCollection new
+]
+
+{ #category : 'operations' }
+CavroisWindowManager >> setDefaultStrategyTo: placeHolder [
+
+	placeHolder strategy: (strategy placeHolder: placeHolder)
+			
 ]
