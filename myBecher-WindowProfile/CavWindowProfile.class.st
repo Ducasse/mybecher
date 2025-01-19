@@ -7,23 +7,37 @@ Class {
 	#instVars : [
 		'profileName',
 		'placeHolders',
-		'placeholderDictionary'
+		'placeHolderDictionary'
 	],
 	#category : 'myBecher-WindowProfile',
 	#package : 'myBecher-WindowProfile'
 }
 
 { #category : 'adding' }
-CavWindowProfile >> add: aCavroisWindowPlaceHolder [ 
-	placeHolders add: aCavroisWindowPlaceHolder 
+CavWindowProfile >> add: aCavroisWindowPlaceHolder [
+
+	(placeHolderDictionary 
+		at: aCavroisWindowPlaceHolder kind 
+		ifPresent: [ placeHolderDictionary at: aCavroisWindowPlaceHolder kind ] 
+		ifAbsent: [ 
+			| col |
+			col := OrderedCollection new.
+			placeHolderDictionary at: aCavroisWindowPlaceHolder kind put: col.
+			col ]) add: aCavroisWindowPlaceHolder.
+	placeHolders add: aCavroisWindowPlaceHolder
+]
+
+{ #category : 'adding' }
+CavWindowProfile >> hasPlaceHolderFor: aString [
+
+	^ placeHolderDictionary keys includes: aString
 ]
 
 { #category : 'initialization' }
 CavWindowProfile >> initialize [ 
 	
 	super initialize.
-	placeholderDictionary := Dictionary new.
-	"should decide probably the dict is better with kind as key eg transcript, playground...."
+	placeHolderDictionary := Dictionary new.
 	placeHolders := OrderedCollection new.
 ]
 
@@ -35,7 +49,11 @@ CavWindowProfile >> named: aString [
 { #category : 'accessing' }
 CavWindowProfile >> placeHolderFor: aString [ 
 	
-	"we use use a dictionary"
+	^ placeHolderDictionary at: aString ifAbsent: [ CavWindowPlaceHolder new kind: 'Unrecorded'; yourself  ]
+]
+
+{ #category : 'accessing' }
+CavWindowProfile >> placeHoldersFor: aString [ 
 	
-	^ placeHolders detect: [ :each | each kind = aString ]
+	^ placeHolderDictionary at: aString
 ]

@@ -95,6 +95,9 @@ CavroisWindowManager >> placePresenter: aStPlayground [
 	
 	| placeHolder |
 	placeHolder := self profiles first placeHolderFor: aStPlayground class name.
+	"we should move the following logic to the placeHolder so that we can have a neutral one
+	what do we do when we do not find one, we return freePlacing...."
+	
 	aStPlayground position: placeHolder position.
 	aStPlayground extent: placeHolder extent.
 	placeHolder strategy placeWindow: aStPlayground.
