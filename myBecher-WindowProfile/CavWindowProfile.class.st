@@ -18,12 +18,6 @@ CavWindowProfile >> add: aCavroisWindowPlaceHolder [
 	placeHolders add: aCavroisWindowPlaceHolder 
 ]
 
-{ #category : 'accessing' }
-CavWindowProfile >> configurationFor: aKey [
-
-
-]
-
 { #category : 'initialization' }
 CavWindowProfile >> initialize [ 
 	
@@ -33,12 +27,12 @@ CavWindowProfile >> initialize [
 	placeHolders := OrderedCollection new.
 ]
 
-{ #category : 'instance creation' }
+{ #category : 'accessing' }
 CavWindowProfile >> named: aString [ 
 	profileName := aString
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'accessing' }
 CavWindowProfile >> placeHolderFor: aString [ 
 	
 	"we use use a dictionary"

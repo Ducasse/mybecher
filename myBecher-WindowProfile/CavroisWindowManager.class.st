@@ -76,30 +76,6 @@ CavroisWindowManager >> kindFor: aString [
 	^ classToolMapping at: aString ifAbsent: [ #Unknown ]
 ]
 
-{ #category : 'old' }
-CavroisWindowManager >> placeHolderFromSpWindow: aSpWindowPresenter [ 
-	
-	| placeHolder |
-	placeHolder := CavWindowPlaceHolder new
-			extent: aSpWindowPresenter extent ;
-			position: aSpWindowPresenter bounds origin;
-			yourself.
-	self setDefaultStrategyTo: placeHolder.
-	placeHolder kind: aSpWindowPresenter model presenter class name.
-	^ placeHolder 
-			
-]
-
-{ #category : 'old' }
-CavroisWindowManager >> placeHolderFromSystemWindow: aSystemWindow [ 
-
-	^ CavWindowPlaceHolder new 
-		extent: aSystemWindow extent;
-		position: aSystemWindow bounds origin;
-		kind: aSystemWindow model class name; 
-		yourself 
-]
-
 { #category : 'operations' }
 CavroisWindowManager >> placeHolderFromWindow: aWindowPresenter [ 
 	
@@ -126,7 +102,7 @@ CavroisWindowManager >> placePresenter: aStPlayground [
 
 ]
 
-{ #category : 'operations' }
+{ #category : 'accessing' }
 CavroisWindowManager >> profileFor: aString [ 
 	"may be a dict should be better"	
 
