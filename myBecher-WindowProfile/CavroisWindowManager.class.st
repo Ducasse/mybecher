@@ -18,6 +18,9 @@ CavroisWindowManager current reset; profileFromWindows.
 
 CavroisWindowManager current
 	placePresenter: IceTipRepositoriesBrowser new.
+	
+CavroisWindowManager current
+	placePresenter: StPlaygroundPresenter new.	
 ```
 
 
