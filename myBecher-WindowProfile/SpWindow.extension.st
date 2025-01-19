@@ -1,6 +1,12 @@
 Extension { #name : 'SpWindow' }
 
 { #category : '*myBecher-WindowProfile' }
+SpWindow >> configurePlaceHolder: aPlaceHolder [
+	
+	aPlaceHolder kind: self model presenter class name.
+]
+
+{ #category : '*myBecher-WindowProfile' }
 SpWindow >> extent: aPoint [ 
 	| announcement oldExtent |
 

@@ -25,7 +25,7 @@ CavroisWindowManager current
 ### Trying with strategy
 
 ```
-(CavroisWindowManager current profile first placeHolderFor: IceTipRepositoriesBrowser name)
+(CavroisWindowManager current profiles first placeHolderFor: IceTipRepositoriesBrowser name)
 	strategy: CavStackingStrategy new
 
 ```
@@ -76,21 +76,21 @@ CavroisWindowManager >> kindFor: aString [
 	^ classToolMapping at: aString ifAbsent: [ #Unknown ]
 ]
 
-{ #category : 'operations' }
+{ #category : 'old' }
 CavroisWindowManager >> placeHolderFromSpWindow: aSpWindowPresenter [ 
 	
 	| placeHolder |
 	placeHolder := CavWindowPlaceHolder new
 			extent: aSpWindowPresenter extent ;
 			position: aSpWindowPresenter bounds origin;
-			kind: aSpWindowPresenter model presenter class name; 
 			yourself.
 	self setDefaultStrategyTo: placeHolder.
+	placeHolder kind: aSpWindowPresenter model presenter class name.
 	^ placeHolder 
 			
 ]
 
-{ #category : 'operations' }
+{ #category : 'old' }
 CavroisWindowManager >> placeHolderFromSystemWindow: aSystemWindow [ 
 
 	^ CavWindowPlaceHolder new 
@@ -98,6 +98,20 @@ CavroisWindowManager >> placeHolderFromSystemWindow: aSystemWindow [
 		position: aSystemWindow bounds origin;
 		kind: aSystemWindow model class name; 
 		yourself 
+]
+
+{ #category : 'operations' }
+CavroisWindowManager >> placeHolderFromWindow: aWindowPresenter [ 
+	
+	| placeHolder |
+	placeHolder := CavWindowPlaceHolder new
+			extent: aWindowPresenter extent ;
+			position: aWindowPresenter bounds origin;
+			yourself.
+	self setDefaultStrategyTo: placeHolder.
+	aWindowPresenter configurePlaceHolder: placeHolder.
+	^ placeHolder 
+			
 ]
 
 { #category : 'operations' }
@@ -133,10 +147,11 @@ CavroisWindowManager >> profileFromWindows [
 	allWindows := World windowsSatisfying: [:w | w isCollapsed not].
 	
 	"for old tools such trranscript"
-	(allWindows select: [ :each | each class = SystemWindow ])
+	"(allWindows select: [ :each | each class = SystemWindow ])
 		 do: [ :each | profile add: (self placeHolderFromSystemWindow: each) ].
 	(allWindows select: [ :each | each isKindOf: SpWindow ])
-		 do: [ :each | profile add: (self placeHolderFromSpWindow: each) ].
+		 do: [ :each | profile add: (self placeHolderFromSpWindow: each) ]."
+	allWindows do: [ :each | profile add: (self placeHolderFromWindow: each) ].
 	profiles add: profile.
 	^ profile
 ]
