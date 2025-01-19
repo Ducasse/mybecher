@@ -10,7 +10,16 @@ CavWindowProfileTest >> testNoPlaceHolder [
 
 	| profile |
 	profile := CavWindowProfile new. 
-	self deny:( profile hasPlaceHolderFor: 'IceTipRepositoriesBrowser')
+	self deny: (profile hasPlaceHolderFor: 'IceTipRepositoriesBrowser')
+]
+
+{ #category : 'tests' }
+CavWindowProfileTest >> testNoPlaceHolderReturnANullPlaceHolder [
+
+	| profile placeHolders |
+	profile := CavWindowProfile new. 
+	placeHolders :=  profile placeHoldersFor: 'IceTipRepositoriesBrowser@@@'.
+	self assert: placeHolders first class equals: CavNullWindowPlaceHolder 
 ]
 
 { #category : 'tests' }

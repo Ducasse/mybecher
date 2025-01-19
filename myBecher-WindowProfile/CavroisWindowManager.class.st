@@ -76,13 +76,13 @@ CavroisWindowManager >> kindFor: aString [
 	^ classToolMapping at: aString ifAbsent: [ #Unknown ]
 ]
 
-{ #category : 'operations' }
+{ #category : 'recording' }
 CavroisWindowManager >> placeHolderFromWindow: aWindowPresenter [ 
 	
 	| placeHolder |
 	placeHolder := CavWindowPlaceHolder new
 			extent: aWindowPresenter extent ;
-			position: aWindowPresenter bounds origin;
+			position: aWindowPresenter bounds origin ;
 			yourself.
 	self setDefaultStrategyTo: placeHolder.
 	aWindowPresenter configurePlaceHolder: placeHolder.
@@ -91,17 +91,12 @@ CavroisWindowManager >> placeHolderFromWindow: aWindowPresenter [
 ]
 
 { #category : 'operations' }
-CavroisWindowManager >> placePresenter: aStPlayground [ 
+CavroisWindowManager >> placePresenter: aPresenter [
 	
 	| placeHolder |
-	placeHolder := self profiles first placeHolderFor: aStPlayground class name.
-	"we should move the following logic to the placeHolder so that we can have a neutral one
-	what do we do when we do not find one, we return freePlacing...."
-	
-	aStPlayground position: placeHolder position.
-	aStPlayground extent: placeHolder extent.
-	placeHolder strategy placeWindow: aStPlayground.
-	aStPlayground open. 
+	placeHolder := (self profiles first placeHoldersFor: aPresenter class name).
+	placeHolder placePresenter: aPresenter.
+	aPresenter open. 
 
 ]
 
@@ -112,7 +107,7 @@ CavroisWindowManager >> profileFor: aString [
 	^ self profiles detect: [ :each | each kind = aString ]
 ]
 
-{ #category : 'operations' }
+{ #category : 'recording' }
 CavroisWindowManager >> profileFromWindows [
 	"self new profileFromWindows"
 	
@@ -146,7 +141,7 @@ CavroisWindowManager >> reset [
 	profiles := OrderedCollection new
 ]
 
-{ #category : 'operations' }
+{ #category : 'internals' }
 CavroisWindowManager >> setDefaultStrategyTo: placeHolder [
 
 	placeHolder strategy: (strategy placeHolder: placeHolder)

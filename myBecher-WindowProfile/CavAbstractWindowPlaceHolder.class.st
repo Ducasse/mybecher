@@ -1,0 +1,116 @@
+"
+A WindowConfiguration is a description of the window on the screen (extent, position, kind, strategy)
+"
+Class {
+	#name : 'CavAbstractWindowPlaceHolder',
+	#superclass : 'Object',
+	#instVars : [
+		'extent',
+		'kind',
+		'position',
+		'strategy',
+		'count'
+	],
+	#category : 'myBecher-WindowProfile',
+	#package : 'myBecher-WindowProfile'
+}
+
+{ #category : 'as yet unclassified' }
+CavAbstractWindowPlaceHolder class >> exampleTranscript [
+
+	^ self new 
+		extent: 400@666;
+		position: 180.0@106.0;
+		kind: #Transcript;
+		yourself
+
+
+	
+]
+
+{ #category : 'accessing' }
+CavAbstractWindowPlaceHolder >> count [
+	^ count
+]
+
+{ #category : 'accessing' }
+CavAbstractWindowPlaceHolder >> extent [
+	^ extent
+]
+
+{ #category : 'accessing' }
+CavAbstractWindowPlaceHolder >> extent: aPoint [ 
+	extent := aPoint
+]
+
+{ #category : 'initialization' }
+CavAbstractWindowPlaceHolder >> increment [ 
+	
+	count := count + 1
+]
+
+{ #category : 'initialization' }
+CavAbstractWindowPlaceHolder >> initialize [
+
+	super initialize. 
+	strategy := CavStackingStrategy new.
+	"count is counting the number of opened window.
+	not really nice but let us get started."
+	count := 0.	
+
+]
+
+{ #category : 'accessing' }
+CavAbstractWindowPlaceHolder >> kind [
+
+	^ kind
+]
+
+{ #category : 'accessing' }
+CavAbstractWindowPlaceHolder >> kind: anObject [
+
+	kind := anObject
+]
+
+{ #category : 'operations' }
+CavAbstractWindowPlaceHolder >> placePresenter: aPresenter [
+
+	aPresenter position: self position.
+	aPresenter extent: self extent.
+	self strategy placeWindow: aPresenter.
+]
+
+{ #category : 'accessing' }
+CavAbstractWindowPlaceHolder >> position [
+	^ position
+]
+
+{ #category : 'accessing' }
+CavAbstractWindowPlaceHolder >> position: aPoint [ 
+	position := aPoint
+]
+
+{ #category : 'printing' }
+CavAbstractWindowPlaceHolder >> printOn: aStream [
+
+	super printOn: aStream.
+	aStream nextPutAll: '(', kind, ' ', self strategy class name, ')'
+]
+
+{ #category : 'printing' }
+CavAbstractWindowPlaceHolder >> resetCount [ 
+	 
+	count := 0.
+]
+
+{ #category : 'accessing' }
+CavAbstractWindowPlaceHolder >> strategy [ 
+
+	^ strategy
+]
+
+{ #category : 'accessing' }
+CavAbstractWindowPlaceHolder >> strategy: aStrategy [
+
+	strategy := aStrategy
+]

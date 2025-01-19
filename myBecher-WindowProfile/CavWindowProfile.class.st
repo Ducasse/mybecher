@@ -24,7 +24,7 @@ CavWindowProfile >> add: aCavroisWindowPlaceHolder [
 			col := OrderedCollection new.
 			placeHolderDictionary at: aCavroisWindowPlaceHolder kind put: col.
 			col ]) add: aCavroisWindowPlaceHolder.
-	placeHolders add: aCavroisWindowPlaceHolder
+	
 ]
 
 { #category : 'adding' }
@@ -38,7 +38,7 @@ CavWindowProfile >> initialize [
 	
 	super initialize.
 	placeHolderDictionary := Dictionary new.
-	placeHolders := OrderedCollection new.
+	
 ]
 
 { #category : 'accessing' }
@@ -47,13 +47,7 @@ CavWindowProfile >> named: aString [
 ]
 
 { #category : 'accessing' }
-CavWindowProfile >> placeHolderFor: aString [ 
-	
-	^ placeHolderDictionary at: aString ifAbsent: [ CavWindowPlaceHolder new kind: 'Unrecorded'; yourself  ]
-]
-
-{ #category : 'accessing' }
 CavWindowProfile >> placeHoldersFor: aString [ 
 	
-	^ placeHolderDictionary at: aString
+	^ placeHolderDictionary at: aString ifAbsent: [ { CavNullWindowPlaceHolder new kind: 'Unrecorded'; yourself } ]
 ]
