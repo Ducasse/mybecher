@@ -95,7 +95,7 @@ CavroisWindowManager >> placePresenter: aPresenter [
 	
 	| placeHolder |
 	placeHolder := (self profiles first placeHoldersFor: aPresenter class name).
-	placeHolder placePresenter: aPresenter.
+	placeHolder first placePresenter: aPresenter.
 	aPresenter open. 
 
 ]
@@ -112,19 +112,11 @@ CavroisWindowManager >> profileFromWindows [
 	"self new profileFromWindows"
 	
 	| profile allWindows |
-	
 	5 timesRepeat: [ 
 		Smalltalk garbageCollect ].
 	
 	profile := CavWindowProfile new named: 'current'.
-	
 	allWindows := World windowsSatisfying: [:w | w isCollapsed not].
-	
-	"for old tools such trranscript"
-	"(allWindows select: [ :each | each class = SystemWindow ])
-		 do: [ :each | profile add: (self placeHolderFromSystemWindow: each) ].
-	(allWindows select: [ :each | each isKindOf: SpWindow ])
-		 do: [ :each | profile add: (self placeHolderFromSpWindow: each) ]."
 	allWindows do: [ :each | profile add: (self placeHolderFromWindow: each) ].
 	profiles add: profile.
 	^ profile
