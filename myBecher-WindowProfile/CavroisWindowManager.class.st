@@ -25,7 +25,7 @@ CavroisWindowManager current
 ### Trying with strategy
 
 ```
-(CavroisWindowManager current profiles first placeHolderFor: IceTipRepositoriesBrowser name)
+(CavroisWindowManager current profiles first placeHoldersFor: IceTipRepositoriesBrowser name) first
 	strategy: CavStackingStrategy new
 
 ```
