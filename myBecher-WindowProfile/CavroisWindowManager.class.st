@@ -110,18 +110,14 @@ CavroisWindowManager >> profileFor: aString [
 { #category : 'recording' }
 CavroisWindowManager >> profileFromWindows [
 	"self new profileFromWindows"
-	
-	| profile allWindows |
-	5 timesRepeat: [ 
-		Smalltalk garbageCollect ].
-	
-	profile := CavWindowProfile new named: 'current'.
-	allWindows := World windowsSatisfying: [:w | w isCollapsed not].
 
-	allWindows do: [ :each | 
-		each model presenter class name = 'IceTipRepositoriesBrowser'
-			ifTrue: [ self halt ].
-		
+	| profile allWindows |
+	5 timesRepeat: [ Smalltalk garbageCollect ].
+
+	profile := CavWindowProfile new named: 'current'.
+	allWindows := World windowsSatisfying: [ :w | w isCollapsed not ].
+
+	allWindows do: [ :each |
 		profile add: (self placeHolderFromWindow: each) ].
 	profiles add: profile.
 	^ profile
