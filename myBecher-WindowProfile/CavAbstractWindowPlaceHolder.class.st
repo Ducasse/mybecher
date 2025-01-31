@@ -28,6 +28,15 @@ CavAbstractWindowPlaceHolder class >> exampleTranscript [
 	
 ]
 
+{ #category : 'initialization' }
+CavAbstractWindowPlaceHolder >> configureStrategy [
+
+
+	strategy placeHolder: self
+
+	
+]
+
 { #category : 'accessing' }
 CavAbstractWindowPlaceHolder >> count [
 	^ count
@@ -56,6 +65,7 @@ CavAbstractWindowPlaceHolder >> initialize [
 	strategy := CavStackingStrategy new.
 	"count is counting the number of opened window.
 	not really nice but let us get started."
+	kind := 'empty'.
 	count := 0.	
 
 ]
@@ -94,13 +104,19 @@ CavAbstractWindowPlaceHolder >> position: aPoint [
 CavAbstractWindowPlaceHolder >> printOn: aStream [
 
 	super printOn: aStream.
-	aStream nextPutAll: '(', kind, ' ', self strategy class name, ')'
+	aStream nextPutAll: '(', kind, ' ', (self strategy ifNotNil: [:s | s class name] ifNil: [' nil strategy']), ')'
 ]
 
 { #category : 'printing' }
 CavAbstractWindowPlaceHolder >> resetCount [ 
 	 
 	count := 0.
+]
+
+{ #category : 'initialization' }
+CavAbstractWindowPlaceHolder >> setDefaultStrategy [
+
+	
 ]
 
 { #category : 'accessing' }

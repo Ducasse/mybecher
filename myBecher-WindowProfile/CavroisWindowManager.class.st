@@ -9,7 +9,7 @@ A place holder is a description of the window on the screen (extent, position, k
 
 ```
 CavroisWindowManager reset. 
-CavroisWindowManager current reset; profileFromWindows.
+CavroisWindowManager current resetProfiles; profileFromWindows.
 ```
 
 ### Place
@@ -35,8 +35,7 @@ Class {
 	#superclass : 'Object',
 	#instVars : [
 		'profiles',
-		'classToolMapping',
-		'strategy'
+		'classToolMapping'
 	],
 	#classVars : [
 		'Current'
@@ -65,7 +64,7 @@ CavroisWindowManager >> initialize [
 	
 	profiles := OrderedCollection new. 
 	"should probably be another dictionary with profile names as key"
-	strategy := CavStackingStrategy new.
+	
 ]
 
 { #category : 'internals' }
@@ -84,7 +83,7 @@ CavroisWindowManager >> placeHolderFromWindow: aWindowPresenter [
 			extent: aWindowPresenter extent ;
 			position: aWindowPresenter bounds origin ;
 			yourself.
-	self setDefaultStrategyTo: placeHolder.
+	placeHolder configureStrategy.
 	aWindowPresenter configurePlaceHolder: placeHolder.
 	^ placeHolder 
 			
@@ -94,8 +93,9 @@ CavroisWindowManager >> placeHolderFromWindow: aWindowPresenter [
 CavroisWindowManager >> placePresenter: aPresenter [
 	
 	| placeHolder |
+
 	placeHolder := (self profiles first placeHoldersFor: aPresenter class name).
-	placeHolder first placePresenter: aPresenter.
+	placeHolder first strategy placeWindow: aPresenter.
 	aPresenter open. 
 
 ]
@@ -117,7 +117,12 @@ CavroisWindowManager >> profileFromWindows [
 	
 	profile := CavWindowProfile new named: 'current'.
 	allWindows := World windowsSatisfying: [:w | w isCollapsed not].
-	allWindows do: [ :each | profile add: (self placeHolderFromWindow: each) ].
+
+	allWindows do: [ :each | 
+		each model presenter class name = 'IceTipRepositoriesBrowser'
+			ifTrue: [ self halt ].
+		
+		profile add: (self placeHolderFromWindow: each) ].
 	profiles add: profile.
 	^ profile
 ]
@@ -134,8 +139,7 @@ CavroisWindowManager >> reset [
 ]
 
 { #category : 'internals' }
-CavroisWindowManager >> setDefaultStrategyTo: placeHolder [
+CavroisWindowManager >> resetProfiles [
 
-	placeHolder strategy: (strategy placeHolder: placeHolder)
-			
+	profiles := OrderedCollection new
 ]
