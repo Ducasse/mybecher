@@ -25,13 +25,15 @@ CavroisWindowManager current
 ### Trying with strategy
 
 ```
-(CavroisWindowManager current profiles first placeHoldersFor: IceTipRepositoriesBrowser name) first
+((CavroisWindowManager current profileNamed: 'current') 
+	placeHoldersFor: IceTipRepositoriesBrowser name) first
 	strategy: CavStackingStrategy new
 
 ```
 
 ```
-(CavroisWindowManager current profiles first placeHoldersFor: IceTipRepositoriesBrowser name) first
+((CavroisWindowManager current profileNamed: 'current')  
+	placeHoldersFor: IceTipRepositoriesBrowser name) first
 	strategy: CavReplaceStrategy new
 
 ```
@@ -39,7 +41,7 @@ CavroisWindowManager current
 ### Display
 
 ```
-(CavroisWindowManager current profiles first placeHolders) do: [:each | each display]
+(CavroisWindowManager current profileNamed: 'current') placeHolders do: [:each | each display]
 ```	
 
 "
@@ -113,13 +115,6 @@ CavroisWindowManager >> placePresenter: aPresenter [
 
 ]
 
-{ #category : 'accessing' }
-CavroisWindowManager >> profileFor: aString [ 
-	"may be a dict should be better"	
-
-	^ self profiles detect: [ :each | each kind = aString ]
-]
-
 { #category : 'recording' }
 CavroisWindowManager >> profileFromWindows [
 	"self new profileFromWindows"
@@ -137,18 +132,19 @@ CavroisWindowManager >> profileFromWindows [
 ]
 
 { #category : 'accessing' }
-CavroisWindowManager >> profiles [
-	^ profiles ifNil: [ self reset  ]
+CavroisWindowManager >> profileNamed: aString [ 
+	"may be a dict should be better"	
+
+	^ profiles at: aString
 ]
 
-{ #category : 'internals' }
-CavroisWindowManager >> reset [
-
-	profiles := OrderedCollection new
+{ #category : 'accessing' }
+CavroisWindowManager >> profiles [
+	^ profiles ifNil: [ self resetProfiles ]
 ]
 
 { #category : 'internals' }
 CavroisWindowManager >> resetProfiles [
 
-	profiles := OrderedCollection new
+	profiles := Dictionary new
 ]
