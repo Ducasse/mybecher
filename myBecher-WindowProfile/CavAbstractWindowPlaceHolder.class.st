@@ -42,6 +42,12 @@ CavAbstractWindowPlaceHolder >> count [
 	^ count
 ]
 
+{ #category : 'api' }
+CavAbstractWindowPlaceHolder >> display [ 
+
+	CavVisualPlaceHolder new extent: extent; position: position; openInWorld
+]
+
 { #category : 'accessing' }
 CavAbstractWindowPlaceHolder >> extent [
 	^ extent
@@ -63,6 +69,7 @@ CavAbstractWindowPlaceHolder >> initialize [
 
 	super initialize. 
 	strategy := CavStackingStrategy new.
+	strategy placeHolder: self.
 	"count is counting the number of opened window.
 	not really nice but let us get started."
 	kind := 'empty'.
@@ -128,5 +135,6 @@ CavAbstractWindowPlaceHolder >> strategy [
 { #category : 'accessing' }
 CavAbstractWindowPlaceHolder >> strategy: aStrategy [
 
-	strategy := aStrategy
+	strategy := aStrategy.
+	aStrategy placeHolder: self.
 ]

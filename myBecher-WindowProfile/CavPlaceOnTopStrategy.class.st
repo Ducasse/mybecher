@@ -1,14 +1,14 @@
 Class {
-	#name : 'CavNullStrategy',
+	#name : 'CavPlaceOnTopStrategy',
 	#superclass : 'CavWindowStrategy',
 	#category : 'myBecher-WindowProfile',
 	#package : 'myBecher-WindowProfile'
 }
 
 { #category : 'positioning' }
-CavNullStrategy >> placeWindow: aWindow [
+CavPlaceOnTopStrategy >> placeWindow: aWindow [
 
-	^ aWindow
+	aWindow position: placeHolder position
 
 
 ]

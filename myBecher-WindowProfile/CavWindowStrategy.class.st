@@ -19,3 +19,7 @@ CavWindowStrategy >> placeHolder: anObject [
 
 	placeHolder := anObject
 ]
+
+{ #category : 'positioning' }
+CavWindowStrategy >> placeWindow: aWindowPresenter [
+]

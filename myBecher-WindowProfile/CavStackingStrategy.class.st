@@ -5,11 +5,12 @@ Class {
 	#package : 'myBecher-WindowProfile'
 }
 
-{ #category : 'as yet unclassified' }
+{ #category : 'positioning' }
 CavStackingStrategy >> placeWindow: aWindow [
 	"for now just stupid"
-	placeHolder increment. 
-	aWindow position: placeHolder position + ((20@20) * placeHolder count) 
+
+	aWindow position: placeHolder position + ((20@20) * placeHolder count).
+	placeHolder increment.  
 
 
 ]
