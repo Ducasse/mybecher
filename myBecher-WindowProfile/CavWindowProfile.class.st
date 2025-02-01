@@ -41,6 +41,11 @@ CavWindowProfile >> initialize [
 ]
 
 { #category : 'accessing' }
+CavWindowProfile >> name [
+	^ profileName
+]
+
+{ #category : 'accessing' }
 CavWindowProfile >> named: aString [ 
 	profileName := aString
 ]

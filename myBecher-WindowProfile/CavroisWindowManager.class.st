@@ -71,14 +71,20 @@ CavroisWindowManager class >> reset [
 	Current := nil
 ]
 
+{ #category : 'accessing' }
+CavroisWindowManager >> currentProfile [
+
+	^ self profiles at: 'current'
+]
+
 { #category : 'initialization' }
 CavroisWindowManager >> initialize [ 
 
 	super initialize.
 	classToolMapping := Dictionary new.
 	
-	profiles := OrderedCollection new. 
-	"should probably be another dictionary with profile names as key"
+	profiles := self resetProfiles.
+	
 	
 ]
 
@@ -109,7 +115,7 @@ CavroisWindowManager >> placePresenter: aPresenter [
 	
 	| placeHolder |
 
-	placeHolder := (self profiles first placeHoldersFor: aPresenter class name).
+	placeHolder := (self profiles at: 'current') placeHoldersFor: aPresenter class name.
 	placeHolder first strategy placeWindow: aPresenter.
 	aPresenter open. 
 
@@ -127,7 +133,7 @@ CavroisWindowManager >> profileFromWindows [
 
 	allWindows do: [ :each |
 		profile add: (self placeHolderFromWindow: each) ].
-	profiles add: profile.
+	profiles at: profile name  put: profile.
 	^ profile
 ]
 
@@ -146,5 +152,8 @@ CavroisWindowManager >> profiles [
 { #category : 'internals' }
 CavroisWindowManager >> resetProfiles [
 
-	profiles := Dictionary new
+	profiles := Dictionary new.
+	
+	"not sure that I want this."
+	profiles at: 'current' put: CavWindowProfile 
 ]

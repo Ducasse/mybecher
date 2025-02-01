@@ -12,8 +12,9 @@ CavReplaceStrategy >> placeWindow: aWindow [
 	aWindow position: placeHolder position.
 	"do we keep a reference to the window from the placeholder?
 	this way we could avoid to scan all the window."
-	self halt.
-	(SystemWindow allInstances select: [ :each | self halt. each position = placeHolder position ]) 
+	
+	"this does not work for now"
+	(SystemWindow allInstances select: [ :each | each position = placeHolder position ]) 
 		do: [ :each | each delete ]
 
 ]
