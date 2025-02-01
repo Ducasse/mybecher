@@ -29,6 +29,19 @@ CavroisWindowManager current
 	strategy: CavStackingStrategy new
 
 ```
+
+```
+(CavroisWindowManager current profiles first placeHoldersFor: IceTipRepositoriesBrowser name) first
+	strategy: CavReplaceStrategy new
+
+```
+
+### Display
+
+```
+(CavroisWindowManager current profiles first placeHolders) do: [:each | each display]
+```	
+
 "
 Class {
 	#name : 'CavroisWindowManager',

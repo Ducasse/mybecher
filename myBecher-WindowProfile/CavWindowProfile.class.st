@@ -6,7 +6,6 @@ Class {
 	#superclass : 'Object',
 	#instVars : [
 		'profileName',
-		'placeHolders',
 		'placeHolderDictionary'
 	],
 	#category : 'myBecher-WindowProfile',
@@ -44,6 +43,14 @@ CavWindowProfile >> initialize [
 { #category : 'accessing' }
 CavWindowProfile >> named: aString [ 
 	profileName := aString
+]
+
+{ #category : 'accessing' }
+CavWindowProfile >> placeHolders [
+	| res |
+	res := OrderedCollection new.
+	placeHolderDictionary keysAndValuesDo: [ :k :v | res addAll: v ].
+	^ res
 ]
 
 { #category : 'accessing' }
