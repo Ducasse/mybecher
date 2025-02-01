@@ -49,6 +49,25 @@ CavroisWindowManagerTest >> testConfigurationFromWindow [
 	
 ]
 
+{ #category : 'holder' }
+CavroisWindowManagerTest >> testHolderStrategyBackLink [
+
+
+	| h |
+	h := CavWindowPlaceHolder new.
+	self assert: h strategy placeHolder equals: h 
+]
+
+{ #category : 'holder' }
+CavroisWindowManagerTest >> testHolderStrategyBackLinkIsKeptOnSetter [
+
+
+	| h |
+	h := CavWindowPlaceHolder new.
+	h strategy: CavReplaceStrategy new. 
+	self assert: h strategy placeHolder equals: h 
+]
+
 { #category : 'tests' }
 CavroisWindowManagerTest >> testPresenterHasCorrectAPI [
 
