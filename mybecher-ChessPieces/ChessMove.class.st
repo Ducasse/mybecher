@@ -1,3 +1,6 @@
+"
+I represent a particular move in the chess game.
+"
 Class {
 	#name : 'ChessMove',
 	#superclass : 'Object',
