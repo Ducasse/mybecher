@@ -70,6 +70,7 @@ CavroisWindowManager class >> current [
 CavroisWindowManager class >> profileList: aBuilder [
 
 	<worldMenu>
+
 	self current profiles keysDo: [ :k |
 		(aBuilder item: k)   
 			parent: #'User Profiles'; 
@@ -175,10 +176,7 @@ CavroisWindowManager >> initialize [
 
 	super initialize.
 	classToolMapping := Dictionary new.
-	profiles := self resetProfiles.
-	
-	
-	
+	self resetProfiles.	
 ]
 
 { #category : 'internals' }
@@ -223,7 +221,7 @@ CavroisWindowManager >> profileNamed: aString [
 
 { #category : 'accessing' }
 CavroisWindowManager >> profiles [
-	^ profiles ifNil: [ self resetProfiles ]
+	^ profiles ifNil: [ self resetProfiles. profiles ]
 ]
 
 { #category : 'internals' }
