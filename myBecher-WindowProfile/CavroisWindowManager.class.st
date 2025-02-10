@@ -65,6 +65,69 @@ CavroisWindowManager class >> current [
 	^ Current ifNil: [ Current := self new ]
 ]
 
+{ #category : 'menu' }
+CavroisWindowManager class >> profileList: aBuilder [ 
+
+	<worldMenu> 
+	self current profiles keysDo: [ : k | (aBuilder item: k)
+		parent: #'User Profiles'; 
+		order: 4;
+		help: 'Profile']
+	
+]
+
+{ #category : 'menu' }
+CavroisWindowManager class >> profileMenu: aBuilder [
+
+    <worldMenu>
+    (aBuilder item: #Profiles)
+        order: 95;
+        with: [
+            (aBuilder group: #UserProfiles)
+                order: 1;
+                withSeparatorAfter.
+            (aBuilder group: #SavingDeleting)
+                order: 2;
+                withSeparatorAfter.
+            (aBuilder group: #ImportExport)
+                order: 3. ]
+]
+
+{ #category : 'menu items' }
+CavroisWindowManager class >> profileMenuItems: aBuilder [
+
+	<worldMenu>
+	(aBuilder item: #'User Profiles')
+		parent: #UserProfiles;
+		order: 1;
+		help: 'boubou';
+		iconName: #userProfile.
+
+	(aBuilder item: #'Save Profile')
+		parent: #SavingDeleting;
+		order: 3;
+		help: 'boubou';
+		iconName: #save.
+
+	(aBuilder item: #'Delete Profile')
+		parent: #SavingDeleting;
+		order: 4;
+		help: 'Takes a screenshot of the world´s current layout';
+		iconName: #trash.
+
+	(aBuilder item: #'Import Profile')
+		parent: #ImportExport;
+		order: 5;
+		help: 'boubou';
+		iconName: #smallUndo.
+
+	(aBuilder item: #'Export Profile')
+		parent: #ImportExport;
+		order: 6;
+		help: 'Takes a screenshot of the current layout';
+		iconName: #smallRedo
+]
+
 { #category : 'accessing' }
 CavroisWindowManager class >> reset [  
 
