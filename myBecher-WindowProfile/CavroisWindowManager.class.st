@@ -141,6 +141,23 @@ CavroisWindowManager class >> reset [
 	Current := nil
 ]
 
+{ #category : 'recording' }
+CavroisWindowManager >> addProfileFromWindows: aProfileName [
+	"self new profileFromWindows"
+
+	| profile allWindows |
+	5 timesRepeat: [ Smalltalk garbageCollect ].
+
+	profile := CavWindowProfile new named: aProfileName.
+	allWindows := self currentWorld windowsSatisfying: [ :w | w isCollapsed not ].
+
+	allWindows do: [ :each |
+		profile add: (self placeHolderFromWindow: each) ].
+	profiles at: profile name put: profile.
+
+	^ profile
+]
+
 { #category : 'accessing' }
 CavroisWindowManager >> currentProfile [
 
