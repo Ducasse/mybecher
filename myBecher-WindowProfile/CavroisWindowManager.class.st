@@ -9,7 +9,7 @@ A place holder is a description of the window on the screen (extent, position, k
 
 ```
 CavroisWindowManager reset. 
-CavroisWindowManager current resetProfiles; profileFromWindows.
+CavroisWindowManager current resetProfiles.
 ```
 
 ### Place
@@ -25,14 +25,14 @@ CavroisWindowManager current
 ### Trying with strategy
 
 ```
-((CavroisWindowManager current profileNamed: 'current') 
+((CavroisWindowManager current currentProfile) 
 	placeHoldersFor: IceTipRepositoriesBrowser name) first
 	strategy: CavStackingStrategy new
 
 ```
 
 ```
-((CavroisWindowManager current profileNamed: 'current')  
+((CavroisWindowManager current currentProfile)  
 	placeHoldersFor: IceTipRepositoriesBrowser name) first
 	strategy: CavReplaceStrategy new
 
@@ -41,7 +41,7 @@ CavroisWindowManager current
 ### Display
 
 ```
-(CavroisWindowManager current profileNamed: 'current') placeHolders do: [:each | each display]
+(CavroisWindowManager current currentProfile) placeHolders do: [:each | each display]
 ```	
 
 "
@@ -50,7 +50,8 @@ Class {
 	#superclass : 'Object',
 	#instVars : [
 		'profiles',
-		'classToolMapping'
+		'classToolMapping',
+		'currentProfile'
 	],
 	#classVars : [
 		'Current'
@@ -66,14 +67,16 @@ CavroisWindowManager class >> current [
 ]
 
 { #category : 'menu' }
-CavroisWindowManager class >> profileList: aBuilder [ 
+CavroisWindowManager class >> profileList: aBuilder [
 
-	<worldMenu> 
-	self current profiles keysDo: [ : k | (aBuilder item: k)
-		parent: #'User Profiles'; 
-		order: 4;
-		help: 'Profile']
-	
+	<worldMenu>
+	self current profiles keysDo: [ :k |
+		(aBuilder item: k)   
+			parent: #'User Profiles'; 
+			action: [
+				self current currentProfile: (self current profiles at: k) ];
+			order: 4;
+			help: 'Profile' ]
 ]
 
 { #category : 'menu' }
@@ -106,6 +109,10 @@ CavroisWindowManager class >> profileMenuItems: aBuilder [
 	(aBuilder item: #'Save Profile')
 		parent: #SavingDeleting;
 		order: 3;
+		action: [
+			self current addProfileFromWindows:
+					'Profile ' , (self current profiles size + 1) printString.
+			MenubarMorph reset ];
 		help: 'boubou';
 		iconName: #save.
 
@@ -137,7 +144,13 @@ CavroisWindowManager class >> reset [
 { #category : 'accessing' }
 CavroisWindowManager >> currentProfile [
 
-	^ self profiles at: 'current'
+	^ currentProfile 
+]
+
+{ #category : 'accessing' }
+CavroisWindowManager >> currentProfile: aProfile [
+
+	currentProfile := aProfile
 ]
 
 { #category : 'initialization' }
@@ -145,8 +158,8 @@ CavroisWindowManager >> initialize [
 
 	super initialize.
 	classToolMapping := Dictionary new.
-	
 	profiles := self resetProfiles.
+	
 	
 	
 ]
@@ -178,26 +191,10 @@ CavroisWindowManager >> placePresenter: aPresenter [
 	
 	| placeHolder |
 
-	placeHolder := (self profiles at: 'current') placeHoldersFor: aPresenter class name.
+	placeHolder := self currentProfile placeHoldersFor: aPresenter class name.
 	placeHolder first strategy placeWindow: aPresenter.
 	aPresenter open. 
 
-]
-
-{ #category : 'recording' }
-CavroisWindowManager >> profileFromWindows [
-	"self new profileFromWindows"
-
-	| profile allWindows |
-	5 timesRepeat: [ Smalltalk garbageCollect ].
-
-	profile := CavWindowProfile new named: 'current'.
-	allWindows := World windowsSatisfying: [ :w | w isCollapsed not ].
-
-	allWindows do: [ :each |
-		profile add: (self placeHolderFromWindow: each) ].
-	profiles at: profile name  put: profile.
-	^ profile
 ]
 
 { #category : 'accessing' }
@@ -216,7 +213,8 @@ CavroisWindowManager >> profiles [
 CavroisWindowManager >> resetProfiles [
 
 	profiles := Dictionary new.
-	
+
 	"not sure that I want this."
-	profiles at: 'current' put: CavWindowProfile 
+	self addProfileFromWindows: 'Current'.
+	currentProfile := profiles at: 'Current'
 ]

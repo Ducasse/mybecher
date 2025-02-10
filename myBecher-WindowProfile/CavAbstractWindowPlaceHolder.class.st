@@ -73,7 +73,7 @@ CavAbstractWindowPlaceHolder >> initialize [
 	"count is counting the number of opened window.
 	not really nice but let us get started."
 	kind := 'empty'.
-	count := 0.	
+	count := 1.	
 
 ]
 
