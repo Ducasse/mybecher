@@ -107,7 +107,7 @@ CavroisWindowManager class >> profileMenuItems: aBuilder [
 		help: 'boubou';
 		iconName: #userProfile.
 
-	(aBuilder item: #'Save Profile')
+	(aBuilder item: #'Snapshot Profile')
 		parent: #SavingDeleting;
 		order: 3;
 		action: [
@@ -155,7 +155,7 @@ CavroisWindowManager >> addProfileFromWindows: aProfileName [
 	allWindows do: [ :each |
 		profile add: (self placeHolderFromWindow: each) ].
 	profiles at: profile name put: profile.
-
+	self currentProfile: profile.
 	^ profile
 ]
 
