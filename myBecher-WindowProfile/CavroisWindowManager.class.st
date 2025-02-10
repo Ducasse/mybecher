@@ -70,7 +70,7 @@ CavroisWindowManager class >> current [
 CavroisWindowManager class >> profileList: aBuilder [
 
 	<worldMenu>
-	
+
 	self current profiles keysDo: [ :k |
 		(aBuilder item: k)   
 			parent: #'User Profiles'; 
@@ -176,10 +176,7 @@ CavroisWindowManager >> initialize [
 
 	super initialize.
 	classToolMapping := Dictionary new.
-	self resetProfiles.
-	
-	
-	
+	self resetProfiles.	
 ]
 
 { #category : 'internals' }
