@@ -205,11 +205,9 @@ CavroisWindowManager >> placeHolderFromWindow: aWindowPresenter [
 CavroisWindowManager >> placePresenter: aPresenter [
 	
 	| placeHolder |
-
 	placeHolder := self currentProfile placeHoldersFor: aPresenter class name.
-	placeHolder first strategy placeWindow: aPresenter.
-	aPresenter open. 
-
+	placeHolder first placePresenter: aPresenter.
+	
 ]
 
 { #category : 'accessing' }

@@ -89,14 +89,6 @@ CavAbstractWindowPlaceHolder >> kind: anObject [
 	kind := anObject
 ]
 
-{ #category : 'operations' }
-CavAbstractWindowPlaceHolder >> placePresenter: aPresenter [
-
-	aPresenter position: self position.
-	aPresenter extent: self extent.
-	self strategy placeWindow: aPresenter.
-]
-
 { #category : 'accessing' }
 CavAbstractWindowPlaceHolder >> position [
 	^ position
