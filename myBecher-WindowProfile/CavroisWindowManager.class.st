@@ -87,6 +87,7 @@ CavroisWindowManager class >> profileMenu: aBuilder [
 CavroisWindowManager class >> profileMenuItems: aBuilder [
 
 	<worldMenu>
+	| presenter |
 	self current profiles keysDo: [ :k |
 		(aBuilder item: k)
 			parent: #UserProfiles;
@@ -100,9 +101,17 @@ CavroisWindowManager class >> profileMenuItems: aBuilder [
 		parent: #SavingDeleting;
 		order: 3;
 		action: [
-			self current addProfileFromWindows:
-					'Profile ' , (self current profiles size + 1) printString.
-			MenubarMorph reset ];
+			presenter := SpRequestDialog new.
+			presenter
+				title: 'Snapshot Profile';
+				label: 'What is the name of your profile?';
+				text: '';
+				acceptLabel: 'Confirm';
+				cancelLabel: 'Cancel';
+				onAccept: [ :dialog |
+					self current addProfileFromWindows: dialog presenter text.
+					MenubarMorph reset ];
+				openDialog ];
 		help: 'boubou';
 		iconName: #save.
 
@@ -210,9 +219,5 @@ CavroisWindowManager >> profiles [
 { #category : 'internals' }
 CavroisWindowManager >> resetProfiles [
 
-	profiles := Dictionary new.
-
-	"not sure that I want this."
-	self addProfileFromWindows: 'Current'.
-	currentProfile := profiles at: 'Current'
+	profiles := Dictionary new
 ]
