@@ -67,20 +67,6 @@ CavroisWindowManager class >> current [
 ]
 
 { #category : 'menu' }
-CavroisWindowManager class >> profileList: aBuilder [
-
-	<worldMenu>
-
-	self current profiles keysDo: [ :k |
-		(aBuilder item: k)   
-			parent: #'User Profiles'; 
-			action: [
-				self current currentProfile: (self current profiles at: k) ];
-			order: 4;
-			help: 'Profile' ]
-]
-
-{ #category : 'menu' }
 CavroisWindowManager class >> profileMenu: aBuilder [
 
     <worldMenu>
@@ -101,11 +87,14 @@ CavroisWindowManager class >> profileMenu: aBuilder [
 CavroisWindowManager class >> profileMenuItems: aBuilder [
 
 	<worldMenu>
-	(aBuilder item: #'User Profiles')
-		parent: #UserProfiles;
-		order: 1;
-		help: 'boubou';
-		iconName: #userProfile.
+	self current profiles keysDo: [ :k |
+		(aBuilder item: k)
+			parent: #UserProfiles;
+			action: [
+				self current currentProfile: (self current profiles at: k) ];
+			order: 4;
+			help: 'Profile';
+			iconName: #userProfile ].
 
 	(aBuilder item: #'Snapshot Profile')
 		parent: #SavingDeleting;
@@ -116,12 +105,6 @@ CavroisWindowManager class >> profileMenuItems: aBuilder [
 			MenubarMorph reset ];
 		help: 'boubou';
 		iconName: #save.
-
-	(aBuilder item: #'Delete Profile')
-		parent: #SavingDeleting;
-		order: 4;
-		help: 'Takes a screenshot of the world´s current layout';
-		iconName: #trash.
 
 	(aBuilder item: #'Import Profile')
 		parent: #ImportExport;
@@ -137,9 +120,11 @@ CavroisWindowManager class >> profileMenuItems: aBuilder [
 ]
 
 { #category : 'accessing' }
-CavroisWindowManager class >> reset [  
+CavroisWindowManager class >> reset [
 
-	Current := nil
+	<script>
+	Current := nil.
+	MenubarMorph reset
 ]
 
 { #category : 'recording' }
