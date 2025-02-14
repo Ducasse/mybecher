@@ -121,10 +121,10 @@ CavroisWindowManager class >> profileMenuItems: aBuilder [
 				cancelLabel: 'Cancel';
 				onAccept: [ :dialog |
 					self current currentProfile ifNotNil: [
-							oldKey := self current profiles keyAtValue:
-									          self current currentProfile.
+							oldProfile := self current currentProfile.
+							oldKey := self current profiles keyAtValue: oldProfile.
 							newKey := oldKey copyReplaceAll: '(Current)' with: ''.
-							self current profiles at: newKey put: oldKey value.
+							self current profiles at: newKey put: oldProfile.
 							self current profiles removeKey: oldKey ].
 					self current addProfileFromWindows: dialog presenter text.
 					MenubarMorph reset ];
