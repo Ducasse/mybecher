@@ -87,7 +87,7 @@ CavroisWindowManager class >> profileMenu: aBuilder [
 CavroisWindowManager class >> profileMenuItems: aBuilder [
 
 	<worldMenu>
-	| presenter oldProfile newProfile oldKey newKey baseName |
+	| presenter oldProfile newProfile oldKey newKey baseName collection |
 	self current profiles keysDo: [ :k |
 		(aBuilder item: k)
 			parent: #UserProfiles;
@@ -122,15 +122,34 @@ CavroisWindowManager class >> profileMenuItems: aBuilder [
 				onAccept: [ :dialog |
 					self current currentProfile ifNotNil: [
 							oldKey := self current profiles keyAtValue:
-									          self current currentProfile. 
+									          self current currentProfile.
 							newKey := oldKey copyReplaceAll: '(Current)' with: ''.
 							self current profiles at: newKey put: oldKey value.
 							self current profiles removeKey: oldKey ].
 					self current addProfileFromWindows: dialog presenter text.
 					MenubarMorph reset ];
 				openDialog ];
-		help: 'boubou';
+		help: 'Creates a local profile based on your image';
 		iconName: #save.
+
+	(aBuilder item: #'Delete Profile')
+		parent: #SavingDeleting;
+		order: 4;
+		action: [
+			self current profiles isNotEmpty ifTrue: [
+					collection := OrderedCollection new.
+					self current profiles keysDo: [ :k | collection add: k ].
+					presenter := SpSelectDialog new.
+					presenter
+						title: 'Delete profile';
+						label: 'Select the profile you want to remove';
+						items: collection;
+						onAccept: [ :dialog |
+							self current profiles removeKey: dialog presenter selectedItem.
+							MenubarMorph reset ];
+						openDialog ] ];
+		help: 'Remove a profile';
+		iconName: #trash.
 
 	(aBuilder item: #'Import Profile')
 		parent: #ImportExport;
@@ -141,7 +160,7 @@ CavroisWindowManager class >> profileMenuItems: aBuilder [
 	(aBuilder item: #'Export Profile')
 		parent: #ImportExport;
 		order: 6;
-		help: 'Takes a screenshot of the current layout';
+		help: 'bibi';
 		iconName: #smallRedo
 ]
 
