@@ -87,12 +87,23 @@ CavroisWindowManager class >> profileMenu: aBuilder [
 CavroisWindowManager class >> profileMenuItems: aBuilder [
 
 	<worldMenu>
-	| presenter |
+	| presenter oldProfile newProfile oldKey newKey baseName |
 	self current profiles keysDo: [ :k |
 		(aBuilder item: k)
 			parent: #UserProfiles;
 			action: [
-				self current currentProfile: (self current profiles at: k) ];
+				oldProfile := self current currentProfile.
+				newProfile := self current profiles at: k.
+				oldProfile = newProfile ifFalse: [
+						oldKey := self current profiles keyAtValue: oldProfile.
+						baseName := oldKey copyReplaceAll: '(Current)' with: ''.
+						self current profiles at: baseName put: oldProfile.
+						self current profiles removeKey: oldKey.
+						newKey := k , '(Current)'.
+						self current profiles at: newKey put: newProfile.
+						self current profiles removeKey: k.
+						self current currentProfile: newProfile.
+						MenubarMorph reset ] ];
 			order: 4;
 			help: 'Profile';
 			iconName: #userProfile ].
@@ -109,6 +120,12 @@ CavroisWindowManager class >> profileMenuItems: aBuilder [
 				acceptLabel: 'Confirm';
 				cancelLabel: 'Cancel';
 				onAccept: [ :dialog |
+					self current currentProfile ifNotNil: [
+							oldKey := self current profiles keyAtValue:
+									          self current currentProfile. 
+							newKey := oldKey copyReplaceAll: '(Current)' with: ''.
+							self current profiles at: newKey put: oldKey value.
+							self current profiles removeKey: oldKey ].
 					self current addProfileFromWindows: dialog presenter text.
 					MenubarMorph reset ];
 				openDialog ];
@@ -144,11 +161,12 @@ CavroisWindowManager >> addProfileFromWindows: aProfileName [
 	5 timesRepeat: [ Smalltalk garbageCollect ].
 
 	profile := CavWindowProfile new named: aProfileName.
-	allWindows := self currentWorld windowsSatisfying: [ :w | w isCollapsed not ].
+	allWindows := self currentWorld windowsSatisfying: [ :w |
+		              w isCollapsed not ].
 
 	allWindows do: [ :each |
 		profile add: (self placeHolderFromWindow: each) ].
-	profiles at: profile name put: profile.
+	profiles at: profile name , '(Current)' put: profile.
 	self currentProfile: profile.
 	^ profile
 ]
