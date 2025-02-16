@@ -11,7 +11,11 @@ Class {
 		'logList',
 		'zoom',
 		'logger',
-		'inspectSelectedItem'
+		'inspectSelectedItem',
+		'showInspector'
+	],
+	#classVars : [
+		'ShowInspector'
 	],
 	#category : 'NewTools-ObjectTranscript',
 	#package : 'NewTools-ObjectTranscript'
@@ -40,6 +44,32 @@ StObjectTranscriptPresenter class >> example [
 	^ cb
 ]
 
+{ #category : 'settings' }
+StObjectTranscriptPresenter class >> settings: aBuilder [
+
+	<systemsettings>
+
+	(aBuilder setting: #objectTranscript)
+		parent: #tools;
+		selector: #showInspector;
+		default: true;
+		label: 'Display the inspector part';
+		description: 'The object transcript supports the in place inspector of log entities. This preference enables it by default';
+		target: self
+]
+
+{ #category : 'settings' }
+StObjectTranscriptPresenter class >> showInspector [
+
+	^ ShowInspector
+]
+
+{ #category : 'settings' }
+StObjectTranscriptPresenter class >> showInspector: aBoolean [
+
+	ShowInspector := aBoolean
+]
+
 { #category : 'initialization' }
 StObjectTranscriptPresenter >> connectPresenters [
 	
@@ -64,11 +94,18 @@ StObjectTranscriptPresenter >> defaultLayout [
 		yourself
 ]
 
+{ #category : 'customization' }
+StObjectTranscriptPresenter >> defaultShowInspector [
+
+	^ ShowInspector ifNil: [ ShowInspector := false ]
+]
+
 { #category : 'initialization' }
 StObjectTranscriptPresenter >> initialize [
 
 	super initialize. 
 	inspectSelectedItem := true.
+	showInspector := self defaultShowInspector
 ]
 
 { #category : 'initialization' }
@@ -94,7 +131,7 @@ StObjectTranscriptPresenter >> initializeWindow: aWindowPresenter [
 	aWindowPresenter whenClosedDo: [ logger removeAsClient: self ]
 ]
 
-{ #category : 'initialization' }
+{ #category : 'actions' }
 StObjectTranscriptPresenter >> inspect: anObject [
 	
 	zoom model: anObject asInspectorModel
@@ -111,7 +148,7 @@ StObjectTranscriptPresenter >> logger: aLogger [
 	
 ]
 
-{ #category : 'accessing' }
+{ #category : 'actions' }
 StObjectTranscriptPresenter >> refresh [ 
 	
 	logList items: logger recordings.
@@ -119,7 +156,7 @@ StObjectTranscriptPresenter >> refresh [
 
 ]
 
-{ #category : 'initialization' }
+{ #category : 'accessing' }
 StObjectTranscriptPresenter >> selectedItem [
 
 	^  logList selectedItem
