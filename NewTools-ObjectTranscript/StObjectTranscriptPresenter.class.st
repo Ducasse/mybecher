@@ -24,8 +24,18 @@ Class {
 { #category : 'accessing' }
 StObjectTranscriptPresenter class >> defaultPreferredExtent [
 	"Answer the desired extent for the receiver when it is first opened on the screen.  "
-
-	^ 450 @ 650
+	"This does oot work and is a perfect case to make the remembering only be used when 
+	it is coming from a resized
+	
+	The behavior should be 
+		open -> we use these 
+		reopen -> we use these
+		onResize -> we store the resize and continue to use them.
+	
+	"
+	^ self showInspector
+		ifTrue: [ 450 @ 650 ]
+		ifFalse: [ 250 @ 450 ]
 ]
 
 { #category : 'accessing' }
@@ -86,12 +96,9 @@ StObjectTranscriptPresenter >> connectPresenters [
 { #category : 'initialization' }
 StObjectTranscriptPresenter >> defaultLayout [
 	
-
-	^ SpBoxLayout
-		newTopToBottom 
-			add: logList ;
-			add: zoom ;
-		yourself
+	^ showInspector 
+		ifTrue: [ self withInspectorLayout ]
+		ifFalse: [ self withoutInspectorLayout ]
 ]
 
 { #category : 'customization' }
@@ -116,9 +123,13 @@ StObjectTranscriptPresenter >> initializePresenters [
 
 	logList 
 		addActionWith: [ :item | item
-			name: 'Toggle inspector';
+			name: 'Toggle inspector entities';
 			iconName: #smallHelp;
-			action: [ inspectSelectedItem := inspectSelectedItem not ] ].
+			action: [ inspectSelectedItem := inspectSelectedItem not ] ];
+		addActionWith: [ :item | item
+			name: 'Hide/Show inspector';
+			iconName: #inspect;
+			action: [ self showInspector: showInspector not ] ].
 	
 	
 ]
@@ -148,6 +159,15 @@ StObjectTranscriptPresenter >> logger: aLogger [
 	
 ]
 
+{ #category : 'customization' }
+StObjectTranscriptPresenter >> preferredExtent [
+	"Answer the desired extent for the receiver when it is first opened on the screen.  "
+
+	^ showInspector
+		ifTrue: [ 450 @ 650 ]
+		ifFalse: [ 250 @ 450 ]
+]
+
 { #category : 'actions' }
 StObjectTranscriptPresenter >> refresh [ 
 	
@@ -162,8 +182,36 @@ StObjectTranscriptPresenter >> selectedItem [
 	^  logList selectedItem
 ]
 
+{ #category : 'initialization' }
+StObjectTranscriptPresenter >> showInspector: aBoolean [
+
+	showInspector := aBoolean.
+	self layout: self defaultLayout.
+]
+
 { #category : 'accessing' }
 StObjectTranscriptPresenter >> windowTitle [ 
 
 	^ 'Object Transcript'
+]
+
+{ #category : 'customization' }
+StObjectTranscriptPresenter >> withInspectorLayout [
+	
+
+	^ SpBoxLayout
+		newTopToBottom 
+			add: logList ;
+			add: zoom ;
+		yourself
+]
+
+{ #category : 'customization' }
+StObjectTranscriptPresenter >> withoutInspectorLayout [
+	
+
+	^ SpBoxLayout
+		newTopToBottom 
+			add: logList ;
+		yourself
 ]
