@@ -3,6 +3,8 @@ I'm a circular logger that works with `StObjectTranscriptPresenter` instances.
 II get a direct reference to my UI so that I can ask them to refresh them.
 I do not use announcements for this by design!
 
+You can show/hide the inspector and the inspector can either display the currently selected log entry or the complete list so that we can perform collection operations for complex filters. 
+
 "
 Class {
 	#name : 'StObjectTranscriptPresenter',
@@ -104,7 +106,7 @@ StObjectTranscriptPresenter >> defaultLayout [
 { #category : 'customization' }
 StObjectTranscriptPresenter >> defaultShowInspector [
 
-	^ ShowInspector ifNil: [ ShowInspector := false ]
+	^ ShowInspector ifNil: [ ShowInspector := true ]
 ]
 
 { #category : 'initialization' }
