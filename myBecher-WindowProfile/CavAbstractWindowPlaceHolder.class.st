@@ -51,7 +51,9 @@ CavAbstractWindowPlaceHolder >> display [
 		color: (Color blue alpha: 0.05);
 		addMorph: (TextMorph new
 				 contents: self kind;
-				 position: position x + (extent x / 2.5) @ position y + 3);
+				 position: position x
+					 + (extent x - (TextMorph new contents: self kind) width / 2)
+					 @ position y + 3);
 		openInWorld
 ]
 
