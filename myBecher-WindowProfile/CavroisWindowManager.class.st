@@ -76,7 +76,7 @@ CavroisWindowManager class >> profileMenu: aBuilder [
             (aBuilder group: #UserProfiles)
                 order: 1;
                 withSeparatorAfter.
-            (aBuilder group: #SavingDeleting)
+            (aBuilder group: #ProfileAction)
                 order: 2;
                 withSeparatorAfter.
             (aBuilder group: #ImportExport)
@@ -109,7 +109,7 @@ CavroisWindowManager class >> profileMenuItems: aBuilder [
 			iconName: #userProfile ].
 
 	(aBuilder item: #'Snapshot Profile')
-		parent: #SavingDeleting;
+		parent: #ProfileAction;
 		order: 3;
 		action: [
 			presenter := SpRequestDialog new.
@@ -133,8 +133,8 @@ CavroisWindowManager class >> profileMenuItems: aBuilder [
 		iconName: #save.
 
 	(aBuilder item: #'Delete Profile')
-		parent: #SavingDeleting;
-		order: 4;
+		parent: #ProfileAction;
+		order: 5;
 		action: [
 			self current profiles isNotEmpty ifTrue: [
 					collection := OrderedCollection new.
@@ -146,20 +146,37 @@ CavroisWindowManager class >> profileMenuItems: aBuilder [
 						items: collection;
 						onAccept: [ :dialog |
 							self current profiles removeKey: dialog presenter selectedItem.
+							self current profiles isEmpty ifTrue: [
+									self current currentProfile: nil ].
 							MenubarMorph reset ];
 						openDialog ] ];
 		help: 'Remove a profile';
 		iconName: #trash.
 
+	(aBuilder item: #'Show/Unshow current profile')
+		parent: #ProfileAction;
+		order: 4;
+		action: [
+			(World submorphs anySatisfy: [ :morph |
+					 morph isKindOf: CavVisualPlaceHolder ])
+				ifTrue: [ self current removeVisualPlaceholders ]
+				ifFalse: [
+					self current currentProfile ifNotNil: [
+							self current currentProfile placeHolders do: [ :each |
+									each display ] ] ] ];
+		help: 'Show the placeholders of the current profile in the World';
+		iconName: #inspect.
+
 	(aBuilder item: #'Import Profile')
 		parent: #ImportExport;
-		order: 5;
+		order: 6;
 		help: 'boubou';
 		iconName: #smallUndo.
 
+
 	(aBuilder item: #'Export Profile')
 		parent: #ImportExport;
-		order: 6;
+		order: 7;
 		help: 'bibi';
 		iconName: #smallRedo
 ]
@@ -203,11 +220,12 @@ CavroisWindowManager >> currentProfile: aProfile [
 ]
 
 { #category : 'initialization' }
-CavroisWindowManager >> initialize [ 
+CavroisWindowManager >> initialize [
 
 	super initialize.
 	classToolMapping := Dictionary new.
-	self resetProfiles.	
+
+	self resetProfiles
 ]
 
 { #category : 'internals' }
@@ -251,6 +269,14 @@ CavroisWindowManager >> profileNamed: aString [
 { #category : 'accessing' }
 CavroisWindowManager >> profiles [
 	^ profiles ifNil: [ self resetProfiles. profiles ]
+]
+
+{ #category : 'removing' }
+CavroisWindowManager >> removeVisualPlaceholders [
+
+	World submorphs
+		select: [ :morph | morph isKindOf: CavVisualPlaceHolder ]
+		thenDo: [ :morph | morph delete ]
 ]
 
 { #category : 'internals' }

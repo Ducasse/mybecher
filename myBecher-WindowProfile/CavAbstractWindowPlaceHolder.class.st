@@ -43,9 +43,12 @@ CavAbstractWindowPlaceHolder >> count [
 ]
 
 { #category : 'api' }
-CavAbstractWindowPlaceHolder >> display [ 
+CavAbstractWindowPlaceHolder >> display [
 
-	CavVisualPlaceHolder new extent: extent; position: position; openInWorld
+	CavVisualPlaceHolder new
+		extent: extent;
+		position: position;
+		openInWorld
 ]
 
 { #category : 'accessing' }
