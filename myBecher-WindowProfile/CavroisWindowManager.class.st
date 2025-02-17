@@ -165,7 +165,7 @@ CavroisWindowManager class >> profileMenuItems: aBuilder [
 							self current currentProfile placeHolders do: [ :each |
 									each display ] ] ] ];
 		help: 'Show the placeholders of the current profile in the World';
-		iconName: #inspect.
+		iconName: #haloView .
 
 	(aBuilder item: #'Import Profile')
 		parent: #ImportExport;
@@ -252,11 +252,12 @@ CavroisWindowManager >> placeHolderFromWindow: aWindowPresenter [
 
 { #category : 'operations' }
 CavroisWindowManager >> placePresenter: aPresenter [
-	
+
 	| placeHolder |
-	placeHolder := self currentProfile placeHoldersFor: aPresenter class name.
-	placeHolder first placePresenter: aPresenter.
-	
+	self currentProfile ifNotNil: [
+		placeHolder := self currentProfile placeHoldersFor:
+			               aPresenter class name.
+		placeHolder first placePresenter: aPresenter ]
 ]
 
 { #category : 'accessing' }
