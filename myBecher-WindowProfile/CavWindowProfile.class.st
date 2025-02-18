@@ -15,15 +15,15 @@ Class {
 { #category : 'adding' }
 CavWindowProfile >> add: aCavroisWindowPlaceHolder [
 
-	(placeHolderDictionary 
-		at: aCavroisWindowPlaceHolder kind 
-		ifPresent: [ placeHolderDictionary at: aCavroisWindowPlaceHolder kind ] 
-		ifAbsent: [ 
-			| col |
-			col := OrderedCollection new.
-			placeHolderDictionary at: aCavroisWindowPlaceHolder kind put: col.
-			col ]) add: aCavroisWindowPlaceHolder.
-	
+	(placeHolderDictionary
+		 at: aCavroisWindowPlaceHolder kind
+		 ifPresent: [
+		 placeHolderDictionary at: aCavroisWindowPlaceHolder kind ]
+		 ifAbsent: [
+			 | col |
+			 col := OrderedCollection new.
+			 placeHolderDictionary at: aCavroisWindowPlaceHolder kind put: col.
+			 col ]) add: aCavroisWindowPlaceHolder
 ]
 
 { #category : 'adding' }

@@ -9,7 +9,8 @@ Class {
 		'kind',
 		'position',
 		'strategy',
-		'count'
+		'count',
+		'visualPlaceHolder'
 	],
 	#category : 'myBecher-WindowProfile',
 	#package : 'myBecher-WindowProfile'
@@ -45,16 +46,20 @@ CavAbstractWindowPlaceHolder >> count [
 { #category : 'api' }
 CavAbstractWindowPlaceHolder >> display [
 
-	CavVisualPlaceHolder new
-		extent: extent;
-		position: position;
-		addMorph: (TextMorph new
-				 contents: kind printString;
-				 position: position x
-					 +
-						 (extent x - (TextMorph new contents: kind printString) width
-						  / 2) @ position y + 3);
-		openInWorld
+	visualPlaceHolder := CavVisualPlaceHolder new
+		                     extent: extent;
+		                     position: position;
+		                     addMorph: (TextMorph new
+				                      contents: kind printString;
+				                      position: position x
+					                      +
+						                      (extent x
+						                       -
+							                       (TextMorph new contents:
+									                        kind printString) width / 2)
+					                      @ position y + 3).
+					visualPlaceHolder placeHolder: self.
+	visualPlaceHolder openInWorld
 ]
 
 { #category : 'accessing' }
@@ -112,7 +117,9 @@ CavAbstractWindowPlaceHolder >> position: aPoint [
 CavAbstractWindowPlaceHolder >> printOn: aStream [
 
 	super printOn: aStream.
-	aStream nextPutAll: '(', kind, ' ', (self strategy ifNotNil: [:s | s class name] ifNil: [' nil strategy']), ')'
+	aStream nextPutAll: '(' , kind printString , ' ' , (self strategy
+			 ifNotNil: [ :s | s class name ]
+			 ifNil: [ ' nil strategy' ]) , ')'
 ]
 
 { #category : 'printing' }
