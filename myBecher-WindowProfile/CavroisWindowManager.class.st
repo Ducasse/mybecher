@@ -198,7 +198,9 @@ CavroisWindowManager >> addProfileFromWindows: aProfileName [
 
 	profile := CavWindowProfile new named: aProfileName.
 	allWindows := self currentWorld windowsSatisfying: [ :w |
-		              w isCollapsed not ].
+		              w isCollapsed not and:
+			              (w isKindOf: SpDialogWindowMorph) not ].
+
 
 	allWindows do: [ :each |
 		profile add: (self placeHolderFromWindow: each) ].
