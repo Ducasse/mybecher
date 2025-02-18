@@ -54,14 +54,7 @@ CavAbstractWindowPlaceHolder >> display [
 					 +
 						 (extent x - (TextMorph new contents: kind printString) width
 						  / 2) @ position y + 3);
-		openInWorld.
-	(World submorphs select: [ :morph |
-	
-		 (morph respondsTo: #model) and: [
-			 morph model notNil or: [
-				 (morph model respondsTo: #presenter) and: [
-					 morph model presenter notNil ] ] ] ]) do: [ :morph |
-		morph visible: morph visible not ]
+		openInWorld
 ]
 
 { #category : 'accessing' }

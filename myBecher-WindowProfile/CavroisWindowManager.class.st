@@ -87,7 +87,7 @@ CavroisWindowManager class >> profileMenu: aBuilder [
 CavroisWindowManager class >> profileMenuItems: aBuilder [
 
 	<worldMenu>
-	| presenter oldProfile newProfile oldKey newKey baseName collection |
+	| presenter oldProfile newProfile oldKey newKey baseName collection allWindows |
 	self current profiles keysDo: [ :k |
 		(aBuilder item: k)
 			parent: #UserProfiles;
@@ -162,10 +162,13 @@ CavroisWindowManager class >> profileMenuItems: aBuilder [
 				ifTrue: [ self current removeVisualPlaceholders ]
 				ifFalse: [
 					self current currentProfile ifNotNil: [
+							allWindows := self currentWorld windowsSatisfying: [ :w |
+									              w isCollapsed not ].
 							self current currentProfile placeHolders do: [ :each |
-									each display ] ] ] ];
+									each display ].
+							allWindows do: [ :w | w hide ] ] ] ];
 		help: 'Show the placeholders of the current profile in the World';
-		iconName: #haloView .
+		iconName: #haloView.
 
 	(aBuilder item: #'Import Profile')
 		parent: #ImportExport;
