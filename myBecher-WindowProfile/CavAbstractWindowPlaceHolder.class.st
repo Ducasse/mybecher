@@ -48,13 +48,20 @@ CavAbstractWindowPlaceHolder >> display [
 	CavVisualPlaceHolder new
 		extent: extent;
 		position: position;
-		color: (Color blue alpha: 0.05);
 		addMorph: (TextMorph new
-				 contents: self kind;
+				 contents: kind printString;
 				 position: position x
-					 + (extent x - (TextMorph new contents: self kind) width / 2)
-					 @ position y + 3);
-		openInWorld
+					 +
+						 (extent x - (TextMorph new contents: kind printString) width
+						  / 2) @ position y + 3);
+		openInWorld.
+	(World submorphs select: [ :morph |
+	
+		 (morph respondsTo: #model) and: [
+			 morph model notNil or: [
+				 (morph model respondsTo: #presenter) and: [
+					 morph model presenter notNil ] ] ] ]) do: [ :morph |
+		morph visible: morph visible not ]
 ]
 
 { #category : 'accessing' }
