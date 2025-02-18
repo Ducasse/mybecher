@@ -277,7 +277,10 @@ CavroisWindowManager >> removeVisualPlaceholders [
 
 	World submorphs
 		select: [ :morph | morph isKindOf: CavVisualPlaceHolder ]
-		thenDo: [ :morph | morph delete ]
+		thenDo: [ :morph | morph delete ].
+			World submorphs
+		select: [ :morph | morph visible = false ]
+		thenDo: [ :morph | morph visible: true ]
 ]
 
 { #category : 'internals' }

@@ -3,7 +3,7 @@ Extension { #name : 'SpWindow' }
 { #category : '*myBecher-WindowProfile' }
 SpWindow >> configurePlaceHolder: aPlaceHolder [
 	
-	aPlaceHolder kind: self model presenter class name
+	aPlaceHolder kind: self model presenter class 
 ]
 
 { #category : '*myBecher-WindowProfile' }
