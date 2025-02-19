@@ -153,7 +153,7 @@ CavroisWindowManager class >> profileMenuItems: aBuilder [
 		help: 'Remove a profile';
 		iconName: #trash.
 
-	(aBuilder item: #'Show/Unshow current profile')
+	(aBuilder item: #'Show/Hide current profile')
 		parent: #ProfileAction;
 		order: 4;
 		action: [
