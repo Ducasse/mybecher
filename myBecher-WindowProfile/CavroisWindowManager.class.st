@@ -259,10 +259,12 @@ CavroisWindowManager >> placeHolderFromWindow: aWindowPresenter [
 CavroisWindowManager >> placePresenter: aPresenter [
 
 	| placeHolder |
+
 	self currentProfile ifNotNil: [
 		placeHolder := self currentProfile placeHoldersFor:
-			               aPresenter class name.
-		placeHolder first placePresenter: aPresenter ]
+			               aPresenter class.
+		placeHolder first placePresenter: aPresenter ].
+	
 ]
 
 { #category : 'accessing' }

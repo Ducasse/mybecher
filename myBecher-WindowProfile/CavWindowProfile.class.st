@@ -59,7 +59,10 @@ CavWindowProfile >> placeHolders [
 ]
 
 { #category : 'accessing' }
-CavWindowProfile >> placeHoldersFor: aString [ 
-	
-	^ placeHolderDictionary at: aString ifAbsent: [ { CavNullWindowPlaceHolder new kind: 'Unrecorded'; yourself } ]
+CavWindowProfile >> placeHoldersFor: aString [
+
+	^ placeHolderDictionary at: aString ifAbsent: [
+		  { (CavNullWindowPlaceHolder new
+			   kind: 'Unrecorded';
+			   yourself) } ]
 ]

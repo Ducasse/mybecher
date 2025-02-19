@@ -17,7 +17,9 @@ CavVisualPlaceHolder >> changeStrategy [
 		             label: 'Select the strategy you want to use';
 		             items: CavWindowStrategy subclasses;
 		             onAccept: [ :dialog |
-			             placeHolder strategy: dialog presenter selectedItem new ].
+			             placeHolder strategy:
+					             dialog presenter selectedItem new.
+			             CavroisWindowManager current removeVisualPlaceholders ].
 	presenter openDialog
 ]
 
