@@ -86,7 +86,7 @@ StTranscriptPresenter >> unregister [
 { #category : 'accessing' }
 StTranscriptPresenter >> updateNewEntry [
 
-
+	self update.
 	text text: transcript contents
 ]
 

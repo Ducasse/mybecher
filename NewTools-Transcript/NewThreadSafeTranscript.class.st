@@ -11,11 +11,6 @@ Class {
 	#name : 'NewThreadSafeTranscript',
 	#superclass : 'Model',
 	#instVars : [
-		'stream',
-		'accessSemaphore',
-		'deferredClear',
-		'deferredEndEntry',
-		'stepContents',
 		'mutex',
 		'recordings',
 		'index',
@@ -39,7 +34,14 @@ NewThreadSafeTranscript class >> install [
 NewThreadSafeTranscript class >> installThreadSafeAsTranscript [
 	<script>
 
-	Smalltalk globals at: #Transcript put: (self new)
+	Smalltalk globals at: #Transcript put: self uniqueInstance
+]
+
+{ #category : 'declare' }
+NewThreadSafeTranscript class >> reset [
+	<script>
+
+	UniqueInstance := nil
 ]
 
 { #category : 'icons' }
@@ -53,7 +55,7 @@ NewThreadSafeTranscript class >> taskbarIconName [
 NewThreadSafeTranscript class >> uniqueInstance [
 	<script>
 
-	UniqueInstance ifNil: [ UniqueInstance := self new ]
+	^ UniqueInstance ifNil: [ UniqueInstance := self new ]
 ]
 
 { #category : 'stop conditions' }
@@ -65,6 +67,12 @@ NewThreadSafeTranscript >> << anObject [
 	Return self to accomodate chaining."
 
  	anObject putOn: self
+]
+
+{ #category : 'initialization' }
+NewThreadSafeTranscript >> allocateRecodings: maxEntry [
+
+	recordings := Array new: maxEntry	
 ]
 
 { #category : 'streaming' }
@@ -85,7 +93,7 @@ NewThreadSafeTranscript >> contents [
 	"probably super inefficient again... "
 	
 	^ String streamContents: [ :s |
-		recordings do: [ :each | s << each ] ] 
+		1 to: loopCount do: [ :i | s << (recordings at: i )] ] 
 ]
 
 { #category : 'stop conditions' }
@@ -106,7 +114,7 @@ NewThreadSafeTranscript >> crShow: anObject [
 NewThreadSafeTranscript >> critical: block [
 	"Execute block making sure only one thread accesses the receiver"
 
-	^ accessSemaphore critical: block
+	^ mutex critical: block
 ]
 
 { #category : 'stop conditions' }
@@ -129,18 +137,19 @@ NewThreadSafeTranscript >> hasBindingOf: aString [
 NewThreadSafeTranscript >> initialize [
 
 	super initialize.
-	accessSemaphore := Mutex new.
+	mutex := Mutex new.
 	maxEntry := 5000.
 	index := 0.
 	loopCount := 0.
+	self allocateRecodings: maxEntry
 	
 ]
 
 { #category : 'initialization' }
 NewThreadSafeTranscript >> maxEntry: aNumber [
 
-
-	maxEntry := aNumber
+	maxEntry := aNumber.
+	self allocateRecodings: maxEntry.
 ]
 
 { #category : 'streaming' }
@@ -156,7 +165,7 @@ NewThreadSafeTranscript >> nextPut: aCharacter [
 NewThreadSafeTranscript >> nextPutAll: value [
 	"Ineffient way...."
 
-	self critical: [ value do: [ :each | each rawNewPut: each  ] ].
+	self critical: [ value do: [ :each | self rawNextPut: each  ] ].
 	^ value
 ]
 
@@ -188,7 +197,7 @@ NewThreadSafeTranscript >> shoutAboutToStyle: aPluggableShoutMorphOrView [
 NewThreadSafeTranscript >> show: anObject [
 	"Output anObject asString on the receiver and show the output"
 
-	self critical: [ self print: anObject  ]
+	self critical: [ self << anObject  ]
 ]
 
 { #category : 'stop conditions' }
