@@ -13,16 +13,16 @@ Class {
 }
 
 { #category : 'accessing' }
-StTranscriptPresenter class >> defaultPreferredExtent [ 
+StTranscriptPresenter class >> defaultPreferredExtent [
 
-	^ 400@800
+	^ 700@500
 ]
 
 { #category : 'tools registry' }
 StTranscriptPresenter class >> registerToolsOn: aRegistry [
-	"Smalltalk tools register: self as: #transcript"
+	"Smalltalk tools register: self as: #newTranscript"
 	
-	aRegistry register: self as: #newtranscript
+	aRegistry register: self as: #transcript
 ]
 
 { #category : 'initialization' }
@@ -69,6 +69,12 @@ StTranscriptPresenter >> registerToAnnouncer [
 		to: self
 ]
 
+{ #category : 'accessing' }
+StTranscriptPresenter >> text [
+
+	^ text
+]
+
 { #category : 'registration' }
 StTranscriptPresenter >> unregister [
 
@@ -79,7 +85,6 @@ StTranscriptPresenter >> unregister [
 StTranscriptPresenter >> updateNewEntry [
 
 	text text: transcript contents.
-	self update.
 	
 ]
 

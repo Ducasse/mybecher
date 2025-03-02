@@ -80,7 +80,7 @@ NewThreadSafeTranscript >> clear [
 
 	mutex critical: [
 		recordings := OrderedCollection new.
-		SystemAnnouncer uniqueInstance announce: (NewEntryToTranscript new recordings: recordings)  ]
+		SystemAnnouncer uniqueInstance announce: NewEntryToTranscript new  ]
 ]
 
 { #category : 'stop conditions' }
@@ -93,7 +93,7 @@ NewThreadSafeTranscript >> contents [
 	"probably super inefficient again... "
 	
 	^ String streamContents: [ :s |
-		1 to: loopCount do: [ :i | s << (recordings at: i )] ] 
+		1 to: index do: [ :i | s << (recordings at: i )] ] 
 ]
 
 { #category : 'stop conditions' }
@@ -179,6 +179,7 @@ NewThreadSafeTranscript >> rawNextPut: aCharacter [
 				         1 ]
 			         ifFalse: [ index + 1 ].
 		recordings at: index put: aCharacter.
+		SystemAnnouncer uniqueInstance announce: NewEntryToTranscript new.
 	
 ]
 
