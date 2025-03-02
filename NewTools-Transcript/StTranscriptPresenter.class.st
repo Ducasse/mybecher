@@ -1,3 +1,9 @@
+"
+I a simple presenter that displays the contents of newThreadSafeTranscript instances.
+I listen to the NewEntryToTranscript announcement to refresh my contents.
+
+
+"
 Class {
 	#name : 'StTranscriptPresenter',
 	#superclass : 'StPresenter',
