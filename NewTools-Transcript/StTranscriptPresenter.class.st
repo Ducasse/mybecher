@@ -15,7 +15,42 @@ Class {
 { #category : 'accessing' }
 StTranscriptPresenter class >> defaultPreferredExtent [
 
-	^ 700@500
+	^ 300@700
+]
+
+{ #category : 'accessing' }
+StTranscriptPresenter class >> example [
+	"this example shows that we can use a different instance than the singleton."
+	<script>
+	
+	| t tr |
+	t := self new. 
+	tr := NewThreadSafeTranscript new.
+	tr show: 'Hello Pharo I''m a new textual transcript'.
+	t transcript: tr.
+	t open. 
+]
+
+{ #category : 'accessing' }
+StTranscriptPresenter class >> exampleDefault [
+	"this example shows that we can use a different instance than the singleton."
+	<script>
+	
+	self new open
+]
+
+{ #category : 'accessing' }
+StTranscriptPresenter class >> menuCommandOn: aBuilder [
+	<worldMenu>
+	(aBuilder item: #'New Transcript')
+		action: [ (Smalltalk tools toolNamed: #transcript) new open ];
+		order: 2;
+		parent: #InputOutput;
+		help: 'Transcript';
+		keyText: 'o, t';
+		help: 'Window on the new Transcript output stream, which is useful for writing log messages.';
+		iconName: self taskbarIconName.
+	aBuilder withSeparatorAfter
 ]
 
 { #category : 'tools registry' }
@@ -73,6 +108,13 @@ StTranscriptPresenter >> registerToAnnouncer [
 StTranscriptPresenter >> text [
 
 	^ text
+]
+
+{ #category : 'accessing' }
+StTranscriptPresenter >> transcript: aTranscript [
+
+	transcript := aTranscript.
+	self updateNewEntry
 ]
 
 { #category : 'registration' }
