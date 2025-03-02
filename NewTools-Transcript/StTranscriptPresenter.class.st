@@ -12,19 +12,10 @@ Class {
 	#package : 'NewTools-Transcript'
 }
 
-{ #category : 'tools registry' }
-StTranscriptPresenter class >> contents [ 
-
-	"It answers a copy of the recorded collection to not grant
-	access to the users to a shared resource that should only be
-	modified via the mutex"
-	^ recordings copy
-]
-
 { #category : 'accessing' }
 StTranscriptPresenter class >> defaultPreferredExtent [ 
 
-	^ 200@800
+	^ 400@800
 ]
 
 { #category : 'tools registry' }
@@ -54,6 +45,7 @@ StTranscriptPresenter >> initializePresenters [
 { #category : 'initialization' }
 StTranscriptPresenter >> initializeWindow: aWindowPresenter [
 
+	super initializeWindow: aWindowPresenter.
 	aWindowPresenter
 		whenOpenedDo: [ self updateNewEntry ];
 		whenClosedDo: [ self unregister ]
@@ -86,8 +78,9 @@ StTranscriptPresenter >> unregister [
 { #category : 'accessing' }
 StTranscriptPresenter >> updateNewEntry [
 
+	text text: transcript contents.
 	self update.
-	text text: transcript contents
+	
 ]
 
 { #category : 'accessing' }
