@@ -14,7 +14,6 @@ Class {
 		'mutex',
 		'recordings',
 		'index',
-		'loopCount',
 		'maxEntry'
 	],
 	#classVars : [
@@ -80,6 +79,7 @@ NewThreadSafeTranscript >> clear [
 
 	mutex critical: [
 		recordings := OrderedCollection new.
+		index := 0.
 		SystemAnnouncer uniqueInstance announce: NewEntryToTranscript new  ]
 ]
 
@@ -140,7 +140,6 @@ NewThreadSafeTranscript >> initialize [
 	mutex := Mutex new.
 	maxEntry := 5000.
 	index := 0.
-	loopCount := 0.
 	self allocateRecodings: maxEntry
 	
 ]
@@ -174,9 +173,7 @@ NewThreadSafeTranscript >> rawNextPut: aCharacter [
 
 	
 		index := index >= maxEntry
-						ifTrue: [
-				         loopCount := loopCount + 1.
-				         1 ]
+						ifTrue: [ 1 ]
 			         ifFalse: [ index + 1 ].
 		recordings at: index put: aCharacter.
 		SystemAnnouncer uniqueInstance announce: NewEntryToTranscript new.
