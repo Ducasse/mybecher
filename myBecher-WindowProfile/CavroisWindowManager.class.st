@@ -60,10 +60,110 @@ Class {
 	#package : 'myBecher-WindowProfile'
 }
 
+{ #category : 'adding' }
+CavroisWindowManager class >> addProfileDeletionItem: aBuilder [
+	"Add menu item for deleting a profile"
+	(aBuilder item: #'Delete Profile')
+		parent: #ProfileAction;
+		order: 5;
+		action: [ self deleteProfile ];
+		help: 'Remove a profile';
+		iconName: #trash
+]
+
+{ #category : 'adding' }
+CavroisWindowManager class >> addProfileImportExportItems: aBuilder [
+	"Add menu items for profile import and export"
+
+	(aBuilder item: #'Import Profile')
+		parent: #ImportExport;
+		order: 6;
+		help: 'Import a profile';
+		iconName: #smallUndo.
+
+	(aBuilder item: #'Export Profile')
+		parent: #ImportExport;
+		order: 7;
+		help: 'Export a profile';
+		iconName: #smallRedo
+]
+
+{ #category : 'adding' }
+CavroisWindowManager class >> addProfileSnapshotItem: aBuilder [
+	"Add menu item for creating a profile snapshot"
+
+	(aBuilder item: #'Snapshot Profile')
+		parent: #ProfileAction;
+		order: 3;
+		action: [ self createProfileSnapshot ];
+		help: 'Creates a local profile based on your image';
+		iconName: #save
+]
+
+{ #category : 'adding' }
+CavroisWindowManager class >> addProfileSwitchingItems: aBuilder [
+	"Add menu items for switching between profiles"
+	self current profiles keysDo: [ :k |
+		(aBuilder item: k)
+			parent: #UserProfiles;
+			action: [ self switchToProfile: k ];
+			order: 4;
+			help: 'Profile';
+			iconName: #userProfile ]
+]
+
+{ #category : 'adding' }
+CavroisWindowManager class >> addProfileVisibilityItem: aBuilder [
+	"Add menu item for showing/hiding current profile placeholders"
+
+	(aBuilder item: #'Show/Hide current profile')
+		parent: #ProfileAction;
+		order: 4;
+		action: [ self toggleProfilePlaceholders ];
+		help: 'Show the placeholders of the current profile in the World';
+		iconName: #haloView
+]
+
+{ #category : 'instance creation' }
+CavroisWindowManager class >> createProfileSnapshot [
+	"Create a new profile snapshot"
+
+	| presenter |
+	presenter := SpRequestDialog new
+		             title: 'Snapshot Profile';
+		             label: 'What is the name of your profile?';
+		             text: '';
+		             acceptLabel: 'Confirm';
+		             cancelLabel: 'Cancel';
+		             onAccept: [ :dialog |
+			             self updateCurrentProfileBeforeSnapshot.
+			             self current addProfileFromWindows:
+					             dialog presenter text.
+			             MenubarMorph reset ];
+		             openDialog
+]
+
 { #category : 'accessing' }
 CavroisWindowManager class >> current [ 
 
 	^ Current ifNil: [ Current := self new ]
+]
+
+{ #category : 'deleting' }
+CavroisWindowManager class >> deleteProfile [
+
+	| collection presenter |
+	self current profiles isNotEmpty ifFalse: [ ^ self ].
+	collection := self current profiles keys asOrderedCollection.
+	presenter := SpSelectDialog new
+		             title: 'Delete profile';
+		             label: 'Select the profile you want to remove';
+		             items: collection;
+		             onAccept: [ :dialog |
+			             self removeSelectedProfile:
+					             dialog presenter selectedItem.
+			             MenubarMorph reset ];
+		             openDialog
 ]
 
 { #category : 'menu' }
@@ -87,114 +187,25 @@ CavroisWindowManager class >> profileMenu: aBuilder [
 CavroisWindowManager class >> profileMenuItems: aBuilder [
 
 	<worldMenu>
-	| presenter oldProfile newProfile oldKey newKey baseName collection allWindows |
-	self current profiles keysDo: [ :k |
-		(aBuilder item: k)
-			parent: #UserProfiles;
-			action: [
-				oldProfile := self current currentProfile.
-				newProfile := self current profiles at: k.
-				oldProfile = newProfile ifFalse: [
-						oldKey := self current profiles keyAtValue: oldProfile.
-						baseName := oldKey copyReplaceAll: '(Current)' with: ''.
-						self current profiles at: baseName put: oldProfile.
-						self current profiles removeKey: oldKey.
-						newKey := k , '(Current)'.
-						self current profiles at: newKey put: newProfile.
-						self current profiles removeKey: k.
-						self current currentProfile: newProfile.
-						MenubarMorph reset ] ];
-			order: 4;
-			help: 'Profile';
-			iconName: #userProfile ].
+		self 
+		addProfileSwitchingItems: aBuilder;
+		addProfileSnapshotItem: aBuilder;
+		addProfileDeletionItem: aBuilder;
+		addProfileVisibilityItem: aBuilder;
+		addProfileImportExportItems: aBuilder
+]
 
-	(aBuilder item: #'Snapshot Profile')
-		parent: #ProfileAction;
-		order: 3;
-		action: [
-			presenter := SpRequestDialog new.
-			presenter
-				title: 'Snapshot Profile';
-				label: 'What is the name of your profile?';
-				text: '';
-				acceptLabel: 'Confirm';
-				cancelLabel: 'Cancel';
-				onAccept: [ :dialog |
-					self current currentProfile ifNotNil: [
-							oldProfile := self current currentProfile.
-							oldKey := self current profiles keyAtValue: oldProfile.
-							newKey := oldKey copyReplaceAll: '(Current)' with: ''.
-							self current profiles at: newKey put: oldProfile.
-							self current profiles removeKey: oldKey ].
-					self current addProfileFromWindows: dialog presenter text.
-					MenubarMorph reset ];
-				openDialog ];
-		help: 'Creates a local profile based on your image';
-		iconName: #save.
+{ #category : 'removing' }
+CavroisWindowManager class >> removeSelectedProfile: selectedProfileKey [
+	"Remove the selected profile and handle profile management"
 
-	(aBuilder item: #'Delete Profile')
-		parent: #ProfileAction;
-		order: 5;
-		action: [
-			self current profiles isNotEmpty ifTrue: [
-					collection := OrderedCollection new.
-					self current profiles keysDo: [ :k | collection add: k ].
-					presenter := SpSelectDialog new.
-					presenter
-						title: 'Delete profile';
-						label: 'Select the profile you want to remove';
-						items: collection;
-						onAccept: [ :dialog |
-							self current profiles removeKey: dialog presenter selectedItem.
-							self current profiles isEmpty
-								ifTrue: [ self current currentProfile: nil ]
-								ifFalse: [
-									(dialog presenter selectedItem includesSubstring: 'Current')
-										ifTrue: [
-											newKey := self current profiles keys first , ' (Current)'.
-											self current profiles
-												at: newKey
-												put: self current profiles values first.
-											self current profiles removeKey:
-													self current profiles keys first.
-											self current currentProfile:
-													(self current profiles at: newKey) ] ].
+	self current profiles removeKey: selectedProfileKey.
 
-
-							MenubarMorph reset ];
-						openDialog ] ];
-		help: 'Remove a profile';
-		iconName: #trash.
-
-	(aBuilder item: #'Show/Hide current profile')
-		parent: #ProfileAction;
-		order: 4;
-		action: [
-			(World submorphs anySatisfy: [ :morph |
-					 morph isKindOf: CavVisualPlaceHolder ])
-				ifTrue: [ self current removeVisualPlaceholders ]
-				ifFalse: [
-					self current currentProfile ifNotNil: [
-							allWindows := self currentWorld windowsSatisfying: [ :w |
-									              w isCollapsed not ].
-							self current currentProfile placeHolders do: [ :each |
-									each display ].
-							allWindows do: [ :w | w hide ] ] ] ];
-		help: 'Show the placeholders of the current profile in the World';
-		iconName: #haloView.
-
-	(aBuilder item: #'Import Profile')
-		parent: #ImportExport;
-		order: 6;
-		help: 'boubou';
-		iconName: #smallUndo.
-
-
-	(aBuilder item: #'Export Profile')
-		parent: #ImportExport;
-		order: 7;
-		help: 'bibi';
-		iconName: #smallRedo
+	"Handle current profile state after deletion"
+	self current profiles isEmpty
+		ifTrue: [ self current currentProfile: nil ]
+		ifFalse: [
+		self updateCurrentProfileAfterDeletion: selectedProfileKey ]
 ]
 
 { #category : 'accessing' }
@@ -203,6 +214,73 @@ CavroisWindowManager class >> reset [
 	<script>
 	Current := nil.
 	MenubarMorph reset
+]
+
+{ #category : 'actions' }
+CavroisWindowManager class >> switchToProfile: profileKey [
+
+	| oldProfile newProfile oldKey newKey baseName |
+	oldProfile := self current currentProfile.
+	newProfile := self current profiles at: profileKey.
+
+	oldProfile = newProfile ifTrue: [ ^ self ].
+	oldKey := self current profiles keyAtValue: oldProfile.
+	baseName := oldKey copyReplaceAll: '(Current)' with: ''.
+
+	"Update old profile key"
+	self current profiles
+		at: baseName put: oldProfile;
+		removeKey: oldKey.
+	newKey := profileKey , '(Current)'.
+	self current profiles
+		at: newKey put: newProfile;
+		removeKey: profileKey.
+	self current currentProfile: newProfile.
+	MenubarMorph reset
+]
+
+{ #category : 'actions' }
+CavroisWindowManager class >> toggleProfilePlaceholders [
+	"Toggle visibility of profile placeholders"
+
+	(World submorphs anySatisfy: [ :morph |
+		 morph isKindOf: CavVisualPlaceHolder ])
+		ifTrue: [ self current removeVisualPlaceholders ]
+		ifFalse: [
+			self current currentProfile ifNotNil: [
+				| allWindows |
+				allWindows := self currentWorld windowsSatisfying: [ :w |
+					              w isCollapsed not ].
+				self current currentProfile placeHolders do: [ :each |
+					each display ].
+				allWindows do: [ :w | w hide ] ] ]
+]
+
+{ #category : 'updating' }
+CavroisWindowManager class >> updateCurrentProfileAfterDeletion: deletedProfileKey [
+
+	| newKey |
+	(deletedProfileKey includesSubstring: 'Current') ifFalse: [ ^ self ].
+	newKey := self current profiles keys first , ' (Current)'.
+	self current profiles
+		at: newKey put: self current profiles values first;
+		removeKey: self current profiles keys first.
+	self current currentProfile: (self current profiles at: newKey)
+]
+
+{ #category : 'updating' }
+CavroisWindowManager class >> updateCurrentProfileBeforeSnapshot [
+	"Update the current profile before creating a snapshot"
+
+	| oldProfile oldKey newKey |
+	self current currentProfile ifNotNil: [
+		oldProfile := self current currentProfile.
+		oldKey := self current profiles keyAtValue: oldProfile.
+		newKey := oldKey copyReplaceAll: '(Current)' with: ''.
+
+		self current profiles
+			at: newKey put: oldProfile;
+			removeKey: oldKey ]
 ]
 
 { #category : 'recording' }
