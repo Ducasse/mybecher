@@ -146,8 +146,21 @@ CavroisWindowManager class >> profileMenuItems: aBuilder [
 						items: collection;
 						onAccept: [ :dialog |
 							self current profiles removeKey: dialog presenter selectedItem.
-							self current profiles isEmpty ifTrue: [
-									self current currentProfile: nil ].
+							self current profiles isEmpty
+								ifTrue: [ self current currentProfile: nil ]
+								ifFalse: [
+									(dialog presenter selectedItem includesSubstring: 'Current')
+										ifTrue: [
+											newKey := self current profiles keys first , ' (Current)'.
+											self current profiles
+												at: newKey
+												put: self current profiles values first.
+											self current profiles removeKey:
+													self current profiles keys first.
+											self current currentProfile:
+													(self current profiles at: newKey) ] ].
+
+
 							MenubarMorph reset ];
 						openDialog ] ];
 		help: 'Remove a profile';
