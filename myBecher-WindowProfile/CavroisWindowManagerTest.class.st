@@ -5,6 +5,12 @@ Class {
 	#package : 'myBecher-WindowProfile'
 }
 
+{ #category : 'initialization' }
+CavroisWindowManagerTest >> setUp [
+
+	CavroisWindowManager reset
+]
+
 { #category : 'tests' }
 CavroisWindowManagerTest >> testConfigurationFromSpSystemWindow [
 
@@ -67,4 +73,30 @@ CavroisWindowManagerTest >> testPresenterHasCorrectAPI [
 	self assert: win extent equals: 200@333.
 	self assert: win position equals: 100@100.
 	"here we see that the size and position are not honored"
+]
+
+{ #category : 'tests' }
+CavroisWindowManagerTest >> testRemovingCurrentProfileUpdateCurrentProfile [
+
+	CavroisWindowManager current addProfileFromWindows: 'Profile 1'.
+	CavroisWindowManager current addProfileFromWindows: 'Profile 2'.
+	"adding Current so the method called gets tricked"
+	CavroisWindowManager current addProfileFromWindows:
+		'Profile 3 (Current)'.
+
+	CavroisWindowManager removeSelectedProfile: 'Profile 3 (Current)'.
+	self
+		assert: CavroisWindowManager current currentProfile name
+		equals: 'Profile 1'
+]
+
+{ #category : 'tests' }
+CavroisWindowManagerTest >> testRemovingLastProfileUpdateCurrentProfile [
+
+	CavroisWindowManager current addProfileFromWindows: 'Profile 1'.
+	CavroisWindowManager removeSelectedProfile:
+		CavroisWindowManager current profiles keys first.
+
+	self assert: CavroisWindowManager current profiles isEmpty.
+	self assert: CavroisWindowManager current currentProfile isNil
 ]

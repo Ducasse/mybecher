@@ -134,7 +134,7 @@ CavroisWindowManager class >> createProfileSnapshot [
 		             onAccept: [ :dialog |
 			             self updateCurrentProfileBeforeSnapshot.
 			             self current addProfileFromWindows:
-					             dialog presenter text.
+					             dialog presenter text , ' (Current)'.
 			             MenubarMorph reset ];
 		             openDialog
 ]
@@ -287,7 +287,7 @@ CavroisWindowManager >> addProfileFromWindows: aProfileName [
 
 	allWindows do: [ :each |
 		profile add: (self placeHolderFromWindow: each) ].
-	profiles at: profile name , '(Current)' put: profile.
+	profiles at: profile name put: profile.
 	self currentProfile: profile.
 	^ profile
 ]
