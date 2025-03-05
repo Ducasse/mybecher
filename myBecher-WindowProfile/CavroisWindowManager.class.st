@@ -73,7 +73,6 @@ CavroisWindowManager class >> addProfileDeletionItem: aBuilder [
 
 { #category : 'adding' }
 CavroisWindowManager class >> addProfileImportExportItems: aBuilder [
-	"Add menu items for profile import and export"
 
 	(aBuilder item: #'Import Profile')
 		parent: #ImportExport;
@@ -90,7 +89,6 @@ CavroisWindowManager class >> addProfileImportExportItems: aBuilder [
 
 { #category : 'adding' }
 CavroisWindowManager class >> addProfileSnapshotItem: aBuilder [
-	"Add menu item for creating a profile snapshot"
 
 	(aBuilder item: #'Snapshot Profile')
 		parent: #ProfileAction;
@@ -102,7 +100,7 @@ CavroisWindowManager class >> addProfileSnapshotItem: aBuilder [
 
 { #category : 'adding' }
 CavroisWindowManager class >> addProfileSwitchingItems: aBuilder [
-	"Add menu items for switching between profiles"
+
 	self current profiles keysDo: [ :k |
 		(aBuilder item: k)
 			parent: #UserProfiles;
@@ -114,7 +112,6 @@ CavroisWindowManager class >> addProfileSwitchingItems: aBuilder [
 
 { #category : 'adding' }
 CavroisWindowManager class >> addProfileVisibilityItem: aBuilder [
-	"Add menu item for showing/hiding current profile placeholders"
 
 	(aBuilder item: #'Show/Hide current profile')
 		parent: #ProfileAction;
@@ -126,7 +123,6 @@ CavroisWindowManager class >> addProfileVisibilityItem: aBuilder [
 
 { #category : 'instance creation' }
 CavroisWindowManager class >> createProfileSnapshot [
-	"Create a new profile snapshot"
 
 	| presenter |
 	presenter := SpRequestDialog new
@@ -197,11 +193,8 @@ CavroisWindowManager class >> profileMenuItems: aBuilder [
 
 { #category : 'removing' }
 CavroisWindowManager class >> removeSelectedProfile: selectedProfileKey [
-	"Remove the selected profile and handle profile management"
 
 	self current profiles removeKey: selectedProfileKey.
-
-	"Handle current profile state after deletion"
 	self current profiles isEmpty
 		ifTrue: [ self current currentProfile: nil ]
 		ifFalse: [
@@ -226,8 +219,6 @@ CavroisWindowManager class >> switchToProfile: profileKey [
 	oldProfile = newProfile ifTrue: [ ^ self ].
 	oldKey := self current profiles keyAtValue: oldProfile.
 	baseName := oldKey copyReplaceAll: '(Current)' with: ''.
-
-	"Update old profile key"
 	self current profiles
 		at: baseName put: oldProfile;
 		removeKey: oldKey.
@@ -241,7 +232,6 @@ CavroisWindowManager class >> switchToProfile: profileKey [
 
 { #category : 'actions' }
 CavroisWindowManager class >> toggleProfilePlaceholders [
-	"Toggle visibility of profile placeholders"
 
 	(World submorphs anySatisfy: [ :morph |
 		 morph isKindOf: CavVisualPlaceHolder ])
@@ -270,7 +260,6 @@ CavroisWindowManager class >> updateCurrentProfileAfterDeletion: deletedProfileK
 
 { #category : 'updating' }
 CavroisWindowManager class >> updateCurrentProfileBeforeSnapshot [
-	"Update the current profile before creating a snapshot"
 
 	| oldProfile oldKey newKey |
 	self current currentProfile ifNotNil: [
