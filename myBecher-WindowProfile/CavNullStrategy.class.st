@@ -17,7 +17,7 @@ CavNullStrategy class >> title [
 { #category : 'positioning' }
 CavNullStrategy >> placeWindow: aWindow [
 
+	aWindow position: placeHolder position.
+	aWindow extent: placeHolder extent.
 	^ aWindow
-
-
 ]

@@ -21,6 +21,7 @@ CavReplaceStrategy >> placeWindow: aWindow [
 	"for now just stupid"
 
 	aWindow position: placeHolder position.
+	aWindow extent: placeHolder extent.
 	"do we keep a reference to the window from the placeholder?
 	this way we could avoid to scan all the window."
 

@@ -7,10 +7,6 @@ Class {
 
 { #category : 'operations' }
 CavWindowPlaceHolder >> placePresenter: aPresenter [
-	
-	aPresenter position: self position.
-	aPresenter extent: self extent.
-	self strategy placeWindow: aPresenter.
 
-	
+	self strategy placeWindow: aPresenter
 ]
