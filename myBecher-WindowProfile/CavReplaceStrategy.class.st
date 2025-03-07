@@ -10,6 +10,12 @@ Class {
 	#package : 'myBecher-WindowProfile'
 }
 
+{ #category : 'accessing' }
+CavReplaceStrategy class >> title [
+
+	^ 'Replace Strategy'
+]
+
 { #category : 'positioning' }
 CavReplaceStrategy >> placeWindow: aWindow [
 	"for now just stupid"

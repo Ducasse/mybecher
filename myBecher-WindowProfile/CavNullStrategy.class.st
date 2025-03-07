@@ -8,6 +8,12 @@ Class {
 	#package : 'myBecher-WindowProfile'
 }
 
+{ #category : 'accessing' }
+CavNullStrategy class >> title [
+
+	^ 'Null Strategy'
+]
+
 { #category : 'positioning' }
 CavNullStrategy >> placeWindow: aWindow [
 

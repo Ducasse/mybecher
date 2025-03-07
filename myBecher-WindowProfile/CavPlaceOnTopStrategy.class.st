@@ -10,6 +10,12 @@ Class {
 	#package : 'myBecher-WindowProfile'
 }
 
+{ #category : 'accessing' }
+CavPlaceOnTopStrategy class >> title [
+
+	^ 'Place On Top Strategy'
+]
+
 { #category : 'positioning' }
 CavPlaceOnTopStrategy >> placeWindow: aWindow [
 

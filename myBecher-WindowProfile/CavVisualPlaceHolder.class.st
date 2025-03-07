@@ -16,6 +16,7 @@ CavVisualPlaceHolder >> changeStrategy [
 		             title: 'Change Strategy';
 		             label: 'Select the strategy you want to use';
 		             items: CavWindowStrategy subclasses;
+		             display: [ :each | each title ];
 		             onAccept: [ :dialog |
 			             placeHolder strategy:
 					             dialog presenter selectedItem new.
@@ -38,7 +39,6 @@ CavVisualPlaceHolder >> initialize [
 	self color: (UITheme current lightSelectionColor alpha: 0.2).
 	self eventHandler: MorphicEventHandler new.
 	self eventHandler on: #click send: #changeStrategy to: self.
-
 ]
 
 { #category : 'accessing' }
