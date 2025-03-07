@@ -11,7 +11,7 @@ Class {
 { #category : 'actions' }
 CavVisualPlaceHolder >> changeStrategy [
 
-	| presenter desc |
+	| presenter description |
 	presenter := SpSelectDialog new
 		             title: 'Change Strategy';
 		             label: 'Select the strategy you want to use';
@@ -20,11 +20,11 @@ CavVisualPlaceHolder >> changeStrategy [
 			             placeHolder strategy:
 					             dialog presenter selectedItem new.
 			             CavroisWindowManager current removeVisualPlaceholders ].
-	desc := presenter newText.
-	presenter defaultLayout add: desc.
+	description := presenter newText text:
+		               presenter list selectedItem comment.
+	presenter layout add: description.
 	presenter list whenSelectionChangedDo: [
-		desc text: presenter list selectedItem comment asString.
-		self halt ].
+		description text: presenter list selectedItem comment asString ].
 
 	presenter openDialog
 ]
@@ -44,7 +44,7 @@ CavVisualPlaceHolder >> initialize [
 	self color: (UITheme current lightSelectionColor alpha: 0.2).
 	self eventHandler: MorphicEventHandler new.
 	self eventHandler on: #click send: #changeStrategy to: self.
-	self eventHandler on: #yellowButtonPressed send: #contextMenu to: self
+
 ]
 
 { #category : 'accessing' }
