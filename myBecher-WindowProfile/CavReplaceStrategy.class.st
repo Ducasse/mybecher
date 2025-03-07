@@ -1,3 +1,8 @@
+"
+I'm a strategy that replace the previous window that was in the placeholder associated by a new one !
+
+It only work if the window has the exact same size and position as the placehokder registered
+"
 Class {
 	#name : 'CavReplaceStrategy',
 	#superclass : 'CavWindowStrategy',

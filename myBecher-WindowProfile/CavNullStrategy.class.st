@@ -1,3 +1,6 @@
+"
+I am a null strategy that does nothing by default, i just return the original window
+"
 Class {
 	#name : 'CavNullStrategy',
 	#superclass : 'CavWindowStrategy',

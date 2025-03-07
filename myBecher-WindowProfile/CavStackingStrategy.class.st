@@ -1,3 +1,8 @@
+"
+I'm a strategy that has a counter used for having a stack of window with the placeholder position at start point.
+
+I should be modified to have a maximum stacking
+"
 Class {
 	#name : 'CavStackingStrategy',
 	#superclass : 'CavWindowStrategy',
