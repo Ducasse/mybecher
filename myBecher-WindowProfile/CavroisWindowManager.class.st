@@ -227,6 +227,7 @@ CavroisWindowManager class >> switchToProfile: profileKey [
 		at: newKey put: newProfile;
 		removeKey: profileKey.
 	self current currentProfile: newProfile.
+	self current transitionToProfile.
 	MenubarMorph reset
 ]
 
@@ -374,4 +375,20 @@ CavroisWindowManager >> removeVisualPlaceholders [
 CavroisWindowManager >> resetProfiles [
 
 	profiles := Dictionary new
+]
+
+{ #category : 'transitions' }
+CavroisWindowManager >> transitionToProfile [
+
+	| allWindows |
+	allWindows := self currentWorld windowsSatisfying: [ :w |
+		              w isCollapsed not and:
+			              (w isKindOf: SpDialogWindowMorph) not ].
+
+	self currentProfile placeHolders do: [ :placeHolder |
+		allWindows do: [ :w |
+			(w model class = placeHolder kind or:
+				 w model presenter class = placeHolder kind) ifTrue: [
+				w position: placeHolder position.
+				w extent: placeHolder extent ] ] ]
 ]
