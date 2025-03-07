@@ -29,12 +29,6 @@ CavVisualPlaceHolder >> changeStrategy [
 	presenter openDialog
 ]
 
-{ #category : 'api' }
-CavVisualPlaceHolder >> contextMenu [
-
-	self inform: 'ssss'
-]
-
 { #category : 'initialization' }
 CavVisualPlaceHolder >> initialize [
 
