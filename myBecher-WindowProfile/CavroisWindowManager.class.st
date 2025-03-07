@@ -76,13 +76,13 @@ CavroisWindowManager class >> addProfileImportExportItems: aBuilder [
 
 	(aBuilder item: #'Import Profile')
 		parent: #ImportExport;
-		order: 6;
+		order: 7;
 		help: 'Import a profile';
 		iconName: #smallUndo.
 
 	(aBuilder item: #'Export Profile')
 		parent: #ImportExport;
-		order: 7;
+		order: 8;
 		help: 'Export a profile';
 		iconName: #smallRedo
 ]
@@ -183,11 +183,12 @@ CavroisWindowManager class >> profileMenu: aBuilder [
 CavroisWindowManager class >> profileMenuItems: aBuilder [
 
 	<worldMenu>
-		self 
+	self
 		addProfileSwitchingItems: aBuilder;
 		addProfileSnapshotItem: aBuilder;
 		addProfileDeletionItem: aBuilder;
 		addProfileVisibilityItem: aBuilder;
+		resetWindowsToCurrentProfile: aBuilder;
 		addProfileImportExportItems: aBuilder
 ]
 
@@ -207,6 +208,18 @@ CavroisWindowManager class >> reset [
 	<script>
 	Current := nil.
 	MenubarMorph reset
+]
+
+{ #category : 'initialization' }
+CavroisWindowManager class >> resetWindowsToCurrentProfile: aBuilder [
+
+	(aBuilder item: #'Reset Windows')
+		parent: #ProfileAction;
+		order: 6;
+		action: [ self current transitionToProfile ];
+		help:
+			'Reset the state of all current windows to their placeHolder state';
+		iconName: #refreshCircling
 ]
 
 { #category : 'actions' }
