@@ -83,6 +83,7 @@ CavroisWindowManager class >> addProfileImportExportItems: aBuilder [
 	(aBuilder item: #'Export Profile')
 		parent: #ImportExport;
 		order: 8;
+		action: [ self saveProfile ];
 		help: 'Export a profile';
 		iconName: #smallRedo
 ]
@@ -220,6 +221,17 @@ CavroisWindowManager class >> resetWindowsToCurrentProfile: aBuilder [
 		help:
 			'Reset the state of all current windows to their placeHolder state';
 		iconName: #refreshCircling
+]
+
+{ #category : 'saving' }
+CavroisWindowManager class >> saveProfile [
+
+	| fileString fileName file |
+	fileString := STON toString: self current currentProfile.
+	fileName := self current currentProfile name , '.ston'.
+	file := FileLocator imageDirectory / fileName.
+	file writeStreamDo: [ :stream | stream nextPutAll: fileString ].
+	self inform: 'Profile saved !'
 ]
 
 { #category : 'actions' }
