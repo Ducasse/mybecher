@@ -77,6 +77,7 @@ CavroisWindowManager class >> addProfileImportExportItems: aBuilder [
 	(aBuilder item: #'Import Profile')
 		parent: #ImportExport;
 		order: 7;
+		action: [ self loadProfile ];
 		help: 'Import a profile';
 		iconName: #smallUndo.
 
@@ -163,6 +164,18 @@ CavroisWindowManager class >> deleteProfile [
 		             openDialog
 ]
 
+{ #category : 'action' }
+CavroisWindowManager class >> loadProfile [
+
+	| file profile |
+	file := FileLocator preferences asFileReference / 'pharo'
+	        / 'Profile.ston'.
+	profile := STON fromString: file.
+	self current profiles at: profile name put: profile.
+	self current currentProfile: profile.
+	MenubarMorph reset
+]
+
 { #category : 'menu' }
 CavroisWindowManager class >> profileMenu: aBuilder [
 
@@ -228,8 +241,8 @@ CavroisWindowManager class >> saveProfile [
 
 	| fileString fileName file |
 	fileString := STON toString: self current currentProfile.
-	fileName := self current currentProfile name , '.ston'.
-	file := FileLocator imageDirectory / fileName.
+	fileName := 'Profile.ston'.
+	file := FileLocator preferences asFileReference / 'pharo' / fileName.
 	file writeStreamDo: [ :stream | stream nextPutAll: fileString ].
 	self inform: 'Profile saved !'
 ]
