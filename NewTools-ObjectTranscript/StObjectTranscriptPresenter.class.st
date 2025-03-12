@@ -1,9 +1,32 @@
 "
-I'm a circular logger that works with `StObjectTranscriptPresenter` instances.
-II get a direct reference to my UI so that I can ask them to refresh them.
-I do not use announcements for this by design!
+I'm a presenter showing StObjectTranscriptLogger log elements. 
 
-You can show/hide the inspector and the inspector can either display the currently selected log entry or the complete list so that we can perform collection operations for complex filters. 
+
+```
+StObjectTranscriptPresenter open
+ 
+StObjectTranscriptPresenter openWithLogger: StObjectTranscripLogger instance
+```
+
+To open from another presenter use the following expression
+
+```
+(self application toolNamed: #objectTranscript) open
+```
+
+
+You can show/hide the inspector and the inspector can either display the currently selected log entry or the complete list so that we can perform collection operations for complex filters
+
+
+```
+	| cb |
+	StObjectTranscriptLogger start.
+	cb := self open.
+	'Pharo is super nice!' emit.
+``` 
+
+
+
 
 "
 Class {
@@ -14,7 +37,8 @@ Class {
 		'zoom',
 		'logger',
 		'inspectSelectedItem',
-		'showInspector'
+		'showInspector',
+		'isOpened'
 	],
 	#classVars : [
 		'ShowInspector'
@@ -26,18 +50,10 @@ Class {
 { #category : 'accessing' }
 StObjectTranscriptPresenter class >> defaultPreferredExtent [
 	"Answer the desired extent for the receiver when it is first opened on the screen.  "
-	"This does oot work and is a perfect case to make the remembering only be used when 
-	it is coming from a resized
-	
-	The behavior should be 
-		open -> we use these 
-		reopen -> we use these
-		onResize -> we store the resize and continue to use them.
-	
-	"
+
 	^ self showInspector
-		ifTrue: [ 450 @ 650 ]
-		ifFalse: [ 250 @ 450 ]
+		ifTrue: [ 550 @ 850 ]
+		ifFalse: [ 550 @ 650 ]
 ]
 
 { #category : 'accessing' }
@@ -54,6 +70,39 @@ StObjectTranscriptPresenter class >> example [
 	'this is a message only interesting from the logger domain' emit.
 	cb open.
 	^ cb
+]
+
+{ #category : 'accessing' }
+StObjectTranscriptPresenter class >> example2 [
+	"self example2"
+	
+	self open. 
+	'Hello Pharo is cool,' emit.
+	
+]
+
+{ #category : 'instance creation' }
+StObjectTranscriptPresenter class >> open [ 
+	"Make sure that the object transcript logger is on and open a presenter on it."
+	<script>
+	
+	StObjectTranscriptLogger start.
+	^ self openWithLogger: StObjectTranscriptLogger instance
+]
+
+{ #category : 'instance creation' }
+StObjectTranscriptPresenter class >> openWithLogger: aLogger [
+
+	^ self new logger: aLogger; open 
+
+	
+]
+
+{ #category : 'registration' }
+StObjectTranscriptPresenter class >> registerToolsOn: registry [
+
+	registry register: self as: #objectTranscript
+
 ]
 
 { #category : 'settings' }
@@ -82,6 +131,46 @@ StObjectTranscriptPresenter class >> showInspector: aBoolean [
 	ShowInspector := aBoolean
 ]
 
+{ #category : 'registration' }
+StObjectTranscriptPresenter class >> worldMenuOn: aBuilder [
+
+	<worldMenu>
+	(aBuilder item: #Browse)
+		parent: #Browse;
+		label: 'Object Transcript';
+		order: 5;
+		iconName: #playground;
+		help: 'Tool to be able to see logs in this instance of Pharo.';
+		action: [ self open ]
+]
+
+{ #category : 'actions' }
+StObjectTranscriptPresenter >> addActions [
+
+	logList 
+		addActionWith: [ :item | item
+			name: 'Toggle inspector entities';
+			iconName: #smallHelp;
+			action: [ self hideShowInspector ] ];
+		addActionWith: [ :item | item
+			name: 'Hide/Show inspector';
+			iconName: #inspect;
+			action: [ self showInspector: showInspector not ] ];
+		addActionWith: [ :item | item
+			name: 'Flush entities';
+			iconName: #delete;
+			action: [ self flush ]];
+		addActionWith: [ :item | item
+			name: 'Start logger';
+			iconName: #start;
+			action: [ self startLogger ]];
+		addActionWith: [ :item | item
+			name: 'Stop logger';
+			iconName: #stop;
+			action: [ self stopLogger ]]
+	
+]
+
 { #category : 'initialization' }
 StObjectTranscriptPresenter >> connectPresenters [
 	
@@ -93,6 +182,7 @@ StObjectTranscriptPresenter >> connectPresenters [
 						ifTrue: [ self inspect: log ]
 						ifFalse: [ self inspect: logger recordings ]
 				]]
+	
 ]
 
 { #category : 'initialization' }
@@ -109,6 +199,22 @@ StObjectTranscriptPresenter >> defaultShowInspector [
 	^ ShowInspector ifNil: [ ShowInspector := true ]
 ]
 
+{ #category : 'actions' }
+StObjectTranscriptPresenter >> flush [
+
+	logger reset.
+	self populateItemsFrom: logger
+]
+
+{ #category : 'actions' }
+StObjectTranscriptPresenter >> hideShowInspector [
+
+	inspectSelectedItem := inspectSelectedItem not.
+				inspectSelectedItem 
+						ifTrue: [ self inspect: logList selectedItem ]
+						ifFalse: [ self inspect: logger recordings ]
+]
+
 { #category : 'initialization' }
 StObjectTranscriptPresenter >> initialize [
 
@@ -123,17 +229,7 @@ StObjectTranscriptPresenter >> initializePresenters [
 	logList := self instantiate: SpFilteringListPresenter.
 	zoom := StInspectorPresenter newApplication: self application. 
 
-	logList 
-		addActionWith: [ :item | item
-			name: 'Toggle inspector entities';
-			iconName: #smallHelp;
-			action: [ inspectSelectedItem := inspectSelectedItem not ] ];
-		addActionWith: [ :item | item
-			name: 'Hide/Show inspector';
-			iconName: #inspect;
-			action: [ self showInspector: showInspector not ] ].
-	
-	
+	self addActions
 ]
 
 { #category : 'initialization' }
@@ -141,6 +237,9 @@ StObjectTranscriptPresenter >> initializeWindow: aWindowPresenter [
 
 
 	super initializeWindow: aWindowPresenter.
+	aWindowPresenter whenOpenedDo: [ 
+			self selectLastItem.
+			isOpened := true. ].
 	aWindowPresenter whenClosedDo: [ logger removeAsClient: self ]
 ]
 
@@ -152,30 +251,48 @@ StObjectTranscriptPresenter >> inspect: anObject [
 ]
 
 { #category : 'initialization' }
+StObjectTranscriptPresenter >> isOpened [ 
+	
+	^ isOpened ifNil: [ isOpened := false ]
+]
+
+{ #category : 'accessing' }
 StObjectTranscriptPresenter >> logger: aLogger [
 	
 	aLogger ifNil: [ ^ self ].
 	logger := aLogger.
 	logger addAsClient: self. 
-	logList items: aLogger recordings.
+	self populateItemsFrom: logger
 	
 ]
 
-{ #category : 'customization' }
-StObjectTranscriptPresenter >> preferredExtent [
-	"Answer the desired extent for the receiver when it is first opened on the screen.  "
+{ #category : 'actions' }
+StObjectTranscriptPresenter >> populateItemsFrom: aLogger [
 
-	^ showInspector
-		ifTrue: [ 450 @ 650 ]
-		ifFalse: [ 250 @ 450 ]
+	| rec |
+	rec := aLogger recordings copy.
+	logList items: rec.
+	rec size > 0 
+		ifTrue: [ logList reapplyOrResetFilter.
+					logList selectLast. ]
 ]
 
 { #category : 'actions' }
 StObjectTranscriptPresenter >> refresh [ 
 	
-	logList items: logger recordings.
-	logList scrollToIndex: logList listSize.
+	self populateItemsFrom: logger.
+	self selectLastItem.
+	
+	
 
+]
+
+{ #category : 'initialization' }
+StObjectTranscriptPresenter >> selectLastItem [ 
+
+	logList 
+		selectIndex: logList listPresenter listSize 
+		scrollToSelection: true
 ]
 
 { #category : 'accessing' }
@@ -184,11 +301,29 @@ StObjectTranscriptPresenter >> selectedItem [
 	^  logList selectedItem
 ]
 
-{ #category : 'initialization' }
+{ #category : 'actions' }
+StObjectTranscriptPresenter >> setInspectSingleEntry [
+
+	inspectSelectedItem := true
+]
+
+{ #category : 'customization' }
 StObjectTranscriptPresenter >> showInspector: aBoolean [
 
 	showInspector := aBoolean.
 	self layout: self defaultLayout.
+]
+
+{ #category : 'actions' }
+StObjectTranscriptPresenter >> startLogger [
+
+	logger start
+]
+
+{ #category : 'actions' }
+StObjectTranscriptPresenter >> stopLogger [
+
+	logger stop
 ]
 
 { #category : 'accessing' }

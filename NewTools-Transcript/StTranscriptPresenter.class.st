@@ -11,9 +11,6 @@ Class {
 		'text',
 		'transcript'
 	],
-	#classInstVars : [
-		'recordings'
-	],
 	#category : 'NewTools-Transcript',
 	#package : 'NewTools-Transcript'
 }
@@ -21,7 +18,7 @@ Class {
 { #category : 'accessing' }
 StTranscriptPresenter class >> defaultPreferredExtent [
 
-	^ 300@700
+	^ (447 @ 300) scaledByDisplayScaleFactor
 ]
 
 { #category : 'accessing' }
@@ -31,7 +28,7 @@ StTranscriptPresenter class >> example [
 	
 	| t tr |
 	t := self new. 
-	tr := NewThreadSafeTranscript new.
+	tr := StThreadSafeTranscript new.
 	tr show: 'Hello Pharo I''m a new textual transcript'.
 	t transcript: tr.
 	t open. 
@@ -59,10 +56,24 @@ StTranscriptPresenter class >> menuCommandOn: aBuilder [
 	aBuilder withSeparatorAfter
 ]
 
+{ #category : 'instance creation' }
+StTranscriptPresenter class >> open [
+
+	<script>
+	^ self new open
+]
+
+{ #category : 'instance creation' }
+StTranscriptPresenter class >> openOn: aTranscript [
+
+	<script>
+	^ self new transcript: aTranscript; open
+]
+
 { #category : 'tools registry' }
 StTranscriptPresenter class >> registerToolsOn: aRegistry [
-	"Smalltalk tools register: self as: #newTranscript"
-	
+	"Smalltalk tools register: self as: #transcript"
+
 	aRegistry register: self as: #transcript
 ]
 
@@ -71,7 +82,7 @@ StTranscriptPresenter >> initialize [
 
 	super initialize.
 	self registerToAnnouncer. 
-	transcript := NewThreadSafeTranscript uniqueInstance
+	transcript := StThreadSafeTranscript uniqueInstance
 ]
 
 { #category : 'initialization' }
@@ -79,6 +90,7 @@ StTranscriptPresenter >> initializePresenters [
 
 
 	text := self newText.
+	text beEditable
 	
 	
 ]
@@ -139,5 +151,5 @@ StTranscriptPresenter >> updateNewEntry [
 { #category : 'accessing' }
 StTranscriptPresenter >> windowTitle [
 
-	^ 'New basic transcript'
+	^ 'Transcript'
 ]
