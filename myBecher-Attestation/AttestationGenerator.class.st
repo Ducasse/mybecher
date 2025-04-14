@@ -62,7 +62,8 @@ AttestationGenerator >> installFiles [
 	generatedFolder := templateFileReference parent parent / 'generated'.
 	generatedFolder ensureDeleteAllChildren.
 	generatedFolder ensureDelete.
-	templateFileReference parent parent / 'Resources' copyAllTo: generatedFolder
+	templateFileReference parent parent / 'Resources' copyAllTo: generatedFolder.
+	templateFileReference parent parent / 'buildAll.sh' copyTo: generatedFolder / 'buildAll.sh'
 	
 ]
 
