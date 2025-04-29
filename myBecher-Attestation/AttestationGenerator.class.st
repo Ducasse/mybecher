@@ -34,7 +34,10 @@ AttestationGenerator class >> installMustache [
 
 { #category : 'accessing' }
 AttestationGenerator >> applyTemplate: aValue [
-
+	"  Metacello new
+        baseline: 'Mustache';
+        repository: 'github://noha/mustache:v1.3/repository';
+        load"
 
 	resultString := (MustacheTemplate  on: templateString) value: { 'N' -> aValue } asDictionary
 ]
