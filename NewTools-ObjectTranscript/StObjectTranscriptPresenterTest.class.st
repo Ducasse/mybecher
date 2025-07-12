@@ -1,41 +1,97 @@
 Class {
 	#name : 'StObjectTranscriptPresenterTest',
 	#superclass : 'TestCase',
+	#instVars : [
+		'presenter'
+	],
 	#category : 'NewTools-ObjectTranscript',
 	#package : 'NewTools-ObjectTranscript'
 }
 
-{ #category : 'tests' }
-StObjectTranscriptPresenterTest >> testFalseShowInspectorDoNotShowInspector [
+{ #category : 'running' }
+StObjectTranscriptPresenterTest >> setUp [ 
+	
+	super setUp.
+	presenter := StObjectTranscriptPresenter new.
+	presenter logger: StObjectTranscriptLogger instance.
+	presenter startLogger
 
+]
+
+{ #category : 'running' }
+StObjectTranscriptPresenterTest >> tearDown [ 
+
+	presenter logger stop.
+	presenter removeFromLogger.
+	presenter withWindowDo: #close.
+	
+	super tearDown
+]
+
+{ #category : 'tests' }
+StObjectTranscriptPresenterTest >> testOpenedLogIsSelectedLog [
+
+	| window |
+	
+	[  		
+		window := presenter open.
+		#thisIsATest emit.
+		presenter selectLastItem.
+		self 
+			
+			assert: presenter logList selectedItem  
+			equals: presenter selectedRecordInspector model inspectedObject ] 
+	ensure: [ window close ].
+	
+
+]
+
+{ #category : 'tests' }
+StObjectTranscriptPresenterTest >> testSmoke [
+
+	| window |
+	[ self shouldnt: [ window := presenter open ] raise: Error ] ensure: [ window close ].
+
+	[ self shouldnt: [ window := presenter openDialog ] raise: Error ] ensure: [ window close ].
+]
+
+{ #category : 'tests' }
+StObjectTranscriptPresenterTest >> testTrueShowInspectorShowsInspector [
+	"We wanted to show that the size of the window can dynamically be changed when the extend of the class presenter changes.
+	However, in the current version of spec this is not possible. 
+	A window can be resized using the resize: message but not the extent: on its presenter. 
+	So a defaultPreferredExtent cannot dynamically change once the window is open."
 	| st win current |
+
+	"With the new changes that makes it so the window remembers its last state, this test will fail if the user has ever resized it."
+	self skip.
+	
 	[
 	current := StObjectTranscriptPresenter showInspector.
-	StObjectTranscriptPresenter showInspector: false.
+	"StObjectTranscriptPresenter resetRememberedResizeExtent."
+	StObjectTranscriptPresenter showInspector: true.
 	st := StObjectTranscriptPresenter new.
-	win := st
-		       logger: StObjectTranscriptLogger instance;
-		       open.
-	self assert: win initialExtent equals: 550 @ 650 ] ensure: [
+	st logger: StObjectTranscriptLogger instance.
+	win := st asWindow.
+	win resizable: false.
+	win open.
+	
+	self assert: win initialExtent equals: 550 @ 850 ] ensure: [
 		win close.
 		StObjectTranscriptPresenter showInspector: current ]
 ]
 
 { #category : 'tests' }
-StObjectTranscriptPresenterTest >> testTrueShowInspectorShowsInspector [
+StObjectTranscriptPresenterTest >> testUnselectWhenChangingToAllLogsTab [
 
-	| st win current |
-	self skip. 
-	"There is a bug in Spec so my test cannot pass."
+	| window |
 	
-	[ current := StObjectTranscriptPresenter showInspector.
-	StObjectTranscriptPresenter showInspector: true. 
-	st := StObjectTranscriptPresenter new.
-	win := st logger: StObjectTranscriptLogger instance; open.
-	self assert: win initialExtent equals: (450.0 @ 650.0).
-		] ensure: [ 
-			win close.
-			StObjectTranscriptPresenter showInspector: current ]
-		
-	
+	[ 
+		window := presenter open.
+		#thisIsATest emit.
+		presenter selectLastItem. 
+		self deny: presenter logList selectedItem equals: nil.
+		presenter tabLayout select: presenter recordsInspector.
+		self assert: presenter logList selectedItem equals: nil ] 
+	ensure: [ window close ]
 ]

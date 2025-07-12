@@ -9,7 +9,13 @@ Class {
 	#superclass : 'StPresenter',
 	#instVars : [
 		'text',
-		'transcript'
+		'transcript',
+		'leftToolbar',
+		'rightToolBar',
+		'service',
+		'mutex',
+		'waitingEntries',
+		'keepServiceAliveStep'
 	],
 	#category : 'NewTools-Transcript',
 	#package : 'NewTools-Transcript'
@@ -22,38 +28,45 @@ StTranscriptPresenter class >> defaultPreferredExtent [
 ]
 
 { #category : 'accessing' }
-StTranscriptPresenter class >> example [
+StTranscriptPresenter class >> exampleDefault [
 	"this example shows that we can use a different instance than the singleton."
+
 	<script>
-	
-	| t tr |
-	t := self new. 
-	tr := StThreadSafeTranscript new.
-	tr show: 'Hello Pharo I''m a new textual transcript'.
-	t transcript: tr.
-	t open. 
+	^ self new open
 ]
 
 { #category : 'accessing' }
-StTranscriptPresenter class >> exampleDefault [
+StTranscriptPresenter class >> exampleNonGlobalTranscript [
 	"this example shows that we can use a different instance than the singleton."
+
 	<script>
-	
-	self new open
+	| presenter transcript |
+	presenter := self new.
+	transcript := StThreadSafeTranscript new.
+	transcript show: 'Hello Pharo I''m a new textual transcript'.
+	presenter transcript: transcript.
+	^ presenter open
+]
+
+{ #category : 'tools registry' }
+StTranscriptPresenter class >> maxEmptySteps [
+"Maximum amount of steps with the queue empty for the service to stop"
+	^ 5
 ]
 
 { #category : 'accessing' }
 StTranscriptPresenter class >> menuCommandOn: aBuilder [
+
 	<worldMenu>
-	(aBuilder item: #'New Transcript')
+	(aBuilder item: #'Transcript')
 		action: [ (Smalltalk tools toolNamed: #transcript) new open ];
 		order: 2;
 		parent: #InputOutput;
 		help: 'Transcript';
 		keyText: 'o, t';
 		help: 'Window on the new Transcript output stream, which is useful for writing log messages.';
-		iconName: self taskbarIconName.
-	aBuilder withSeparatorAfter
+		iconName: #transcript
+	
 ]
 
 { #category : 'instance creation' }
@@ -77,12 +90,58 @@ StTranscriptPresenter class >> registerToolsOn: aRegistry [
 	aRegistry register: self as: #transcript
 ]
 
+{ #category : 'actions' }
+StTranscriptPresenter >> clear [
+	
+	text clearContent
+]
+
+{ #category : 'private' }
+StTranscriptPresenter >> ensureTranscriptService [
+		
+	service ifNotNil: [ 
+		service isRunning ifFalse: [ service restart ].
+		^ service ].
+	
+	service := TKTParameterizableService new.
+	service name: 'Transcript service: ', UUID new asString.
+	service stepDelay: 50 milliSeconds.
+	service step: [ self processEntries ].
+	service start.
+	
+	^ service
+]
+
+{ #category : 'actions' }
+StTranscriptPresenter >> fetchOld [ 
+
+	text appendText: transcript contents
+]
+
 { #category : 'initialization' }
-StTranscriptPresenter >> initialize [ 
+StTranscriptPresenter >> initialize [
 
 	super initialize.
-	self registerToAnnouncer. 
-	transcript := StThreadSafeTranscript uniqueInstance
+	self registerToAnnouncer.
+	transcript := StThreadSafeTranscript defaultInstance.
+	keepServiceAliveStep := 0
+]
+
+{ #category : 'initialization' }
+StTranscriptPresenter >> initializeLeftToolbar [
+
+	leftToolbar := self newToolbar 
+  		addStyle: 'stToolbar';
+  		displayMode: self application toolbarDisplayMode;
+  		yourself.
+	
+	leftToolbar
+		add: (leftToolbar newToolbarButton 
+			label: 'Clear';
+			icon: (self application iconNamed: #changeRemove );
+			help: 'Clears the transcript';
+			action: [ self clear ])
+			
 ]
 
 { #category : 'initialization' }
@@ -90,9 +149,38 @@ StTranscriptPresenter >> initializePresenters [
 
 
 	text := self newText.
-	text beEditable
+	text beEditable.
+	self initializeToolbars
 	
 	
+]
+
+{ #category : 'initialization' }
+StTranscriptPresenter >> initializeRightToolbar [
+		
+	rightToolBar := self newToolbar 
+	  		addStyle: 'stToolbar';
+  		displayMode: self application toolbarDisplayMode;
+  		yourself.
+			
+	rightToolBar 
+		add: (rightToolBar newToolbarButton 
+			label: 'Reset';
+			icon: (self application iconNamed: #glamorousTrash );
+			help: 'Resets the transcript history';
+			action: [ self reset ]);
+		add: (rightToolBar newToolbarButton 
+			label: 'Fetch';
+			icon: (self application iconNamed: #down );
+			help: 'Fetches transcript history';
+			action: [ self fetchOld ])
+]
+
+{ #category : 'initialization' }
+StTranscriptPresenter >> initializeToolbars [
+
+	self initializeLeftToolbar.
+	self initializeRightToolbar
 ]
 
 { #category : 'initialization' }
@@ -100,26 +188,74 @@ StTranscriptPresenter >> initializeWindow: aWindowPresenter [
 
 	super initializeWindow: aWindowPresenter.
 	aWindowPresenter
-		whenOpenedDo: [ self updateNewEntry ];
 		whenClosedDo: [ self unregister ]
 ]
 
-{ #category : 'accessing' }
+{ #category : 'layout' }
 StTranscriptPresenter >> layout [ 
 
-	^ SpBoxLayout newLeftToRight 
-			add: text;
-			yourself
+	^ SpBoxLayout newTopToBottom 
+		add: (SpBoxLayout newLeftToRight 
+			add: leftToolbar ;
+			add: rightToolBar expand: false ) 
+			expand: false;
+		add: text;
+		yourself
+]
+
+{ #category : 'private' }
+StTranscriptPresenter >> maybeStopService [
+
+	self waitingEntries isEmpty 
+		ifFalse: [ 
+			keepServiceAliveStep := 0.
+			^ self ].
+		
+	keepServiceAliveStep := keepServiceAliveStep + 1.
+	keepServiceAliveStep = self class maxEmptySteps 
+		ifTrue: [ service stop ].
+
+]
+
+{ #category : 'private' }
+StTranscriptPresenter >> mutex [
+		
+	^ mutex ifNil: [ mutex := Mutex new ]
+]
+
+{ #category : 'private' }
+StTranscriptPresenter >> processEntries [
+	| entries |
+	
+	self maybeStopService.
+	self waitingEntries ifEmpty: [ ^ self ].
+	
+	entries := #().
+	self mutex critical: [
+		entries := self waitingEntries copy. 
+		self waitingEntries removeAll ].
+
+	self application defer: [
+		| newText |
+		newText := String streamContents: [ :stream | 
+			entries do: [ :each | stream nextPutAll: each ] ].
+		text appendText: newText ]
 ]
 
 { #category : 'registration' }
 StTranscriptPresenter >> registerToAnnouncer [
 
-	
 	SystemAnnouncer uniqueInstance
 		when: NewEntryToTranscript
-		send: #updateNewEntry
+		send: #updateNewEntry: 
 		to: self
+]
+
+{ #category : 'actions' }
+StTranscriptPresenter >> reset [
+
+	transcript clear.
+	self clear
 ]
 
 { #category : 'accessing' }
@@ -131,21 +267,28 @@ StTranscriptPresenter >> text [
 { #category : 'accessing' }
 StTranscriptPresenter >> transcript: aTranscript [
 
-	transcript := aTranscript.
-	self updateNewEntry
+	transcript := aTranscript
 ]
 
 { #category : 'registration' }
 StTranscriptPresenter >> unregister [
 
-	^ SystemAnnouncer uniqueInstance unsubscribe: self
+	self ensureTranscriptService stop.
+	SystemAnnouncer uniqueInstance unsubscribe: self
 ]
 
-{ #category : 'accessing' }
-StTranscriptPresenter >> updateNewEntry [
+{ #category : 'private' }
+StTranscriptPresenter >> updateNewEntry: anAnnouncement [
 
-	text text: transcript contents.
-	
+	self ensureTranscriptService.
+	self mutex critical: [ 
+		self waitingEntries add: anAnnouncement entry ]
+]
+
+{ #category : 'private' }
+StTranscriptPresenter >> waitingEntries [
+
+	^ waitingEntries ifNil: [ waitingEntries := OrderedCollection new: 100 ]
 ]
 
 { #category : 'accessing' }
