@@ -8,7 +8,7 @@ Class {
 	#package : 'myBecher-DSPBook'
 }
 
-{ #category : 'as yet unclassified' }
+{ #category : 'basic' }
 DBBasic >> meanOf: aCollection [ 
 	
 	| sum n |
@@ -19,7 +19,7 @@ DBBasic >> meanOf: aCollection [
 	
 ]
 
-{ #category : 'as yet unclassified' }
+{ #category : 'basic' }
 DBBasic >> standardDeviationOf: aCollection [ 
 	"a naive version performing two passes while one is enough."
 	
