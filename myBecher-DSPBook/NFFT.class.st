@@ -6,25 +6,6 @@ Class {
 }
 
 { #category : 'reverse bit' }
-NFFT >> reverseBit: n [
-	
-	| nn copy lsb |
-	nn := n.
-	copy := n.
-	
-	2 timesRepeat: [ 
-		nn := nn >> 1.
-		lsb := nn bitAnd: 1. 	
-	
-		copy := copy << 1. 
-		copy := copy bitOr: lsb.
-	].
-	
-	^ copy bitAnd: 2r111.
-
-]
-
-{ #category : 'reverse bit' }
 NFFT >> reverseBit: n ofSize: s [
 	
 	| nn copy lsb |
