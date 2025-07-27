@@ -61,11 +61,38 @@ nu: order
 	permTable := perms contents.
 ```
 One problem I have with the above code is that it creates the following table 
-`#(2 9 3 5 4 13 6 11 8 15 12 14)` because in the book we get
+```
+#(
+2 9 
+3 5 
+4 13 
+6 11 
+8 15 
+12 14
+)
+``` 
+and I'm missing some pairs.
 
-`(0->0 1->8 2->4 3->12 4->2 5->10 6->6 7->14 8->1 9->9 10->5 11->13 12->3 13->11 14->7 15->15)` 
-
-
+I would like to get 
+```
+#(
+1 1 
+2 9 
+3 5 
+4 13 
+5 3 
+6 11 
+7 7 
+8 15 
+9 2 
+10 10
+11 6 
+12 14 
+13 4 
+14 12 
+15 8 
+16 16)
+```
 
 
 "
