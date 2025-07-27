@@ -103,7 +103,7 @@ Class {
 	#package : 'myBecher-DSPBook'
 }
 
-{ #category : 'tests' }
+{ #category : 'tests - bit reverse table' }
 NFFTTest >> testBitFlipsTableStartingAt0 [
 
 
@@ -116,21 +116,23 @@ NFFTTest >> testBitFlipsTableStartingAt0 [
 		equals: outputRe
 ]
 
-{ #category : 'tests' }
+{ #category : 'tests - bit reverse table' }
 NFFTTest >> testBitFlipsTableStartingAt1 [
 
 
-	| inputRe outputRe inputIm outputIm fft |
+	| inputRe outputRe fft |
 	inputRe := { 1.  2 .  3 .  4 .  5 . 6 . 7 .  8}.
 	outputRe := { 1.  5 .  3 .  7 .  2 . 6 . 4 .  8}.
 	fft := NFFT new.
+	fft sampleNumber: 8.
+	fft computePermTableOfSize.
 	self 
-		assert: (fft permTableOfSize: 8)
+		assert: fft permutationTable 
 		equals: { 1.  5 .  3 .  7 .  2 . 6 . 4 .  8}.
 
 ]
 
-{ #category : 'tests' }
+{ #category : 'tests - bit reverse table' }
 NFFTTest >> testBitReversed16bitsPrintingOut [
 	
 	| in ou res |
@@ -146,25 +148,27 @@ NFFTTest >> testBitReversed16bitsPrintingOut [
 
 ]
 
-{ #category : 'tests' }
+{ #category : 'tests - bit reverse table' }
 NFFTTest >> testBitReversed16bitsStartingAtOne [
 	
-	| in ou fft |
+	| in ou fft res |
 	in :=  { 1  .  2  .  3  .  4  .  5 .  6  .  7  . 8  . 9 . 10 . 11 . 12 . 13 . 14 . 15 . 16 }.
-	ou :=  { 1  .  9  .  5  .  13 .  3 . 11  .  7  . 15 . 2 . 10 . 6  . 14 .  4 . 12 . 8 . 16 }.
-	"sq trace		#(2 9 
-					3 5 
-					4 13 
-					6 11 
-					8 15 
-					12 14)"
+	ou :=  { 1  .  9  .  5  .  13 .  3 .  11 .  7  . 15 . 2 . 10 . 6  . 14 .  4 . 12 . 8 .  16 }.
+	
+	res := OrderedCollection new. 
+	in with: ou do: [ :f :s | res add: f ; add: s ].
+	res := res asArray.
+	
 	fft := NFFT new.
- 	self assert: (fft permTableOfSize: 16) 
-		equals: ou. 
+	fft sampleNumber: 16.
+	fft computePermTableOfSize.
+ 	self 
+		assert: fft permutationTable 
+		equals: res. 
 
 ]
 
-{ #category : 'tests' }
+{ #category : 'tests - bit reverse table' }
 NFFTTest >> testBitReversed16bitsStartingAtZero [
 	
 	| in ou fft |
