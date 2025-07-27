@@ -176,3 +176,14 @@ NFFTTest >> testBitReversed16bitsStartingAtZero [
 		equals: ou. 
 
 ]
+
+{ #category : 'tests' }
+NFFTTest >> testReverseBit [
+
+
+	| fft |
+	fft := NFFT new. 
+	self 
+		assert: (fft reverseBit: 2r110) 
+		equals: 2r011.
+]
