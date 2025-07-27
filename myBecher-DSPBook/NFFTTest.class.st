@@ -77,26 +77,34 @@ Class {
 }
 
 { #category : 'tests' }
-NFFTTest >> testBitFlips [
+NFFTTest >> testBitFlipsTableStartingAt0 [
+
+
+	| inputRe outputRe fft |
+	inputRe := { 0 . 1 .  2 .  3 .  4 .  5 . 6 . 7 }.
+	outputRe := { 0 .  4 .  2 .  6 .  1 . 5 . 3 .  7}.
+	fft := NFFT new.
+	self 
+		assert: (fft permTableOfSize: 8)
+		equals: outputRe
+]
+
+{ #category : 'tests' }
+NFFTTest >> testBitFlipsTableStartingAt1 [
 
 
 	| inputRe outputRe inputIm outputIm fft |
 	inputRe := { 1.  2 .  3 .  4 .  5 . 6 . 7 .  8}.
 	outputRe := { 1.  5 .  3 .  7 .  2 . 6 . 4 .  8}.
-	inputIm := { 1.  2 .  3 .  4 .  5 . 6 . 7 .  8}.
-	outputIm := { 1.  5 .  3 .  7 .  2 . 6 . 4 .  8}.
 	fft := NFFT new.
-	fft realData: inputRe.
-	fft imagData: inputIm. 
-	fft permuteData.
-	self assert: fft outIm equals: outputIm.
-	self assert: fft outRe equals: outputRe.
-	
+	self 
+		assert: (fft permTableOfSize: 8)
+		equals: { 1.  5 .  3 .  7 .  2 . 6 . 4 .  8}.
 
 ]
 
 { #category : 'tests' }
-NFFTTest >> testBitReversed16bits [
+NFFTTest >> testBitReversed16bitsPrintingOut [
 	
 	| in ou res |
 	in :=  { 0  .  1  .  2  .  3  .  4 .  5  .  6  . 7  . 8 . 9 . 10 . 11 . 12 . 13 . 14 . 15 }.
@@ -105,7 +113,39 @@ NFFTTest >> testBitReversed16bits [
 	res := OrderedCollection new.  
 	in with: ou do: [ :fst :scd | 
 			res add: fst -> scd ].
-	self halt. 
-	res 
+	 self assert: 
+			res asArray 
+		equals: {0->0 . 1->8 . 2->4 . 3->12 . 4->2 . 5->10 . 6->6 . 7->14 . 8->1 . 9->9 . 10->5 . 11->13 . 12->3 . 13->11 . 14->7 . 15->15} 
+
+]
+
+{ #category : 'tests' }
+NFFTTest >> testBitReversed16bitsStartingAtOne [
+	
+	| in ou fft |
+	in :=  { 1  .  2  .  3  .  4  .  5 .  6  .  7  . 8  . 9 . 10 . 11 . 12 . 13 . 14 . 15 . 16 }.
+	ou :=  { 1  .  9  .  5  .  13 .  3 . 11  .  7  . 15 . 2 . 10 . 6  . 14 .  4 . 12 . 8 . 16 }.
+	"sq trace		#(2 9 
+					3 5 
+					4 13 
+					6 11 
+					8 15 
+					12 14)"
+	fft := NFFT new.
+ 	self assert: (fft permTableOfSize: 16) 
+		equals: ou. 
+
+]
+
+{ #category : 'tests' }
+NFFTTest >> testBitReversed16bitsStartingAtZero [
+	
+	| in ou fft |
+	in :=  { 0  .  1  .  2  .  3  .  4 .  5  .  6  . 7  . 8 . 9 . 10 . 11 . 12 . 13 . 14 . 15 }.
+	ou :=  { 0  .  8  .  4  .  12 .  2 . 10  .  6  . 14 . 1 . 9 . 5  . 13 .  3 . 11 . 7 . 15 }.
+	
+	fft := NFFT new.
+ 	self assert: (fft permTableOfSize: 16) 
+		equals: ou. 
 
 ]
