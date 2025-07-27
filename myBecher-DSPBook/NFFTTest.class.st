@@ -202,6 +202,19 @@ NFFTTest >> testReverseBit [
 ]
 
 { #category : 'tests - reversebit' }
+NFFTTest >> testReverseBitOfSizeFive [
+	| fft |
+	fft := NFFT new. 
+	self 
+		assert: (fft reverseBit: 2r00001 ofSize: 5) 
+		equals: 2r10000.
+	self 
+		assert: (fft reverseBit: 2r00011 ofSize: 5) 
+		equals: 2r11000.
+	
+]
+
+{ #category : 'tests - reversebit' }
 NFFTTest >> testReverseBitOfSizeFour [
 	| fft |
 	fft := NFFT new. 
@@ -214,6 +227,9 @@ NFFTTest >> testReverseBitOfSizeFour [
 	self 
 		assert: (fft reverseBit: 2r0011 ofSize: 4) 
 		equals: 2r1100.
+	self 
+		assert: (fft reverseBit: 2r0100 ofSize: 4) 
+		equals: 2r0010.
 	
 ]
 
