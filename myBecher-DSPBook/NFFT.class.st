@@ -5,7 +5,7 @@ Class {
 	#package : 'myBecher-DSPBook'
 }
 
-{ #category : 'as yet unclassified' }
+{ #category : 'reverse bit' }
 NFFT >> reverseBit: n [
 	
 	| nn copy lsb |
@@ -21,5 +21,24 @@ NFFT >> reverseBit: n [
 	].
 	
 	^ copy bitAnd: 2r111.
+
+]
+
+{ #category : 'reverse bit' }
+NFFT >> reverseBit: n ofSize: s [
+	
+	| nn copy lsb |
+	nn := n.
+	copy := n.
+	
+	s - 1 timesRepeat: [ 
+		nn := nn >> 1.
+		lsb := nn bitAnd: 1. 	
+	
+		copy := copy << 1. 
+		copy := copy bitOr: lsb.
+	].
+	
+	^ copy bitAnd: (1 << s -1).
 
 ]

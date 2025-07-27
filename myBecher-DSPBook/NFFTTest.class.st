@@ -177,13 +177,66 @@ NFFTTest >> testBitReversed16bitsStartingAtZero [
 
 ]
 
-{ #category : 'tests' }
+{ #category : 'tests - reversebit' }
 NFFTTest >> testReverseBit [
-
-
 	| fft |
 	fft := NFFT new. 
 	self 
 		assert: (fft reverseBit: 2r110) 
 		equals: 2r011.
+	self 
+		assert: (fft reverseBit: 2r011) 
+		equals: 2r110.
+	self 
+		assert: (fft reverseBit: 2r001) 
+		equals: 2r100.
+	self 
+		assert: (fft reverseBit: 2r101) 
+		equals: 2r101.
+	self 
+		assert: (fft reverseBit: 2r111) 
+		equals: 2r111.
+	self 
+		assert: (fft reverseBit: 2r100) 
+		equals: 2r001.
+]
+
+{ #category : 'tests - reversebit' }
+NFFTTest >> testReverseBitOfSizeFour [
+	| fft |
+	fft := NFFT new. 
+	self 
+		assert: (fft reverseBit: 2r0001 ofSize: 4) 
+		equals: 2r1000.
+	self 
+		assert: (fft reverseBit: 2r0010 ofSize: 4) 
+		equals: 2r0100.
+	self 
+		assert: (fft reverseBit: 2r0011 ofSize: 4) 
+		equals: 2r1100.
+	
+]
+
+{ #category : 'tests - reversebit' }
+NFFTTest >> testReverseBitOfSizeThree [
+	| fft |
+	fft := NFFT new. 
+	self 
+		assert: (fft reverseBit: 2r110 ofSize: 3) 
+		equals: 2r011.
+	self 
+		assert: (fft reverseBit: 2r011 ofSize: 3) 
+		equals: 2r110.
+	self 
+		assert: (fft reverseBit: 2r001 ofSize: 3) 
+		equals: 2r100.
+	self 
+		assert: (fft reverseBit: 2r101 ofSize: 3) 
+		equals: 2r101.
+	self 
+		assert: (fft reverseBit: 2r111 ofSize: 3) 
+		equals: 2r111.
+	self 
+		assert: (fft reverseBit: 2r100 ofSize: 3) 
+		equals: 2r001.
 ]
