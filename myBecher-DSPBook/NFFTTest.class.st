@@ -104,32 +104,28 @@ Class {
 }
 
 { #category : 'tests - bit reverse table' }
-NFFTTest >> testBitFlipsTableStartingAt0 [
-
-
-	| inputRe outputRe fft |
-	inputRe := { 0 . 1 .  2 .  3 .  4 .  5 . 6 . 7 }.
-	outputRe := { 0 .  4 .  2 .  6 .  1 . 5 . 3 .  7}.
-	fft := NFFT new.
-	self 
-		assert: (fft permTableOfSize: 8)
-		equals: outputRe
-]
-
-{ #category : 'tests - bit reverse table' }
 NFFTTest >> testBitFlipsTableStartingAt1 [
 
 
-	| inputRe outputRe fft |
-	inputRe := { 1.  2 .  3 .  4 .  5 . 6 . 7 .  8}.
-	outputRe := { 1.  5 .  3 .  7 .  2 . 6 . 4 .  8}.
+	| in ou  fft res |
+	in := { 1.  2 .  3 .  4 .  5 . 6 . 7 .  8}.
+	ou := { 1.  5 .  3 .  7 .  2 . 6 . 4 .  8}.
+	res := OrderedCollection new. 
+	in with: ou do: [ :f :s | res add: f ; add: s ].
+	res := res asArray.
+	
 	fft := NFFT new.
 	fft sampleNumber: 8.
 	fft computePermTableOfSize.
-	self 
+ 	self 
 		assert: fft permutationTable 
-		equals: { 1.  5 .  3 .  7 .  2 . 6 . 4 .  8}.
-
+		equals: res. 
+		
+	" 
+	for the record here is the zero based table 
+		inputRe := { 0 . 1 .  2 .  3 .  4 .  5 . 6 . 7 }.
+		outputRe := { 0 .  4 .  2 .  6 .  1 . 5 . 3 .  7}.
+	"
 ]
 
 { #category : 'tests - bit reverse table' }
@@ -165,19 +161,11 @@ NFFTTest >> testBitReversed16bitsStartingAtOne [
  	self 
 		assert: fft permutationTable 
 		equals: res. 
-
-]
-
-{ #category : 'tests - bit reverse table' }
-NFFTTest >> testBitReversed16bitsStartingAtZero [
-	
-	| in ou fft |
+		
+	"for the record here is the zero based equivalent 
 	in :=  { 0  .  1  .  2  .  3  .  4 .  5  .  6  . 7  . 8 . 9 . 10 . 11 . 12 . 13 . 14 . 15 }.
 	ou :=  { 0  .  8  .  4  .  12 .  2 . 10  .  6  . 14 . 1 . 9 . 5  . 13 .  3 . 11 . 7 . 15 }.
-	
-	fft := NFFT new.
- 	self assert: (fft permTableOfSize: 16) 
-		equals: ou. 
+	"
 
 ]
 
