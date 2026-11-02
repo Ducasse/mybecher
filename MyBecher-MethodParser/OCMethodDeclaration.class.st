@@ -1,10 +1,10 @@
 "
-I represent one method read from Tonel source, as returned by `OCMethodParser`.
+I represent one method read by `OCMethodParser`, from Tonel source or from a plain Pharo method.
 
 ## Responsibility:
 
-- I know which class the method belongs to (its name), and whether it is on the instance side or the class side.
-- I hold the Tonel metadata (e.g. `#category`) found before the method.
+- I know which class the method belongs to (its name), and whether it is on the instance side or the class side. A plain method doesn't say, so its `className` is nil.
+- I hold the Tonel metadata (e.g. `#category`) found before the method. It is empty for a plain method.
 - I hold the `OCMethodNode` built by `OCParser` from the selector pattern and the body.
 
 ## Collaborators:
@@ -25,13 +25,15 @@ Create me with `OCMethodParser parse: aString`. Usually you don't create me your
 Point class >> origin [
 	^ 0 @ 0
 ]') selector. ""#origin""
+
+(OCMethodParser parse: 'origin ^ 0 @ 0') className. ""nil""
 ```
 
-See `OCMethodDeclaration class >> #exampleClassSide`.
+See `OCMethodDeclaration class >> #exampleClassSide`, `#exampleInstanceSide` and `#examplePlain`.
 
 ## Internal Representation
 
-- `className`: a `String`, the class name without ` class`.
+- `className`: a `String`, the class name without ` class`, or nil for a plain method.
 - `isMeta`: a `Boolean`, true for a class-side method.
 - `metadata`: a `Dictionary` read with STON. It is empty when the method has no metadata.
 - `ast`: an `OCMethodNode`.
@@ -69,6 +71,15 @@ OCMethodDeclaration class >> exampleInstanceSide [
 Point >> double [
 	^ self * 2
 ]'
+]
+
+{ #category : 'examples' }
+OCMethodDeclaration class >> examplePlain [
+
+	<sampleInstance>
+	^ OCMethodParser parse: 'squared: aNumber
+	"Answer aNumber multiplied by itself"
+	^ aNumber * aNumber'
 ]
 
 { #category : 'accessing' }
@@ -149,9 +160,10 @@ OCMethodDeclaration >> metadata: aDictionary [
 { #category : 'printing' }
 OCMethodDeclaration >> printOn: aStream [
 
-	aStream nextPutAll: className asString.
-	isMeta ifTrue: [ aStream nextPutAll: ' class' ].
-	aStream nextPutAll: ' >> '.
+	className ifNotNil: [
+			aStream nextPutAll: className asString.
+			isMeta ifTrue: [ aStream nextPutAll: ' class' ].
+			aStream nextPutAll: ' >> ' ].
 	ast ifNotNil: [ aStream print: ast selector ]
 ]
 

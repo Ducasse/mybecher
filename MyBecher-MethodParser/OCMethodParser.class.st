@@ -1,23 +1,24 @@
 "
-I parse method definitions written in the Tonel format, without the class definition around them. I handle instance-side methods (`Foo >> bar [ ... ]`) and class-side methods (`Foo class >> bar [ ... ]`).
+I parse one Pharo method given either as a Tonel method definition (without the class definition around it) or as a plain Pharo method. In Tonel I handle instance-side methods (`Foo >> bar [ ... ]`) and class-side methods (`Foo class >> bar [ ... ]`). A plain method is a selector pattern followed by its body, as shown in the browser (`bar ^ 42`).
 
 ## Responsibility:
 
-- I read the optional STON metadata (`{ #category : 'accessing' }`), the class reference before `>>`, and the selector pattern.
-- I find the method body between its brackets. Brackets inside strings, comments, characters and nested blocks don't end it.
-- I give the selector pattern and the body to `OCParser`, which parses the method. Any syntax error is signalled as a `TonelParseError`.
+- I tell Tonel from plain source: Tonel starts with metadata (`{`) or with `ClassName >>` / `ClassName class >>`. Anything else is a plain method.
+- For Tonel, I read the optional STON metadata (`{ #category : 'accessing' }`), the class reference, the selector pattern, and the body between its brackets. Brackets inside strings, comments, characters and nested blocks don't end the body.
+- I give the method source to `OCParser`, which builds the AST. Any syntax error is signalled as a `TonelParseError`.
 
 ## Collaborators:
 
-- `TonelSourceScanner` finds the end of the method body.
+- `TonelSourceScanner` finds the end of a Tonel method body.
 - `OCParser` parses the method source into an `OCMethodNode`.
-- `STON` reads the metadata.
+- `STON` reads the Tonel metadata.
 - `OCMethodDeclaration` is what I return for each method.
 
 ## Public API and Key Messages
 
-- `OCMethodParser parse: aString` returns one `OCMethodDeclaration`. The string must contain exactly one method.
-- `OCMethodParser parseAll: aString` returns the collection of `OCMethodDeclaration` for a string with several methods.
+- `OCMethodParser parse: aString` detects the format and returns one `OCMethodDeclaration`. The string must contain exactly one method.
+- `OCMethodParser parseTonel: aString` and `OCMethodParser parsePlain: aString` force one format. Use them when the format is known: for example `bar [ ^ 1 ]` is a plain method whose body is a block, but an error for `parseTonel:`.
+- `OCMethodParser parseAll: aString` returns the collection of `OCMethodDeclaration` for a string with several Tonel methods. Plain methods have no delimiters, so they can't be listed this way.
 - The same messages exist on the instance side: `OCMethodParser new parse: aString`.
 
 ```
@@ -29,7 +30,9 @@ Fraction class >> half: aNumber [
 ]'.
 declaration isClassSide. ""true""
 declaration selector. ""#half:""
-declaration ast body statements size. ""1""
+
+(OCMethodParser parse: 'double: x
+	^ x * 2') selector. ""#double:""
 ```
 
 Run `OCMethodParser class >> #scriptParseMethods` to inspect several parsed methods.
@@ -40,8 +43,8 @@ Run `OCMethodParser class >> #scriptParseMethods` to inspect several parsed meth
 
 ### Implementation Points
 
-- The source given to `OCParser` is the selector pattern followed by the body, as Tonel stores it.
-- Comments are allowed in the selector pattern, and a `[` inside them is not taken as the start of the body.
+- For Tonel, the source given to `OCParser` is the selector pattern followed by the body, as Tonel stores it. For plain methods, it is the whole string without the surrounding separators.
+- Comments are allowed in a Tonel selector pattern, and a `[` inside them is not taken as the start of the body.
 "
 Class {
 	#name : 'OCMethodParser',
@@ -56,7 +59,7 @@ Class {
 
 { #category : 'parsing' }
 OCMethodParser class >> parse: aString [
-	"Parse aString, which holds exactly one Tonel method definition, and answer a OCMethodDeclaration"
+	"Parse aString, which holds exactly one method, Tonel or plain Pharo, and answer an OCMethodDeclaration"
 
 	^ self new parse: aString
 ]
@@ -68,12 +71,27 @@ OCMethodParser class >> parseAll: aString [
 	^ self new parseAll: aString
 ]
 
+{ #category : 'parsing' }
+OCMethodParser class >> parsePlain: aString [
+	"Parse aString, a plain Pharo method (selector pattern and body), and answer an OCMethodDeclaration"
+
+	^ self new parsePlain: aString
+]
+
+{ #category : 'parsing' }
+OCMethodParser class >> parseTonel: aString [
+	"Parse aString, which holds exactly one Tonel method definition, and answer an OCMethodDeclaration"
+
+	^ self new parseTonel: aString
+]
+
 { #category : 'script' }
 OCMethodParser class >> scriptParseMethods [
-	"Parse an instance-side and a class-side method from one Tonel string and inspect the declarations with their ASTs"
+	"Parse an instance-side and a class-side Tonel method, and a plain Pharo method, then inspect the declarations with their ASTs"
 
 	<script>
-	(self parseAll: '{ #category : ''accessing'' }
+	| declarations |
+	declarations := self parseAll: '{ #category : ''accessing'' }
 Counter >> increment [
 	count := count + 1.
 	^ count
@@ -82,7 +100,10 @@ Counter >> increment [
 { #category : ''instance creation'' }
 Counter class >> startingAt: anInteger [
 	^ self new setCount: anInteger
-]') inspect
+]'.
+	declarations add: (self parse: 'reset
+	count := 0').
+	declarations inspect
 ]
 
 { #category : 'private' }
@@ -101,10 +122,34 @@ OCMethodParser >> error: aString [
 	^ TonelParseError signal: aString
 ]
 
+{ #category : 'testing' }
+OCMethodParser >> isTonel: aString [
+	"Answer whether aString starts like a Tonel method definition: metadata, or 'ClassName >>' or 'ClassName class >>'"
+
+	| input word |
+	input := aString readStream.
+	input skipSeparators.
+	input peek = ${ ifTrue: [ ^ true ].
+	word := self nextWordFrom: input.
+	(word isEmpty or: [ word first isLetter not ]) ifTrue: [ ^ false ].
+	input skipSeparators.
+	(input atEnd not and: [ input peek isLetter ]) ifTrue: [
+			(self nextWordFrom: input) = 'class' ifFalse: [ ^ false ].
+			input skipSeparators ].
+	^ (input next: 2) = '>>'
+]
+
 { #category : 'private' }
 OCMethodParser >> isValidClassName: aString [
 
 	^ aString first isLetter and: [ aString allSatisfy: [ :char | char isAlphaNumeric or: [ char = $_ ] ] ]
+]
+
+{ #category : 'private' }
+OCMethodParser >> nextWordFrom: aStream [
+
+	^ String streamContents: [ :out |
+		  [ aStream atEnd not and: [ aStream peek isAlphaNumeric or: [ aStream peek = $_ ] ] ] whileTrue: [ out nextPut: aStream next ] ]
 ]
 
 { #category : 'private' }
@@ -117,14 +162,11 @@ OCMethodParser >> ocParse: aString [
 
 { #category : 'parsing' }
 OCMethodParser >> parse: aString [
-	"Parse aString, which holds exactly one Tonel method definition, and answer a OCMethodDeclaration"
+	"Parse aString, which holds exactly one method, and answer an OCMethodDeclaration. The method is either a Tonel method definition or a plain Pharo method (selector pattern and body)"
 
-	| declaration |
-	stream := aString readStream.
-	declaration := self parseMethod.
-	self skipSeparators.
-	stream atEnd ifFalse: [ self error: 'Unexpected characters after the method' ].
-	^ declaration
+	^ (self isTonel: aString)
+		  ifTrue: [ self parseTonel: aString ]
+		  ifFalse: [ self parsePlain: aString ]
 ]
 
 { #category : 'parsing' }
@@ -204,6 +246,18 @@ OCMethodParser >> parseMethodSource: aString pattern: aPattern [
 ]
 
 { #category : 'parsing' }
+OCMethodParser >> parsePlain: aString [
+	"Parse aString, a plain Pharo method made of a selector pattern and a body, and answer an OCMethodDeclaration without class name nor metadata"
+
+	| source |
+	source := aString trimBoth.
+	source ifEmpty: [ self error: 'Missing method' ].
+	^ OCMethodDeclaration new
+		  ast: (self ocParse: source);
+		  yourself
+]
+
+{ #category : 'parsing' }
 OCMethodParser >> parseSelectorPattern [
 	"Read the selector pattern up to the opening bracket of the body. Comments may contain brackets"
 
@@ -221,6 +275,18 @@ OCMethodParser >> parseSelectorPattern [
 	pattern := pattern trimBoth.
 	pattern ifEmpty: [ self error: 'Missing selector pattern' ].
 	^ pattern
+]
+
+{ #category : 'parsing' }
+OCMethodParser >> parseTonel: aString [
+	"Parse aString, which holds exactly one Tonel method definition, and answer an OCMethodDeclaration"
+
+	| declaration |
+	stream := aString readStream.
+	declaration := self parseMethod.
+	self skipSeparators.
+	stream atEnd ifFalse: [ self error: 'Unexpected characters after the method' ].
+	^ declaration
 ]
 
 { #category : 'private' }
