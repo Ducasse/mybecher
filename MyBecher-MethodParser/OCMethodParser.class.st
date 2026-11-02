@@ -12,17 +12,17 @@ I parse method definitions written in the Tonel format, without the class defini
 - `TonelSourceScanner` finds the end of the method body.
 - `OCParser` parses the method source into an `OCMethodNode`.
 - `STON` reads the metadata.
-- `TonelMethodDeclaration` is what I return for each method.
+- `OCMethodDeclaration` is what I return for each method.
 
 ## Public API and Key Messages
 
-- `TonelMethodParser parse: aString` returns one `TonelMethodDeclaration`. The string must contain exactly one method.
-- `TonelMethodParser parseAll: aString` returns the collection of `TonelMethodDeclaration` for a string with several methods.
-- The same messages exist on the instance side: `TonelMethodParser new parse: aString`.
+- `OCMethodParser parse: aString` returns one `OCMethodDeclaration`. The string must contain exactly one method.
+- `OCMethodParser parseAll: aString` returns the collection of `OCMethodDeclaration` for a string with several methods.
+- The same messages exist on the instance side: `OCMethodParser new parse: aString`.
 
 ```
 | declaration |
-declaration := TonelMethodParser parse: '{ #category : ''arithmetic'' }
+declaration := OCMethodParser parse: '{ #category : ''arithmetic'' }
 Fraction class >> half: aNumber [
 	""Answer half of aNumber""
 	^ aNumber / 2
@@ -32,7 +32,7 @@ declaration selector. ""#half:""
 declaration ast body statements size. ""1""
 ```
 
-Run `TonelMethodParser class >> #scriptParseMethods` to inspect several parsed methods.
+Run `OCMethodParser class >> #scriptParseMethods` to inspect several parsed methods.
 
 ## Internal Representation
 
@@ -44,7 +44,7 @@ Run `TonelMethodParser class >> #scriptParseMethods` to inspect several parsed m
 - Comments are allowed in the selector pattern, and a `[` inside them is not taken as the start of the body.
 "
 Class {
-	#name : 'TonelMethodParser',
+	#name : 'OCMethodParser',
 	#superclass : 'Object',
 	#instVars : [
 		'stream'
@@ -55,21 +55,21 @@ Class {
 }
 
 { #category : 'parsing' }
-TonelMethodParser class >> parse: aString [
-	"Parse aString, which holds exactly one Tonel method definition, and answer a TonelMethodDeclaration"
+OCMethodParser class >> parse: aString [
+	"Parse aString, which holds exactly one Tonel method definition, and answer a OCMethodDeclaration"
 
 	^ self new parse: aString
 ]
 
 { #category : 'parsing' }
-TonelMethodParser class >> parseAll: aString [
-	"Parse aString, which holds zero or more Tonel method definitions, and answer a collection of TonelMethodDeclaration"
+OCMethodParser class >> parseAll: aString [
+	"Parse aString, which holds zero or more Tonel method definitions, and answer a collection of OCMethodDeclaration"
 
 	^ self new parseAll: aString
 ]
 
 { #category : 'script' }
-TonelMethodParser class >> scriptParseMethods [
+OCMethodParser class >> scriptParseMethods [
 	"Parse an instance-side and a class-side method from one Tonel string and inspect the declarations with their ASTs"
 
 	<script>
@@ -86,7 +86,7 @@ Counter class >> startingAt: anInteger [
 ]
 
 { #category : 'private' }
-TonelMethodParser >> atMethodSeparator [
+OCMethodParser >> atMethodSeparator [
 	"Answer whether the stream is positioned on the >> between the class reference and the selector pattern"
 
 	| position |
@@ -95,20 +95,20 @@ TonelMethodParser >> atMethodSeparator [
 ]
 
 { #category : 'private' }
-TonelMethodParser >> error: aString [
+OCMethodParser >> error: aString [
 	"Signal parse errors as TonelParseError, the error used by the rest of Tonel"
 
 	^ TonelParseError signal: aString
 ]
 
 { #category : 'private' }
-TonelMethodParser >> isValidClassName: aString [
+OCMethodParser >> isValidClassName: aString [
 
 	^ aString first isLetter and: [ aString allSatisfy: [ :char | char isAlphaNumeric or: [ char = $_ ] ] ]
 ]
 
 { #category : 'private' }
-TonelMethodParser >> ocParse: aString [
+OCMethodParser >> ocParse: aString [
 
 	^ [ OCParser parseMethod: aString ]
 		  on: OCCodeError
@@ -116,8 +116,8 @@ TonelMethodParser >> ocParse: aString [
 ]
 
 { #category : 'parsing' }
-TonelMethodParser >> parse: aString [
-	"Parse aString, which holds exactly one Tonel method definition, and answer a TonelMethodDeclaration"
+OCMethodParser >> parse: aString [
+	"Parse aString, which holds exactly one Tonel method definition, and answer a OCMethodDeclaration"
 
 	| declaration |
 	stream := aString readStream.
@@ -128,8 +128,8 @@ TonelMethodParser >> parse: aString [
 ]
 
 { #category : 'parsing' }
-TonelMethodParser >> parseAll: aString [
-	"Parse aString, which holds zero or more Tonel method definitions, and answer a collection of TonelMethodDeclaration"
+OCMethodParser >> parseAll: aString [
+	"Parse aString, which holds zero or more Tonel method definitions, and answer a collection of OCMethodDeclaration"
 
 	stream := aString readStream.
 	^ OrderedCollection streamContents: [ :declarations |
@@ -139,14 +139,14 @@ TonelMethodParser >> parseAll: aString [
 ]
 
 { #category : 'parsing' }
-TonelMethodParser >> parseBody [
+OCMethodParser >> parseBody [
 	"Answer the text between the brackets of the method body. TonelSourceScanner skips the brackets that are inside strings, comments, characters and blocks"
 
 	^ (TonelSourceScanner on: stream) scan
 ]
 
 { #category : 'parsing' }
-TonelMethodParser >> parseClassReferenceInto: aDeclaration [
+OCMethodParser >> parseClassReferenceInto: aDeclaration [
 	"Read 'ClassName >>' or 'ClassName class >>' and store the class name and side in aDeclaration"
 
 	| reference parts |
@@ -164,7 +164,7 @@ TonelMethodParser >> parseClassReferenceInto: aDeclaration [
 ]
 
 { #category : 'parsing' }
-TonelMethodParser >> parseMetadata [
+OCMethodParser >> parseMetadata [
 	"Read the STON dictionary before the method, or answer an empty dictionary when there is none"
 
 	| metadata |
@@ -177,11 +177,11 @@ TonelMethodParser >> parseMetadata [
 ]
 
 { #category : 'parsing' }
-TonelMethodParser >> parseMethod [
+OCMethodParser >> parseMethod [
 	"Read one method definition from the stream: optional metadata, class reference, selector pattern and body"
 
 	| declaration pattern body |
-	declaration := TonelMethodDeclaration new.
+	declaration := OCMethodDeclaration new.
 	self skipSeparators.
 	declaration metadata: self parseMetadata.
 	self skipSeparators.
@@ -193,7 +193,7 @@ TonelMethodParser >> parseMethod [
 ]
 
 { #category : 'parsing' }
-TonelMethodParser >> parseMethodSource: aString pattern: aPattern [
+OCMethodParser >> parseMethodSource: aString pattern: aPattern [
 	"Delegate the parsing of the method to OCParser. aPattern must hold only a selector pattern"
 
 	| patternNode |
@@ -204,7 +204,7 @@ TonelMethodParser >> parseMethodSource: aString pattern: aPattern [
 ]
 
 { #category : 'parsing' }
-TonelMethodParser >> parseSelectorPattern [
+OCMethodParser >> parseSelectorPattern [
 	"Read the selector pattern up to the opening bracket of the body. Comments may contain brackets"
 
 	| pattern |
@@ -224,7 +224,7 @@ TonelMethodParser >> parseSelectorPattern [
 ]
 
 { #category : 'private' }
-TonelMethodParser >> skipSeparators [
+OCMethodParser >> skipSeparators [
 
 	[ stream atEnd not and: [ stream peek isSeparator ] ] whileTrue: [ stream next ]
 ]

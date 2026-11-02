@@ -1,8 +1,8 @@
 "
-I test `TonelMethodParser` and the `TonelMethodDeclaration` instances it returns: instance-side and class-side methods, the metadata, brackets inside the body, comments in the selector pattern, and the errors.
+I test `OCMethodParser` and the `OCMethodDeclaration` instances it returns: instance-side and class-side methods, the metadata, brackets inside the body, comments in the selector pattern, and the errors.
 "
 Class {
-	#name : 'TonelMethodParserTest',
+	#name : 'OCMethodParserTest',
 	#superclass : 'TestCase',
 	#category : 'MyBecher-MethodParser-Tests',
 	#package : 'MyBecher-MethodParser',
@@ -10,10 +10,10 @@ Class {
 }
 
 { #category : 'tests' }
-TonelMethodParserTest >> testBinaryMethod [
+OCMethodParserTest >> testBinaryMethod [
 
 	| declaration |
-	declaration := TonelMethodParser parse: 'Foo >> <= other [
+	declaration := OCMethodParser parse: 'Foo >> <= other [
 	^ true
 ]'.
 	self assert: declaration selector equals: #'<='.
@@ -21,10 +21,10 @@ TonelMethodParserTest >> testBinaryMethod [
 ]
 
 { #category : 'tests' }
-TonelMethodParserTest >> testBracketsInsideBody [
+OCMethodParserTest >> testBracketsInsideBody [
 
 	| declaration |
-	declaration := TonelMethodParser parse: 'Foo >> bar [
+	declaration := OCMethodParser parse: 'Foo >> bar [
 	"a ] comment"
 	| b |
 	b := [ :x | x ].
@@ -36,10 +36,10 @@ TonelMethodParserTest >> testBracketsInsideBody [
 ]
 
 { #category : 'tests' }
-TonelMethodParserTest >> testClassSideKeywordMethod [
+OCMethodParserTest >> testClassSideKeywordMethod [
 
 	| declaration |
-	declaration := TonelMethodParser parse: 'Foo class >> x: aNumber y: anotherNumber [
+	declaration := OCMethodParser parse: 'Foo class >> x: aNumber y: anotherNumber [
 	^ self new setX: aNumber y: anotherNumber
 ]'.
 	self assert: declaration className equals: 'Foo'.
@@ -50,10 +50,10 @@ TonelMethodParserTest >> testClassSideKeywordMethod [
 ]
 
 { #category : 'tests' }
-TonelMethodParserTest >> testCommentInSelectorPattern [
+OCMethodParserTest >> testCommentInSelectorPattern [
 
 	| declaration |
-	declaration := TonelMethodParser parse: 'Foo >> bar: x "see [ here" baz: y [
+	declaration := OCMethodParser parse: 'Foo >> bar: x "see [ here" baz: y [
 	^ x + y
 ]'.
 	self assert: declaration selector equals: #bar:baz:.
@@ -61,19 +61,19 @@ TonelMethodParserTest >> testCommentInSelectorPattern [
 ]
 
 { #category : 'tests' }
-TonelMethodParserTest >> testInstanceSideAPI [
+OCMethodParserTest >> testInstanceSideAPI [
 
 	| declaration |
-	declaration := TonelMethodParser new parse: 'Foo class >> bar [ ^ 1 ]'.
+	declaration := OCMethodParser new parse: 'Foo class >> bar [ ^ 1 ]'.
 	self assert: declaration isMeta.
 	self assert: declaration selector equals: #bar
 ]
 
 { #category : 'tests' }
-TonelMethodParserTest >> testInstanceSideUnaryMethod [
+OCMethodParserTest >> testInstanceSideUnaryMethod [
 
 	| declaration |
-	declaration := TonelMethodParser parse: 'Foo >> bar [
+	declaration := OCMethodParser parse: 'Foo >> bar [
 	^ 42
 ]'.
 	self assert: declaration className equals: 'Foo'.
@@ -85,16 +85,16 @@ TonelMethodParserTest >> testInstanceSideUnaryMethod [
 ]
 
 { #category : 'tests' }
-TonelMethodParserTest >> testInvalidClassReference [
+OCMethodParserTest >> testInvalidClassReference [
 
-	self should: [ TonelMethodParser parse: 'Foo bar >> baz [ ^ 1 ]' ] raise: TonelParseError
+	self should: [ OCMethodParser parse: 'Foo bar >> baz [ ^ 1 ]' ] raise: TonelParseError
 ]
 
 { #category : 'tests' }
-TonelMethodParserTest >> testMetadata [
+OCMethodParserTest >> testMetadata [
 
 	| declaration |
-	declaration := TonelMethodParser parse: '{ #category : ''accessing'', #foo : 3 }
+	declaration := OCMethodParser parse: '{ #category : ''accessing'', #foo : 3 }
 Foo >> bar [
 	^ 42
 ]'.
@@ -103,31 +103,31 @@ Foo >> bar [
 ]
 
 { #category : 'tests' }
-TonelMethodParserTest >> testMissingBody [
+OCMethodParserTest >> testMissingBody [
 
-	self should: [ TonelMethodParser parse: 'Foo >> bar' ] raise: TonelParseError
+	self should: [ OCMethodParser parse: 'Foo >> bar' ] raise: TonelParseError
 ]
 
 { #category : 'tests' }
-TonelMethodParserTest >> testMissingClassReference [
+OCMethodParserTest >> testMissingClassReference [
 
-	self should: [ TonelMethodParser parse: 'bar [ ^ 1 ]' ] raise: TonelParseError
+	self should: [ OCMethodParser parse: 'bar [ ^ 1 ]' ] raise: TonelParseError
 ]
 
 { #category : 'tests' }
-TonelMethodParserTest >> testNoMetadata [
+OCMethodParserTest >> testNoMetadata [
 
 	| declaration |
-	declaration := TonelMethodParser parse: 'Foo >> bar [ ^ 42 ]'.
+	declaration := OCMethodParser parse: 'Foo >> bar [ ^ 42 ]'.
 	self assert: declaration metadata isEmpty.
 	self assert: declaration category isNil
 ]
 
 { #category : 'tests' }
-TonelMethodParserTest >> testParseAll [
+OCMethodParserTest >> testParseAll [
 
 	| declarations |
-	declarations := TonelMethodParser parseAll: '
+	declarations := OCMethodParser parseAll: '
 { #category : ''accessing'' }
 Foo >> bar [
 	^ 1
@@ -148,17 +148,17 @@ Foo >> baz [ ^ 2 ]
 ]
 
 { #category : 'tests' }
-TonelMethodParserTest >> testParseAllEmpty [
+OCMethodParserTest >> testParseAllEmpty [
 
-	self assert: (TonelMethodParser parseAll: '  
+	self assert: (OCMethodParser parseAll: '  
  ') isEmpty
 ]
 
 { #category : 'tests' }
-TonelMethodParserTest >> testPragmaAndTemporaries [
+OCMethodParserTest >> testPragmaAndTemporaries [
 
 	| declaration |
-	declaration := TonelMethodParser parse: 'Foo class >> example [
+	declaration := OCMethodParser parse: 'Foo class >> example [
 	<sampleInstance>
 	| a |
 	a := 3.
@@ -170,27 +170,27 @@ TonelMethodParserTest >> testPragmaAndTemporaries [
 ]
 
 { #category : 'tests' }
-TonelMethodParserTest >> testSelectorPatternMismatchIsAnError [
+OCMethodParserTest >> testSelectorPatternMismatchIsAnError [
 	"The text between >> and [ must be only a selector pattern"
 
-	self should: [ TonelMethodParser parse: 'Foo >> bar baz [ ^ 1 ]' ] raise: TonelParseError
+	self should: [ OCMethodParser parse: 'Foo >> bar baz [ ^ 1 ]' ] raise: TonelParseError
 ]
 
 { #category : 'tests' }
-TonelMethodParserTest >> testSeveralMethodsWithParseIsAnError [
+OCMethodParserTest >> testSeveralMethodsWithParseIsAnError [
 
 	self
 		should: [
-				TonelMethodParser parse: 'Foo >> bar [ ^ 1 ]
+				OCMethodParser parse: 'Foo >> bar [ ^ 1 ]
 Foo >> baz [ ^ 2 ]' ]
 		raise: TonelParseError
 ]
 
 { #category : 'tests' }
-TonelMethodParserTest >> testSourceCodeIsPatternAndBody [
+OCMethodParserTest >> testSourceCodeIsPatternAndBody [
 
 	| declaration |
-	declaration := TonelMethodParser parse: '{ #category : ''accessing'' }
+	declaration := OCMethodParser parse: '{ #category : ''accessing'' }
 Foo >> bar: x [
 	^ x
 ]
@@ -199,24 +199,24 @@ Foo >> bar: x [
 ]
 
 { #category : 'tests' }
-TonelMethodParserTest >> testSyntaxErrorInBody [
+OCMethodParserTest >> testSyntaxErrorInBody [
 
 	self
 		should: [
-				TonelMethodParser parse: 'Foo >> bar [
+				OCMethodParser parse: 'Foo >> bar [
 	^ ( 1
 ]' ]
 		raise: TonelParseError
 ]
 
 { #category : 'tests' }
-TonelMethodParserTest >> testTrailingCharacters [
+OCMethodParserTest >> testTrailingCharacters [
 
-	self should: [ TonelMethodParser parse: 'Foo >> bar [ ^ 1 ] garbage' ] raise: TonelParseError
+	self should: [ OCMethodParser parse: 'Foo >> bar [ ^ 1 ] garbage' ] raise: TonelParseError
 ]
 
 { #category : 'tests' }
-TonelMethodParserTest >> testUnclosedBody [
+OCMethodParserTest >> testUnclosedBody [
 
-	self should: [ TonelMethodParser parse: 'Foo >> bar [ ^ 1' ] raise: TonelParseError
+	self should: [ OCMethodParser parse: 'Foo >> bar [ ^ 1' ] raise: TonelParseError
 ]

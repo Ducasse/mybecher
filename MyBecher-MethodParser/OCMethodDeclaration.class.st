@@ -1,5 +1,5 @@
 "
-I represent one method read from Tonel source, as returned by `TonelMethodParser`.
+I represent one method read from Tonel source, as returned by `OCMethodParser`.
 
 ## Responsibility:
 
@@ -9,7 +9,7 @@ I represent one method read from Tonel source, as returned by `TonelMethodParser
 
 ## Collaborators:
 
-- `TonelMethodParser` creates me.
+- `OCMethodParser` creates me.
 - `OCMethodNode` is my `ast`. It answers the selector, the arguments and the source code.
 
 ## Public API and Key Messages
@@ -18,16 +18,16 @@ I represent one method read from Tonel source, as returned by `TonelMethodParser
 - `metadata`, `category`
 - `ast`, `selector`, `sourceCode`
 
-Create me with `TonelMethodParser parse: aString`. Usually you don't create me yourself. For example:
+Create me with `OCMethodParser parse: aString`. Usually you don't create me yourself. For example:
 
 ```
-(TonelMethodParser parse: '{ #category : ''accessing'' }
+(OCMethodParser parse: '{ #category : ''accessing'' }
 Point class >> origin [
 	^ 0 @ 0
 ]') selector. ""#origin""
 ```
 
-See `TonelMethodDeclaration class >> #exampleClassSide`.
+See `OCMethodDeclaration class >> #exampleClassSide`.
 
 ## Internal Representation
 
@@ -37,7 +37,7 @@ See `TonelMethodDeclaration class >> #exampleClassSide`.
 - `ast`: an `OCMethodNode`.
 "
 Class {
-	#name : 'TonelMethodDeclaration',
+	#name : 'OCMethodDeclaration',
 	#superclass : 'Object',
 	#instVars : [
 		'className',
@@ -51,10 +51,10 @@ Class {
 }
 
 { #category : 'examples' }
-TonelMethodDeclaration class >> exampleClassSide [
+OCMethodDeclaration class >> exampleClassSide [
 
 	<sampleInstance>
-	^ TonelMethodParser parse: '{ #category : ''instance creation'' }
+	^ OCMethodParser parse: '{ #category : ''instance creation'' }
 Point class >> unit [
 	"Answer the point at 1@1"
 	^ 1 @ 1
@@ -62,48 +62,48 @@ Point class >> unit [
 ]
 
 { #category : 'examples' }
-TonelMethodDeclaration class >> exampleInstanceSide [
+OCMethodDeclaration class >> exampleInstanceSide [
 
 	<sampleInstance>
-	^ TonelMethodParser parse: '{ #category : ''arithmetic'' }
+	^ OCMethodParser parse: '{ #category : ''arithmetic'' }
 Point >> double [
 	^ self * 2
 ]'
 ]
 
 { #category : 'accessing' }
-TonelMethodDeclaration >> ast [
+OCMethodDeclaration >> ast [
 
 	^ ast
 ]
 
 { #category : 'accessing' }
-TonelMethodDeclaration >> ast: aMethodNode [
+OCMethodDeclaration >> ast: aMethodNode [
 
 	ast := aMethodNode
 ]
 
 { #category : 'accessing' }
-TonelMethodDeclaration >> category [
+OCMethodDeclaration >> category [
 	"Answer the protocol given in the Tonel metadata, or nil when there is none"
 
 	^ metadata at: #category ifAbsent: [ nil ]
 ]
 
 { #category : 'accessing' }
-TonelMethodDeclaration >> className [
+OCMethodDeclaration >> className [
 
 	^ className
 ]
 
 { #category : 'accessing' }
-TonelMethodDeclaration >> className: aString [
+OCMethodDeclaration >> className: aString [
 
 	className := aString
 ]
 
 { #category : 'initialization' }
-TonelMethodDeclaration >> initialize [
+OCMethodDeclaration >> initialize [
 
 	super initialize.
 	isMeta := false.
@@ -111,43 +111,43 @@ TonelMethodDeclaration >> initialize [
 ]
 
 { #category : 'testing' }
-TonelMethodDeclaration >> isClassSide [
+OCMethodDeclaration >> isClassSide [
 
 	^ isMeta
 ]
 
 { #category : 'testing' }
-TonelMethodDeclaration >> isInstanceSide [
+OCMethodDeclaration >> isInstanceSide [
 
 	^ isMeta not
 ]
 
 { #category : 'accessing' }
-TonelMethodDeclaration >> isMeta [
+OCMethodDeclaration >> isMeta [
 
 	^ isMeta
 ]
 
 { #category : 'accessing' }
-TonelMethodDeclaration >> isMeta: aBoolean [
+OCMethodDeclaration >> isMeta: aBoolean [
 
 	isMeta := aBoolean
 ]
 
 { #category : 'accessing' }
-TonelMethodDeclaration >> metadata [
+OCMethodDeclaration >> metadata [
 
 	^ metadata
 ]
 
 { #category : 'accessing' }
-TonelMethodDeclaration >> metadata: aDictionary [
+OCMethodDeclaration >> metadata: aDictionary [
 
 	metadata := aDictionary
 ]
 
 { #category : 'printing' }
-TonelMethodDeclaration >> printOn: aStream [
+OCMethodDeclaration >> printOn: aStream [
 
 	aStream nextPutAll: className asString.
 	isMeta ifTrue: [ aStream nextPutAll: ' class' ].
@@ -156,13 +156,13 @@ TonelMethodDeclaration >> printOn: aStream [
 ]
 
 { #category : 'accessing' }
-TonelMethodDeclaration >> selector [
+OCMethodDeclaration >> selector [
 
 	^ ast selector
 ]
 
 { #category : 'accessing' }
-TonelMethodDeclaration >> sourceCode [
+OCMethodDeclaration >> sourceCode [
 	"Answer the method source as Pharo stores it: the selector pattern followed by the body"
 
 	^ ast source
