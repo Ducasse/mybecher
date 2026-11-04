@@ -36,8 +36,8 @@ See `MyStackMachinePresenter class >> #exampleSumToN` and `MyStackMachinePresent
 
 ### Implementation Points
 
-- Every action ends with `refresh`, which rebuilds the stack items, moves the program selection to the pc, and updates the buttons and status.
-- `MySMError` is caught around each action, so a faulty program shows its error in the status line instead of opening a debugger.
+- I never refresh myself after an action: the machine announces `MyStackMachineChanged` exactly once per change and my subscription calls `refresh`, which reloads the program if needed, moves the selection to the pc, and updates the buttons and status. So one click means one refresh.
+- `performReportingErrors:` catches `MySMError` around each action, so a faulty program shows its error in the status line instead of opening a debugger. The message is written after the announcement (sent while the error unwinds), so the refresh does not erase it.
 "
 Class {
 	#name : 'MyStackMachinePresenter',
@@ -158,14 +158,13 @@ MyStackMachinePresenter >> markerFor: anInstruction [
 ]
 
 { #category : 'private' }
-MyStackMachinePresenter >> performAndRefresh: aBlock [
-	"Run aBlock on the machine and refresh the display. A machine error is shown in the status line instead of opening a debugger; it is set after the machine's own change announcement, which would otherwise overwrite it."
+MyStackMachinePresenter >> performReportingErrors: aBlock [
+	"Run aBlock on the machine; the machine's change announcement refreshes me. A machine error is shown in the status line instead of opening a debugger. It is written after the announcement, which runs while the error unwinds and would otherwise overwrite it."
 
 	| errorText |
 	[ aBlock value ]
 		on: MySMError
 		do: [ :error | errorText := error messageText ].
-	self refresh.
 	errorText ifNotNil: [ statusLabel label: 'Error: ' , errorText ]
 ]
 
@@ -202,7 +201,7 @@ MyStackMachinePresenter >> resetButton [
 MyStackMachinePresenter >> resetProgram [
 	"Restart the program from its first instruction with an empty stack."
 
-	self performAndRefresh: [ machine reset ]
+	self performReportingErrors: [ machine reset ]
 ]
 
 { #category : 'accessing' }
@@ -214,7 +213,7 @@ MyStackMachinePresenter >> runButton [
 MyStackMachinePresenter >> runProgram [
 	"Execute the rest of the program and show the final state."
 
-	self performAndRefresh: [ machine run ]
+	self performReportingErrors: [ machine run ]
 ]
 
 { #category : 'initialization' }
@@ -249,5 +248,5 @@ MyStackMachinePresenter >> stepButton [
 MyStackMachinePresenter >> stepInstruction [
 	"Execute the next instruction and show the new state."
 
-	self performAndRefresh: [ machine step ]
+	self performReportingErrors: [ machine step ]
 ]

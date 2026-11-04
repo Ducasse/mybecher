@@ -199,24 +199,18 @@ MyStackMachine >> announcer [
 ]
 
 { #category : 'private' }
+MyStackMachine >> basicExecute: anInstruction [
+	"Execute anInstruction without announcing it, by dispatching on its opcode."
+
+	self perform: anInstruction executionSelector with: anInstruction
+]
+
+{ #category : 'private' }
 MyStackMachine >> basicReset [
 
 	stack := OrderedCollection new.
 	pc := 1.
 	stepCount := 0
-]
-
-{ #category : 'private' }
-MyStackMachine >> basicStep [
-	"Execute the instruction at pc without announcing it. Jumps may then overwrite the already advanced pc."
-
-	| instruction |
-	self isFinished ifTrue: [ ^ self ].
-	stepCount := stepCount + 1.
-	stepCount > stepLimit ifTrue: [ MySMError signal: 'Step limit of ' , stepLimit printString , ' exceeded (infinite loop?)' ].
-	instruction := program at: pc.
-	pc := pc + 1.
-	self perform: instruction executionSelector with: instruction
 ]
 
 { #category : 'private' }
@@ -253,13 +247,18 @@ MyStackMachine >> eq [
 	self execute: #EQ with: nil
 ]
 
+{ #category : 'running' }
+MyStackMachine >> execute: anInstruction [
+	"Execute anInstruction and announce the change, even when it fails. This is the only place announcing the execution of a single instruction: both step and direct manipulation go through it."
+
+	[ self basicExecute: anInstruction ] ensure: [ self announceChanged ]
+]
+
 { #category : 'private' }
 MyStackMachine >> execute: anOpcode with: anArgument [
-	"Execute a single instruction outside of the program, exactly as the program would, then announce the change."
+	"Execute a single instruction built from anOpcode and anArgument, exactly as the program would."
 
-	| instruction |
-	instruction := MySMInstruction opcode: anOpcode argument: anArgument.
-	[ self perform: instruction executionSelector with: instruction ] ensure: [ self announceChanged ]
+	self execute: (MySMInstruction opcode: anOpcode argument: anArgument)
 ]
 
 { #category : 'executing' }
@@ -349,6 +348,16 @@ MyStackMachine >> executeSWAP: anInstruction [
 
 	self ensureDepth: 2 for: anInstruction.
 	stack swap: stack size with: stack size - 1
+]
+
+{ #category : 'private' }
+MyStackMachine >> fetchNextInstruction [
+	"Answer the instruction at pc and advance pc past it, guarding against infinite loops. Jumps may then overwrite the advanced pc."
+
+	stepCount := stepCount + 1.
+	stepCount > stepLimit ifTrue: [ MySMError signal: 'Step limit of ' , stepLimit printString , ' exceeded (infinite loop?)' ].
+	pc := pc + 1.
+	^ program at: pc - 1
 ]
 
 { #category : 'initialization' }
@@ -483,9 +492,9 @@ MyStackMachine >> reset [
 
 { #category : 'running' }
 MyStackMachine >> run [
-	"Execute the program until its end and answer the resulting stack. Announce the change once, at the end."
+	"Execute the program until its end and answer the resulting stack. Instructions are executed silently and the change is announced once, at the end."
 
-	[ [ self isFinished ] whileFalse: [ self basicStep ] ] ensure: [ self announceChanged ].
+	[ [ self isFinished ] whileFalse: [ self basicExecute: self fetchNextInstruction ] ] ensure: [ self announceChanged ].
 	^ stack
 ]
 
@@ -512,9 +521,10 @@ MyStackMachine >> stack: aCollection [
 
 { #category : 'running' }
 MyStackMachine >> step [
-	"Execute the instruction at pc, then announce the change (even when the instruction fails)."
+	"Execute the instruction at pc."
 
-	[ self basicStep ] ensure: [ self announceChanged ]
+	self isFinished ifTrue: [ ^ self ].
+	self execute: self fetchNextInstruction
 ]
 
 { #category : 'accessing' }

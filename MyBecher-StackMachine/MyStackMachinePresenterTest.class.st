@@ -33,6 +33,17 @@ MyStackMachinePresenterTest >> testDirectManipulationRefreshesStepper [
 	self assert: presenter stackTable items asArray equals: #( 3 3 )
 ]
 
+{ #category : 'tests' }
+MyStackMachinePresenterTest >> testEachButtonRefreshesOnlyOnce [
+
+	| stepper |
+	stepper := MyCountingStackMachinePresenter on: machine.
+	#( #stepButton #runButton #resetButton ) do: [ :button |
+			stepper resetRefreshCount.
+			(stepper perform: button) click.
+			self assert: stepper refreshCount equals: 1 ]
+]
+
 { #category : 'tests - external changes' }
 MyStackMachinePresenterTest >> testExternalRunAndResetRefreshStepper [
 
@@ -52,6 +63,20 @@ MyStackMachinePresenterTest >> testExternalStepRefreshesSelectionAndStatus [
 	self assert: presenter programTable selection selectedIndex equals: 2.
 	self assert: (presenter statusLabel label includesSubstring: 'pc 2').
 	self assert: presenter stackTable items asArray equals: #( 1 )
+]
+
+{ #category : 'tests' }
+MyStackMachinePresenterTest >> testFailingStepRefreshesOnlyOnce [
+	"A failing instruction is not an expected error here: it is reported in the status line, after a single refresh."
+
+	| stepper |
+	stepper := MyCountingStackMachinePresenter on: (MyStackMachine new
+			            source: 'POP';
+			            yourself).
+	stepper resetRefreshCount.
+	stepper stepButton click.
+	self assert: stepper refreshCount equals: 1.
+	self assert: (stepper statusLabel label includesSubstring: 'Error')
 ]
 
 { #category : 'tests' }
