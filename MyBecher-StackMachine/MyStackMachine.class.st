@@ -12,13 +12,14 @@ I am an interpreter for a small stack machine language: one operand stack, a pro
 - `MySMParser`: turns source text into instructions.
 - `MySMInstruction`: the instructions I execute, dispatching on their opcode.
 - `MySMError`: signaled on runtime errors (stack underflow, unknown label or variable, modulo by zero...).
+- `MyStackMachineChanged`: announced through my `announcer` after each change (`step`, `run` once at the end, `reset`, `stack:`, `program:`, direct manipulation), so user interfaces such as `MyStackMachinePresenter` and `MyStackPresenter` stay up to date.
 
 ## Public API and Key Messages
 
 - `MyStackMachine new` then `stack: #(10 3)`, `variableAt: #x put: 5`, `source: aString` (or `program: instructions`)
 - `run` executes until the end and answers the stack (an `OrderedCollection`, top is last).
 - `step` executes one instruction; `isFinished` tells whether the program is done.
-- `inspect` me: the **Stack** pane (`inspectionStack:`) lists the stack top first, depth 1 being the top.
+- `inspect` me: the first pane, **Stepper** (`inspectionStepper:`), is a `MyStackMachinePresenter` to step through my program; the **Stack** pane (`inspectionStack:`) lists the stack top first, depth 1 being the top. `openStepper` opens the stepper in its own window.
 - Class side: `MyStackMachine runSource: aString` and `runSource:stack:variables:`.
 - Direct manipulation, one message per instruction, cascadable: `push:` (integer or variable name), `pop`, `dup`, `swap`, `add`, `sub`, `mul`, `mod`, `eq`, `lt`, `jump:`, `jumpIfZero:`; `top` answers the top without popping.
 
@@ -50,6 +51,7 @@ See `MyStackMachine class >> #exampleSumToN` and `MyStackMachine class >> #scrip
 - `labels`: a Dictionary mapping label names to their instruction index.
 - `variables`: a Dictionary mapping variable names (Symbols) to integers.
 - `stepCount`, `stepLimit`: guard against infinite loops.
+- `announcer`: created on first use; nothing is announced while nobody listens.
 
 ### Implementation Points
 
@@ -66,7 +68,8 @@ Class {
 		'labels',
 		'variables',
 		'stepCount',
-		'stepLimit'
+		'stepLimit',
+		'announcer'
 	],
 	#category : 'MyBecher-StackMachine-Core',
 	#package : 'MyBecher-StackMachine',
@@ -181,6 +184,41 @@ MyStackMachine >> add [
 	self execute: #ADD with: nil
 ]
 
+{ #category : 'announcements' }
+MyStackMachine >> announceChanged [
+	"Tell my listeners that my stack, pc or program changed. Costs nothing while nobody listens."
+
+	announcer ifNotNil: [ :anAnnouncer | anAnnouncer announce: (MyStackMachineChanged machine: self) ]
+]
+
+{ #category : 'announcements' }
+MyStackMachine >> announcer [
+	"Answer the announcer telling listeners (e.g. user interfaces) that my state changed."
+
+	^ announcer ifNil: [ announcer := Announcer new ]
+]
+
+{ #category : 'private' }
+MyStackMachine >> basicReset [
+
+	stack := OrderedCollection new.
+	pc := 1.
+	stepCount := 0
+]
+
+{ #category : 'private' }
+MyStackMachine >> basicStep [
+	"Execute the instruction at pc without announcing it. Jumps may then overwrite the already advanced pc."
+
+	| instruction |
+	self isFinished ifTrue: [ ^ self ].
+	stepCount := stepCount + 1.
+	stepCount > stepLimit ifTrue: [ MySMError signal: 'Step limit of ' , stepLimit printString , ' exceeded (infinite loop?)' ].
+	instruction := program at: pc.
+	pc := pc + 1.
+	self perform: instruction executionSelector with: instruction
+]
+
 { #category : 'private' }
 MyStackMachine >> binary: anInstruction do: aBlock [
 	"Pop b (the top) then a, and push the value of aBlock applied to a and b."
@@ -217,11 +255,11 @@ MyStackMachine >> eq [
 
 { #category : 'private' }
 MyStackMachine >> execute: anOpcode with: anArgument [
-	"Execute a single instruction outside of the program, exactly as the program would, and answer the receiver so that sends can be cascaded."
+	"Execute a single instruction outside of the program, exactly as the program would, then announce the change."
 
 	| instruction |
 	instruction := MySMInstruction opcode: anOpcode argument: anArgument.
-	self perform: instruction executionSelector with: instruction
+	[ self perform: instruction executionSelector with: instruction ] ensure: [ self announceChanged ]
 ]
 
 { #category : 'executing' }
@@ -321,26 +359,23 @@ MyStackMachine >> initialize [
 	labels := Dictionary new.
 	variables := Dictionary new.
 	stepLimit := 1000000.
-	self reset
+	self basicReset
 ]
 
 { #category : 'inspector' }
 MyStackMachine >> inspectionStack: aBuilder [
-	"Inspector pane listing the operand stack, top first: depth 1 is the top of the stack."
+	"Inspector pane listing the operand stack, top first, kept up to date when I change."
 
-	<inspectorPresentationOrder: 0 title: 'Stack'>
-	^ aBuilder newTable
-		  addStyle: 'stList';
-		  addColumn: (SpIndexTableColumn new
-				   title: 'Depth';
-				   width: 60;
-				   yourself);
-		  addColumn: (SpStringTableColumn new
-				   title: 'Value';
-				   evaluated: [ :each | StObjectPrinter asTruncatedTextFrom: each ];
-				   yourself);
-		  items: stack reversed;
-		  yourself
+	<inspectorPresentationOrder: 1 title: 'Stack'>
+	^ aBuilder instantiate: MyStackPresenter on: self
+]
+
+{ #category : 'inspector' }
+MyStackMachine >> inspectionStepper: aBuilder [
+	"Inspector pane to execute my program one instruction at a time while watching the stack."
+
+	<inspectorPresentationOrder: 0 title: 'Stepper'>
+	^ aBuilder instantiate: MyStackMachinePresenter on: self
 ]
 
 { #category : 'testing' }
@@ -390,6 +425,13 @@ MyStackMachine >> mul [
 	self execute: #MUL with: nil
 ]
 
+{ #category : 'ui' }
+MyStackMachine >> openStepper [
+	"Open a window to execute my program one instruction at a time while watching the stack."
+
+	^ (MyStackMachinePresenter on: self) open
+]
+
 { #category : 'accessing' }
 MyStackMachine >> pc [
 
@@ -435,16 +477,15 @@ MyStackMachine >> push: anIntegerOrVariableName [
 MyStackMachine >> reset [
 	"Put the machine back at the start of its program with an empty stack."
 
-	stack := OrderedCollection new.
-	pc := 1.
-	stepCount := 0
+	self basicReset.
+	self announceChanged
 ]
 
 { #category : 'running' }
 MyStackMachine >> run [
-	"Execute the program until its end and answer the resulting stack."
+	"Execute the program until its end and answer the resulting stack. Announce the change once, at the end."
 
-	[ self isFinished ] whileFalse: [ self step ].
+	[ [ self isFinished ] whileFalse: [ self basicStep ] ] ensure: [ self announceChanged ].
 	^ stack
 ]
 
@@ -463,22 +504,17 @@ MyStackMachine >> stack [
 
 { #category : 'accessing' }
 MyStackMachine >> stack: aCollection [
-	"Set the initial stack; the last element of aCollection is the top."
+	"Set the stack; the last element of aCollection is the top."
 
-	stack := aCollection asOrderedCollection
+	stack := aCollection asOrderedCollection.
+	self announceChanged
 ]
 
 { #category : 'running' }
 MyStackMachine >> step [
-	"Execute the instruction at pc. Jumps may then overwrite the already advanced pc."
+	"Execute the instruction at pc, then announce the change (even when the instruction fails)."
 
-	| instruction |
-	self isFinished ifTrue: [ ^ self ].
-	stepCount := stepCount + 1.
-	stepCount > stepLimit ifTrue: [ MySMError signal: 'Step limit of ' , stepLimit printString , ' exceeded (infinite loop?)' ].
-	instruction := program at: pc.
-	pc := pc + 1.
-	self perform: instruction executionSelector with: instruction
+	[ self basicStep ] ensure: [ self announceChanged ]
 ]
 
 { #category : 'accessing' }

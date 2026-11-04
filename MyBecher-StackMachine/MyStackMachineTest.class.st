@@ -10,6 +10,18 @@ Class {
 }
 
 { #category : 'helpers' }
+MyStackMachineTest >> countAnnouncementsOf: aMachine during: aBlock [
+	"Answer how many MyStackMachineChanged aMachine announces while aBlock runs."
+
+	| count |
+	count := 0.
+	aMachine announcer when: MyStackMachineChanged do: [ :announcement | count := count + 1 ] for: self.
+	aBlock value.
+	aMachine announcer unsubscribe: self.
+	^ count
+]
+
+{ #category : 'helpers' }
 MyStackMachineTest >> execute: aSource [
 
 	^ self execute: aSource stack: #(  ) variables: Dictionary new
@@ -37,6 +49,16 @@ MyStackMachineTest >> execute: aSource variables: aDictionary [
 { #category : 'tests - errors' }
 MyStackMachineTest >> testAddWithOneElementRaisesError [
 	self should: [ self execute: 'ADD' stack: #( 1 ) ] raise: MySMError
+]
+
+{ #category : 'tests - announcements' }
+MyStackMachineTest >> testAnnouncementKnowsTheMachine [
+
+	| machine received |
+	machine := MyStackMachine new.
+	machine announcer when: MyStackMachineChanged do: [ :announcement | received := announcement ] for: self.
+	machine push: 1.
+	self assert: received machine identicalTo: machine
 ]
 
 { #category : 'tests - instructions' }
@@ -162,6 +184,19 @@ LABEL end'.
 	self assert: machine stack asArray equals: #( 2 )
 ]
 
+{ #category : 'tests - announcements' }
+MyStackMachineTest >> testDirectManipulationAnnouncesChange [
+
+	| machine |
+	machine := MyStackMachine new.
+	self
+		assert: (self countAnnouncementsOf: machine during: [
+					 machine
+						 push: 3;
+						 dup ])
+		equals: 2
+]
+
 { #category : 'tests - direct manipulation errors' }
 MyStackMachineTest >> testDirectPopOnEmptyStackRaisesError [
 
@@ -227,16 +262,42 @@ JUMP loop'.
 { #category : 'tests - inspector' }
 MyStackMachineTest >> testInspectionStackShowsTopFirst [
 
-	| machine builder table |
+	| machine builder pane |
 	machine := MyStackMachine new.
 	machine stack: #( 10 20 30 ).
 	builder := SpPresenterBuilder new
 		           application: SpApplication new;
 		           yourself.
-	table := machine inspectionStack: builder.
-	self assert: table items asArray equals: #( 30 20 10 ).
-	self assert: (table columns collect: [ :each | each title ]) asArray equals: #( 'Depth' 'Value' ).
+	pane := machine inspectionStack: builder.
+	self assert: pane class equals: MyStackPresenter.
+	self assert: pane table items asArray equals: #( 30 20 10 ).
 	self assert: (MyStackMachine >> #inspectionStack: hasPragmaNamed: #inspectorPresentationOrder:title:)
+]
+
+{ #category : 'tests - inspector' }
+MyStackMachineTest >> testInspectionStepperDrivesTheInspectedMachine [
+
+	| machine builder stepper |
+	machine := MyStackMachine new.
+	machine source: 'PUSH 1
+PUSH 2'.
+	builder := SpPresenterBuilder new
+		           application: SpApplication new;
+		           yourself.
+	stepper := machine inspectionStepper: builder.
+	self assert: stepper class equals: MyStackMachinePresenter.
+	stepper stepButton click.
+	self assert: machine stack asArray equals: #( 1 )
+]
+
+{ #category : 'tests - inspector' }
+MyStackMachineTest >> testInspectionStepperIsFirstPane [
+
+	| panes |
+	panes := (Pragma allNamed: #inspectorPresentationOrder:title: in: MyStackMachine) sorted: [ :a :b |
+		         (a argumentAt: 1) < (b argumentAt: 1) ].
+	self assert: panes first method selector equals: #inspectionStepper:.
+	self assert: (panes first argumentAt: 1) < (panes second argumentAt: 1)
 ]
 
 { #category : 'tests - parser' }
@@ -477,6 +538,29 @@ MyStackMachineTest >> testPushUnknownVariableRaisesError [
 	self should: [ self execute: 'PUSH y' ] raise: MySMError
 ]
 
+{ #category : 'tests - announcements' }
+MyStackMachineTest >> testResetStackAndProgramAnnounceChange [
+
+	| machine |
+	machine := MyStackMachine new.
+	self assert: (self countAnnouncementsOf: machine during: [ machine reset ]) equals: 1.
+	self assert: (self countAnnouncementsOf: machine during: [ machine stack: #( 1 2 ) ]) equals: 1.
+	self assert: (self countAnnouncementsOf: machine during: [ machine source: 'POP' ]) equals: 1
+]
+
+{ #category : 'tests - announcements' }
+MyStackMachineTest >> testRunAnnouncesOnlyOnce [
+	"Running a whole program must not trigger one redraw per instruction."
+
+	| machine |
+	machine := MyStackMachine new.
+	machine source: 'PUSH 1
+PUSH 2
+ADD'.
+	self assert: (self countAnnouncementsOf: machine during: [ machine run ]) equals: 1.
+	self assert: machine stack asArray equals: #( 3 )
+]
+
 { #category : 'tests - stepping' }
 MyStackMachineTest >> testRunDoesNotChangeInitialArray [
 
@@ -492,6 +576,16 @@ MyStackMachineTest >> testStackManipulation [
 	self assert: (self execute: 'POP' stack: #( 1 2 )) equals: #( 1 ).
 	self assert: (self execute: 'DUP' stack: #( 1 2 )) equals: #( 1 2 2 ).
 	self assert: (self execute: 'SWAP' stack: #( 1 2 3 )) equals: #( 1 3 2 )
+]
+
+{ #category : 'tests - announcements' }
+MyStackMachineTest >> testStepAnnouncesChange [
+
+	| machine |
+	machine := MyStackMachine new.
+	machine source: 'PUSH 1
+PUSH 2'.
+	self assert: (self countAnnouncementsOf: machine during: [ machine step ]) equals: 1
 ]
 
 { #category : 'tests - stepping' }
