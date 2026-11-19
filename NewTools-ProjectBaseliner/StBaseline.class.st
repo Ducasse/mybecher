@@ -44,6 +44,12 @@ StBaseline class >> exampleDebuggerCLI [
 	^ ProjectBaseliner exampleDebuggerCLI baseline
 ]
 
+{ #category : 'visiting' }
+StBaseline >> acceptVisitor: aVisitor [
+
+	^ aVisitor visitBaseline: self
+]
+
 { #category : 'adding' }
 StBaseline >> addGroup: aGroup [
 

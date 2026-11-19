@@ -36,6 +36,12 @@ StBaselineUnresolvedReference class >> exampleMissing [
 	^ self named: 'Missing'
 ]
 
+{ #category : 'visiting' }
+StBaselineUnresolvedReference >> acceptVisitor: aVisitor [
+
+	^ aVisitor visitUnresolvedReference: self
+]
+
 { #category : 'testing' }
 StBaselineUnresolvedReference >> isUnresolved [
 

@@ -37,6 +37,12 @@ StBaselineGroup class >> exampleDebuggerCLICore [
 	^ StBaseline exampleDebuggerCLI groupNamed: 'Core'
 ]
 
+{ #category : 'visiting' }
+StBaselineGroup >> acceptVisitor: aVisitor [
+
+	^ aVisitor visitGroup: self
+]
+
 { #category : 'adding' }
 StBaselineGroup >> addMember: anElement [
 

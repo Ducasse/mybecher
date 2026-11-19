@@ -42,6 +42,12 @@ StBaselineProject class >> exampleDebugging [
 	^ StBaseline exampleDebuggerCLI projectNamed: 'Debugging'
 ]
 
+{ #category : 'visiting' }
+StBaselineProject >> acceptVisitor: aVisitor [
+
+	^ aVisitor visitProject: self
+]
+
 { #category : 'initialization' }
 StBaselineProject >> initialize [
 

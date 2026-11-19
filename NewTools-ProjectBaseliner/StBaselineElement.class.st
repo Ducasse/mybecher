@@ -5,21 +5,24 @@ I am an element of a baseline as represented by `ProjectBaseliner`: something wi
 
 1. `ProjectBaseliner>>represent` creates the `StBaseline`, its `StBaselinePackage`s and `StBaselineGroup`s, and one `StBaselineUnresolvedReference` per missing name. `ProjectBaseliner>>baseline:with:` creates the `StBaselineProject`s while the baseline method runs.
 2. `ProjectBaseliner>>represent` links them: the `requires` of each package and the `members` of each group are elements.
-3. Clients get the tree with `ProjectBaseliner>>baseline` and walk it. Nothing changes it afterwards; representing again builds a new tree.
+3. Clients get the tree with `ProjectBaseliner>>baseline` and walk it, or visit it with `acceptVisitor:` (`BaselinerPrinter` prints it back as a `<baseline>` method). Nothing changes it afterwards; representing again builds a new tree.
 
 ## Responsibility:
 
 - Know my name, a string even when the baseline wrote a symbol.
 - Tell whether I stand for a name the baseline does not declare (`isUnresolved`).
+- Accept a visitor, sending it the `visit…:` message of my class.
 
 ## Collaborators: 
 
 - `ProjectBaseliner`: creates and links the elements.
+- `BaselinerPrinter`: visits them.
 
 ## Public API and Key Messages
 
 - `StBaselineElement named: aString` creates an element.
 - `name`, `isUnresolved`.
+- `acceptVisitor: aVisitor`.
 
 ## Examples
 
@@ -52,6 +55,12 @@ StBaselineElement class >> scriptDebuggerCLITree [
 
 	<example>
 	^ ProjectBaseliner exampleDebuggerCLI baseline inspect
+]
+
+{ #category : 'visiting' }
+StBaselineElement >> acceptVisitor: aVisitor [
+
+	^ self subclassResponsibility
 ]
 
 { #category : 'testing' }

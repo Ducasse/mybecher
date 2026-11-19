@@ -38,6 +38,12 @@ StBaselinePackage class >> exampleDebuggerCLITests [
 	^ StBaseline exampleDebuggerCLI packageNamed: 'Debugger-CLI-Tests'
 ]
 
+{ #category : 'visiting' }
+StBaselinePackage >> acceptVisitor: aVisitor [
+
+	^ aVisitor visitPackage: self
+]
+
 { #category : 'adding' }
 StBaselinePackage >> addRequired: anElement [
 

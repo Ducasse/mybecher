@@ -5,77 +5,10 @@ Each test interprets a small fixture: a `BaselineOf` subclass built with the cla
 "
 Class {
 	#name : 'ProjectBaselinerTest',
-	#superclass : 'TestCase',
-	#instVars : [
-		'environment'
-	],
+	#superclass : 'ProjectBaselinerAbstractTest',
 	#category : 'NewTools-ProjectBaseliner-Tests',
 	#package : 'NewTools-ProjectBaseliner-Tests'
 }
-
-{ #category : 'helpers' }
-ProjectBaselinerTest >> baselineClassNamed: aSymbol withMethod: aSource [
-	"Answer a BaselineOf subclass built in the private environment, never installed, whose only method is aSource."
-
-	| class |
-	class := (BaselineOf << aSymbol)
-		         environment: environment;
-		         build.
-	class
-		compile: aSource
-		classified: #baselines
-		withStamp: nil
-		logSource: false.
-	^ class
-]
-
-{ #category : 'helpers' }
-ProjectBaselinerTest >> baselineClassWithMethod: aSource [
-
-	^ self baselineClassNamed: #BaselineOfFixture withMethod: aSource
-]
-
-{ #category : 'helpers' }
-ProjectBaselinerTest >> interpret: aBaselineBody [
-	"Answer a baseliner that interpreted and represented a fixture whose baseline: method has aBaselineBody as body."
-
-	^ self interpretMethod: 'baseline: spec
-	<baseline>
-	' , aBaselineBody
-]
-
-{ #category : 'helpers' }
-ProjectBaselinerTest >> interpretMethod: aSource [
-
-	^ ProjectBaseliner new
-		  interpret: (self baselineClassWithMethod: aSource);
-		  represent;
-		  yourself
-]
-
-{ #category : 'helpers' }
-ProjectBaselinerTest >> namesOf: aCollection [
-
-	^ aCollection collect: [ :each | each name ] as: Array
-]
-
-{ #category : 'helpers' }
-ProjectBaselinerTest >> represent: aBaselineBody [
-
-	^ (self interpret: aBaselineBody) baseline
-]
-
-{ #category : 'running' }
-ProjectBaselinerTest >> setUp [
-
-	super setUp.
-	environment := SystemEnvironment new.
-	environment codeChangeAnnouncer: Announcer new.
-	environment
-		at: #BaselineOf put: BaselineOf;
-		at: #FixedLayout put: FixedLayout;
-		at: #Error put: Error
-]
 
 { #category : 'tests - interpreting' }
 ProjectBaselinerTest >> testBaselineIsNilBeforeRepresent [
