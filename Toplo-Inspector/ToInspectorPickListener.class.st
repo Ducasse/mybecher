@@ -1,29 +1,5 @@
 "
-I am the event listener that lets you pick an element in a Bloc space, the first step of the Toplo element inspector. While I am installed as an event filter on the space root, I follow the element under the mouse and pick the element you release the mouse button on, and I report both. For now a report is a line printed to the Transcript.
-
-## Life cycle: who creates me and who uses me
-
-1. `ToInspectorPickListener class>>#scriptPrintHoveredAndPickedElements` and `ToInspectorPickListenerTest>>#setUp` create me with `new`; `reportBlock:` replaces the default report (printing to the Transcript).
-2. They install me on the root of a space with `space root addEventFilter: aListener`. As a filter, I receive the mouse events before the handlers of the elements under the pointer.
-3. On each mouse move I note the element under the pointer (`hover:`), on mouse up I note the picked element (`pick:`), and I report each change.
-4. I consume mouse down and mouse up events, so the application does not react to them; consuming mouse up also keeps Bloc from generating the click. `space root removeEventFilter: aListener` gives the space back to the application.
-
-## Responsibility:
-
-- I know the element under the pointer (`hoveredElement`) and the last picked element (`pickedElement`).
-- I keep the inspected application from reacting to the mouse buttons while picking.
-- I report what I hover and pick, as one line per change.
-
-## Collaborators: 
-
-- `BlSpace` and its root element: they dispatch the mouse events to me before the inspected elements.
-- `BlMouseMoveEvent`, `BlMouseDownEvent`, `BlMouseUpEvent`: their `target` is the deepest element under the pointer.
-
-## Public API and Key Messages
-
-- `hoveredElement`, `pickedElement`
-- `reportBlock:` a one-argument block receiving each report line
-- `describe: anElement` the one-line description used in the reports (class, identity, id, width × height)
+I let you pick an element in a running Bloc space by pointing at it, the way the element picker of a web browser's developer tools does. I am the first piece of the Toplo element inspector: installed as an event filter on the root of a `BlSpace`, I follow the deepest element under the pointer (`hoveredElement`), pick the element on which the mouse button is released (`pickedElement`), and report each change as one line (`describe:`). By default a report is printed to the Transcript; `reportBlock:` sends it elsewhere.
 
 ## Examples
 
@@ -31,11 +7,37 @@ I am the event listener that lets you pick an element in a Bloc space, the first
 ToInspectorPickListener scriptPrintHoveredAndPickedElements
 ```
 
+## Design Rationale
+
+- I am an event filter on the space root, not a handler: filters run before the handlers of the elements under the pointer, so I see every mouse event first and can consume it before the inspected application reacts.
+- I pick on mouse up rather than on click. Consuming the mouse up keeps Bloc from generating the `BlClickEvent` at all, so the application never sees a click; a click handler of mine would never run.
+- I take the event `target`, which Bloc computes with `BlElement>>#findMouseEventTargetAt:`, instead of hit testing again: what I pick is exactly what would have received the event. That is the deepest element, e.g. the `ToLabel` inside a `ToButton`, as in a browser.
+- Reporting goes through a block so that I stay independent of how the inspector shows things; the printing default makes me usable on my own.
+
+## Usage
+
+1. `reportBlock:` optionally sets a one-argument block that receives the reports.
+2. I am installed with `aSpace root addEventFilter: aListener`.
+3. As the mouse moves, `mouseMoveEvent:` sends `hover:`; when the button is released, `mouseUpEvent:` sends `pick:`. `hoveredElement` and `pickedElement` answer the last ones.
+4. `aSpace root removeEventFilter: aListener` ends the inspection and gives the mouse back to the application.
+
+Instances are mutable and keep state between events: the last hovered and picked elements. An instance serves one space at a time; it is used from the space's UI process and is not meant to be shared between processes.
+
+## Implementation Notes
+
+- `hover:` reports only when the hovered element changes, so moving inside one element prints a single line.
+- Mouse down is consumed too, so the mouse down handlers of the inspected elements do not run either.
+
+## Invariants and Assumptions
+
+- `hoveredElement` and `pickedElement` are nil until the first mouse move and mouse up; afterwards they are elements of the space I am installed on.
+- I assume I am installed on the space root, so that I receive the events of every element of the space.
+
 ## Internal Representation
 
 - `hoveredElement` the deepest element under the pointer at the last mouse move
 - `pickedElement` the deepest element under the pointer at the last mouse up
-- `reportBlock` a one-argument block, by default printing to the Transcript
+- `reportBlock` a one-argument block receiving each report line
 "
 Class {
 	#name : 'ToInspectorPickListener',

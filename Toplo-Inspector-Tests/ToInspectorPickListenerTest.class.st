@@ -1,7 +1,10 @@
 "
-I check that `ToInspectorPickListener` follows and picks the deepest element under the pointer in a headless space, keeps the clicks from reaching the inspected elements, and reports what it hovers and picks.
+I check that `ToInspectorPickListener` follows and picks the deepest element under the pointer, keeps the mouse buttons from reaching the inspected elements, and reports what it hovers and picks.
 
-My fixture is an outer element with an inner child whose click handler stands for the inspected application.
+## Implementation Notes
+
+- My space uses `BlHeadlessHost`, so events are simulated (`eventSimulator`) without opening an OS window; `tearDown` closes it.
+- My fixture is an outer element with an inner child whose click handler stands for the inspected application. `testClickReachesApplicationOnceListenerRemoved` shows that this handler does run without the listener, so `testClickDoesNotReachApplication` cannot pass by accident.
 "
 Class {
 	#name : 'ToInspectorPickListenerTest',
