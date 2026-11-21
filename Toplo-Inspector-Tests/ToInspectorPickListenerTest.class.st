@@ -3,14 +3,12 @@ I check that `ToInspectorPickListener` follows and picks the deepest element und
 
 ## Implementation Notes
 
-- My space uses `BlHeadlessHost`, so events are simulated (`eventSimulator`) without opening an OS window; `tearDown` closes it.
 - My fixture is an outer element with an inner child whose click handler stands for the inspected application. `testClickReachesApplicationOnceListenerRemoved` shows that this handler does run without the listener, so `testClickDoesNotReachApplication` cannot pass by accident.
 "
 Class {
 	#name : 'ToInspectorPickListenerTest',
-	#superclass : 'TestCase',
+	#superclass : 'ToInspectorTestCase',
 	#instVars : [
-		'space',
 		'listener',
 		'reports',
 		'outer',
@@ -25,8 +23,6 @@ Class {
 ToInspectorPickListenerTest >> setUp [
 
 	super setUp.
-	space := BlSpace new.
-	space host: BlHeadlessHost default.
 	outer := BlElement new
 		         position: 10 @ 10;
 		         extent: 100 @ 100;
@@ -44,13 +40,6 @@ ToInspectorPickListenerTest >> setUp [
 	listener reportBlock: [ :aString | reports add: aString ].
 	space root addEventFilter: listener.
 	space show
-]
-
-{ #category : 'running' }
-ToInspectorPickListenerTest >> tearDown [
-
-	space close.
-	super tearDown
 ]
 
 { #category : 'tests - picking' }
