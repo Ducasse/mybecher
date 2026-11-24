@@ -126,7 +126,9 @@ OCMethodParser >> addTonelPropertiesTo: aMethodNode [
 	aMethodNode
 		propertyAt: #className put: className;
 		propertyAt: #isClassSide put: isClassSide.
-	metadata at: #category ifPresent: [ :category | category isString ifTrue: [ aMethodNode propertyAt: #protocol put: category asSymbol ] ]
+	metadata
+		at: #category
+		ifPresent: [ :protocol | protocol isString ifTrue: [ aMethodNode propertyAt: #protocol put: protocol asSymbol ] ]
 ]
 
 { #category : 'testing' }
