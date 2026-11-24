@@ -11,7 +11,7 @@ For a Tonel definition, the AST is the one of the plain method, and the extra in
 - The error cases (`should:raise:`) are in the `tests - errors` protocol, one case per test; the faulty ASTs of `parseFaultyMethod:` are checked in `tests - faulty`, and the use of another decorated parser in `tests - decorator`.
 "
 Class {
-	#name : 'OCMethodParserTest',
+	#name : 'OCFullMethodParserTest',
 	#superclass : 'OCParseTreeTest',
 	#category : 'MyBecher-NewFullMethodParser-Tests',
 	#package : 'MyBecher-NewFullMethodParser',
@@ -19,13 +19,13 @@ Class {
 }
 
 { #category : 'helpers' }
-OCMethodParserTest >> parserClass [
+OCFullMethodParserTest >> parserClass [
 
-	^ OCMethodParser
+	^ OCFullMethodParser
 ]
 
 { #category : 'tests - tonel' }
-OCMethodParserTest >> testBinaryMethod [
+OCFullMethodParserTest >> testBinaryMethod [
 
 	| ast |
 	ast := self parseMethod: 'Foo >> = other [ ^ true ]'.
@@ -34,7 +34,7 @@ OCMethodParserTest >> testBinaryMethod [
 ]
 
 { #category : 'tests - tonel' }
-OCMethodParserTest >> testBracketsInsideBody [
+OCFullMethodParserTest >> testBracketsInsideBody [
 
 	| ast |
 	ast := self parseMethod: 'Foo >> bar [ ^ #( $] ) collect: [ :each | '']'' , each asString "]" ] ]'.
@@ -43,13 +43,13 @@ OCMethodParserTest >> testBracketsInsideBody [
 ]
 
 { #category : 'tests - errors' }
-OCMethodParserTest >> testCharactersAfterClosingBracketRaisesError [
+OCFullMethodParserTest >> testCharactersAfterClosingBracketRaisesError [
 
 	self should: [ self parseMethod: 'Foo >> bar [ ^ 1 ] 2' ] raise: OCCodeError
 ]
 
 { #category : 'tests - tonel' }
-OCMethodParserTest >> testClassName [
+OCFullMethodParserTest >> testClassName [
 
 	| ast |
 	ast := self parseMethod: 'Foo >> bar [ ^ 1 ]'.
@@ -58,7 +58,7 @@ OCMethodParserTest >> testClassName [
 ]
 
 { #category : 'tests - tonel' }
-OCMethodParserTest >> testClassSideMethod [
+OCFullMethodParserTest >> testClassSideMethod [
 
 	| ast |
 	ast := self parseMethod: 'Foo class >> bar: x [ ^ x ]'.
@@ -68,7 +68,7 @@ OCMethodParserTest >> testClassSideMethod [
 ]
 
 { #category : 'tests - tonel' }
-OCMethodParserTest >> testClassSideMethodNamedLikeALiteral [
+OCFullMethodParserTest >> testClassSideMethodNamedLikeALiteral [
 
 	| ast |
 	ast := self parseMethod: 'Foo class >> nil [ ^ 1 ]'.
@@ -77,7 +77,7 @@ OCMethodParserTest >> testClassSideMethodNamedLikeALiteral [
 ]
 
 { #category : 'tests - tonel' }
-OCMethodParserTest >> testClassSideMethodWithoutSpaces [
+OCFullMethodParserTest >> testClassSideMethodWithoutSpaces [
 
 	| ast |
 	ast := self parseMethod: 'Foo class>>bar [ ^ 1 ]'.
@@ -86,7 +86,7 @@ OCMethodParserTest >> testClassSideMethodWithoutSpaces [
 ]
 
 { #category : 'tests - tonel' }
-OCMethodParserTest >> testCommentInPattern [
+OCFullMethodParserTest >> testCommentInPattern [
 
 	| ast |
 	ast := self parseMethod: 'Foo >> bar: x "a comment with [" [ ^ x ]'.
@@ -95,24 +95,24 @@ OCMethodParserTest >> testCommentInPattern [
 ]
 
 { #category : 'tests - tonel' }
-OCMethodParserTest >> testCompileDefinition [
+OCFullMethodParserTest >> testCompileDefinition [
 
 	| compiler method |
 	compiler := OpalCompiler new
 		            class: Object;
 		            source: '{ #category : #a } Object >> fortyTwo [ ^ 40 + 2 ]';
 		            yourself.
-	compiler compilationContext parserClass: OCMethodParser.
+	compiler compilationContext parserClass: OCFullMethodParser.
 	method := compiler compile.
 	self assert: method selector equals: #fortyTwo.
 	self assert: (method valueWithReceiver: Object new) equals: 42
 ]
 
 { #category : 'tests - decorator' }
-OCMethodParserTest >> testDecoratedParserParsesPlainMethod [
+OCFullMethodParserTest >> testDecoratedParserParsesPlainMethod [
 
 	| parser ast |
-	parser := OCMethodParser on: OCPatternParser new.
+	parser := OCFullMethodParser on: OCPatternParser new.
 	parser initializeParserWith: 'bar ^ `@value'.
 	ast := parser parseMethod.
 	self assert: ast body statements first value isPatternNode.
@@ -120,10 +120,10 @@ OCMethodParserTest >> testDecoratedParserParsesPlainMethod [
 ]
 
 { #category : 'tests - decorator' }
-OCMethodParserTest >> testDecoratedParserParsesTonelBody [
+OCFullMethodParserTest >> testDecoratedParserParsesTonelBody [
 
 	| parser ast |
-	parser := OCMethodParser on: OCPatternParser new.
+	parser := OCFullMethodParser on: OCPatternParser new.
 	parser initializeParserWith: 'Foo >> bar [ ^ `@value ]'.
 	ast := parser parseMethod.
 	self assert: ast body statements first value isPatternNode.
@@ -131,13 +131,13 @@ OCMethodParserTest >> testDecoratedParserParsesTonelBody [
 ]
 
 { #category : 'tests - decorator' }
-OCMethodParserTest >> testDefaultDecoratedParser [
+OCFullMethodParserTest >> testDefaultDecoratedParser [
 
-	self assert: OCMethodParser new parser class equals: OCParser
+	self assert: OCFullMethodParser new parser class equals: OCParser
 ]
 
 { #category : 'tests - tonel' }
-OCMethodParserTest >> testEmptyBody [
+OCFullMethodParserTest >> testEmptyBody [
 
 	| ast |
 	ast := self parseMethod: 'Foo >> bar [ ]'.
@@ -146,7 +146,7 @@ OCMethodParserTest >> testEmptyBody [
 ]
 
 { #category : 'tests - tonel' }
-OCMethodParserTest >> testEmptyMetadataHasNoProtocol [
+OCFullMethodParserTest >> testEmptyMetadataHasNoProtocol [
 
 	| ast |
 	ast := self parseMethod: '{ } Foo >> bar [ ^ 1 ]'.
@@ -155,25 +155,25 @@ OCMethodParserTest >> testEmptyMetadataHasNoProtocol [
 ]
 
 { #category : 'tests - errors' }
-OCMethodParserTest >> testErrorInBodyRaisesError [
+OCFullMethodParserTest >> testErrorInBodyRaisesError [
 
 	self should: [ self parseMethod: 'Foo >> bar [ ^ 1 + ]' ] raise: OCCodeError
 ]
 
 { #category : 'tests - faulty' }
-OCMethodParserTest >> testFaultyBracketInCommentIsNotTheClosingBracket [
+OCFullMethodParserTest >> testFaultyBracketInCommentIsNotTheClosingBracket [
 
 	self assert: (self parseFaultyMethod: 'Foo >> bar [ ^ 1 "]"') isFaulty
 ]
 
 { #category : 'tests - faulty' }
-OCMethodParserTest >> testFaultyCharacterLiteralIsNotTheClosingBracket [
+OCFullMethodParserTest >> testFaultyCharacterLiteralIsNotTheClosingBracket [
 
 	self assert: (self parseFaultyMethod: 'Foo >> bar [ ^ $]') isFaulty
 ]
 
 { #category : 'tests - faulty' }
-OCMethodParserTest >> testFaultyConsumesEntireStream [
+OCFullMethodParserTest >> testFaultyConsumesEntireStream [
 
 	| parser |
 	parser := self parserClass new.
@@ -183,7 +183,7 @@ OCMethodParserTest >> testFaultyConsumesEntireStream [
 ]
 
 { #category : 'tests - faulty' }
-OCMethodParserTest >> testFaultyErrorPositionIsInTheDefinition [
+OCFullMethodParserTest >> testFaultyErrorPositionIsInTheDefinition [
 
 	| source ast error |
 	source := 'Foo >> bar [ ^ 1 + ]'.
@@ -194,7 +194,7 @@ OCMethodParserTest >> testFaultyErrorPositionIsInTheDefinition [
 ]
 
 { #category : 'tests - faulty' }
-OCMethodParserTest >> testFaultyInvalidMetadata [
+OCFullMethodParserTest >> testFaultyInvalidMetadata [
 
 	| ast |
 	ast := self parseFaultyMethod: '{ #category ''a'' } Foo >> bar [ ^ 1 ]'.
@@ -202,7 +202,7 @@ OCMethodParserTest >> testFaultyInvalidMetadata [
 ]
 
 { #category : 'tests - faulty' }
-OCMethodParserTest >> testFaultyMetadataConsumesEntireStream [
+OCFullMethodParserTest >> testFaultyMetadataConsumesEntireStream [
 
 	| parser |
 	parser := self parserClass new.
@@ -212,7 +212,7 @@ OCMethodParserTest >> testFaultyMetadataConsumesEntireStream [
 ]
 
 { #category : 'tests - faulty' }
-OCMethodParserTest >> testFaultyMissingClosingBracket [
+OCFullMethodParserTest >> testFaultyMissingClosingBracket [
 
 	| ast |
 	ast := self parseFaultyMethod: 'Foo >> bar [ ^ 1'.
@@ -222,7 +222,7 @@ OCMethodParserTest >> testFaultyMissingClosingBracket [
 ]
 
 { #category : 'tests - errors' }
-OCMethodParserTest >> testInvalidEscapeInMetadataRaisesError [
+OCFullMethodParserTest >> testInvalidEscapeInMetadataRaisesError [
 
 	self
 		should: [
@@ -231,7 +231,7 @@ OCMethodParserTest >> testInvalidEscapeInMetadataRaisesError [
 ]
 
 { #category : 'tests - tonel' }
-OCMethodParserTest >> testKeywordMethod [
+OCFullMethodParserTest >> testKeywordMethod [
 
 	| ast |
 	ast := self parseMethod: 'Foo >> at: index put: anObject [ ^ anObject ]'.
@@ -240,7 +240,7 @@ OCMethodParserTest >> testKeywordMethod [
 ]
 
 { #category : 'tests - tonel' }
-OCMethodParserTest >> testMetadataKeysAndValues [
+OCFullMethodParserTest >> testMetadataKeysAndValues [
 
 	| ast |
 	ast := self parseMethod: '{ ''category'' : #accessing, #count : -12, #flag : true, #none : nil } Foo >> q [ ]'.
@@ -248,43 +248,43 @@ OCMethodParserTest >> testMetadataKeysAndValues [
 ]
 
 { #category : 'tests - errors' }
-OCMethodParserTest >> testMetadataWithoutClassReferenceRaisesError [
+OCFullMethodParserTest >> testMetadataWithoutClassReferenceRaisesError [
 
 	self should: [ self parseMethod: '{ #category : #a } bar [ ^ 1 ]' ] raise: OCCodeError
 ]
 
 { #category : 'tests - errors' }
-OCMethodParserTest >> testMissingBodyRaisesError [
+OCFullMethodParserTest >> testMissingBodyRaisesError [
 
 	self should: [ self parseMethod: 'Foo >> bar ^ 1' ] raise: OCCodeError
 ]
 
 { #category : 'tests - errors' }
-OCMethodParserTest >> testMissingClosingBracketRaisesError [
+OCFullMethodParserTest >> testMissingClosingBracketRaisesError [
 
 	self should: [ self parseMethod: 'Foo >> bar [ ^ 1' ] raise: OCCodeError
 ]
 
 { #category : 'tests - errors' }
-OCMethodParserTest >> testMissingColonInMetadataRaisesError [
+OCFullMethodParserTest >> testMissingColonInMetadataRaisesError [
 
 	self should: [ self parseMethod: '{ #category ''a'' } Foo >> bar [ ^ 1 ]' ] raise: OCCodeError
 ]
 
 { #category : 'tests - errors' }
-OCMethodParserTest >> testMissingSelectorPatternRaisesError [
+OCFullMethodParserTest >> testMissingSelectorPatternRaisesError [
 
 	self should: [ self parseMethod: 'Foo >> [ ^ 1 ]' ] raise: OCCodeError
 ]
 
 { #category : 'tests - errors' }
-OCMethodParserTest >> testMissingValueInMetadataRaisesError [
+OCFullMethodParserTest >> testMissingValueInMetadataRaisesError [
 
 	self should: [ self parseMethod: '{ #category : } Foo >> bar [ ^ 1 ]' ] raise: OCCodeError
 ]
 
 { #category : 'tests - tonel' }
-OCMethodParserTest >> testMultilineDefinition [
+OCFullMethodParserTest >> testMultilineDefinition [
 
 	| ast |
 	ast := self parseMethod: (String cr join: #( '{ #category : ''accessing'' }' 'Foo >> bar: x [' '' '	"Answer x"' '	^ x' ']' '' )).
@@ -294,7 +294,7 @@ OCMethodParserTest >> testMultilineDefinition [
 ]
 
 { #category : 'tests - tonel' }
-OCMethodParserTest >> testNoMetadataHasNoProtocol [
+OCFullMethodParserTest >> testNoMetadataHasNoProtocol [
 
 	| ast |
 	ast := self parseMethod: 'Foo >> bar [ ^ 1 ]'.
@@ -302,7 +302,7 @@ OCMethodParserTest >> testNoMetadataHasNoProtocol [
 ]
 
 { #category : 'tests - tonel' }
-OCMethodParserTest >> testNodePositionsAfterEscapedMetadata [
+OCFullMethodParserTest >> testNodePositionsAfterEscapedMetadata [
 
 	| ast |
 	ast := self parseMethod: '{ #category : ''a\''b'' } Foo >> bar: x [ ^ x + 2 ]'.
@@ -310,7 +310,7 @@ OCMethodParserTest >> testNodePositionsAfterEscapedMetadata [
 ]
 
 { #category : 'tests - tonel' }
-OCMethodParserTest >> testNodePositionsAreInTheDefinition [
+OCFullMethodParserTest >> testNodePositionsAreInTheDefinition [
 
 	| ast |
 	ast := self parseMethod: '{ #category : #a } Foo >> bar: x [ ^ x + 2 ]'.
@@ -319,7 +319,7 @@ OCMethodParserTest >> testNodePositionsAreInTheDefinition [
 ]
 
 { #category : 'tests - decorator' }
-OCMethodParserTest >> testPlainMethodGivesTheSameTreeAsTheDecoratedParser [
+OCFullMethodParserTest >> testPlainMethodGivesTheSameTreeAsTheDecoratedParser [
 
 	| source |
 	source := 'at: index put: anObject
@@ -332,7 +332,7 @@ OCMethodParserTest >> testPlainMethodGivesTheSameTreeAsTheDecoratedParser [
 ]
 
 { #category : 'tests - plain' }
-OCMethodParserTest >> testPlainMethodHasNoTonelProperties [
+OCFullMethodParserTest >> testPlainMethodHasNoTonelProperties [
 
 	| ast |
 	ast := self parseMethod: 'bar ^ 1'.
@@ -343,13 +343,13 @@ OCMethodParserTest >> testPlainMethodHasNoTonelProperties [
 ]
 
 { #category : 'tests - plain' }
-OCMethodParserTest >> testPlainMethodSourcesOfThisClassAreNotTonel [
+OCFullMethodParserTest >> testPlainMethodSourcesOfThisClassAreNotTonel [
 
 	self class methods do: [ :method | self deny: ((self parseMethod: method sourceCode) hasProperty: #className) ]
 ]
 
 { #category : 'tests - plain' }
-OCMethodParserTest >> testPlainMethodWhoseBodyIsABlock [
+OCFullMethodParserTest >> testPlainMethodWhoseBodyIsABlock [
 
 	| ast |
 	ast := self parseMethod: 'bar [ ^ 1 ]'.
@@ -359,7 +359,7 @@ OCMethodParserTest >> testPlainMethodWhoseBodyIsABlock [
 ]
 
 { #category : 'tests - plain' }
-OCMethodParserTest >> testPlainMethodWhoseBodySendsToClass [
+OCFullMethodParserTest >> testPlainMethodWhoseBodySendsToClass [
 
 	| ast |
 	ast := self parseMethod: 'foo class >> bar'.
@@ -369,7 +369,7 @@ OCMethodParserTest >> testPlainMethodWhoseBodySendsToClass [
 ]
 
 { #category : 'tests - plain' }
-OCMethodParserTest >> testPlainMethodWhoseBodySendsToClassSide [
+OCFullMethodParserTest >> testPlainMethodWhoseBodySendsToClassSide [
 
 	| ast |
 	ast := self parseMethod: 'foo classSide >> bar'.
@@ -379,7 +379,7 @@ OCMethodParserTest >> testPlainMethodWhoseBodySendsToClassSide [
 ]
 
 { #category : 'tests - plain' }
-OCMethodParserTest >> testPlainMethodWhoseBodySendsToClassWithKeyword [
+OCFullMethodParserTest >> testPlainMethodWhoseBodySendsToClassWithKeyword [
 
 	| ast |
 	ast := self parseMethod: 'Foo class >> bar max: 1'.
@@ -389,7 +389,7 @@ OCMethodParserTest >> testPlainMethodWhoseBodySendsToClassWithKeyword [
 ]
 
 { #category : 'tests - tonel' }
-OCMethodParserTest >> testProtocolFromMetadata [
+OCFullMethodParserTest >> testProtocolFromMetadata [
 
 	| ast |
 	ast := self parseMethod: '{ #category : ''accessing'' } Foo >> bar [ ^ 1 ]'.
@@ -397,7 +397,7 @@ OCMethodParserTest >> testProtocolFromMetadata [
 ]
 
 { #category : 'tests - tonel' }
-OCMethodParserTest >> testProtocolFromMetadataWithSeveralEntries [
+OCFullMethodParserTest >> testProtocolFromMetadataWithSeveralEntries [
 
 	| ast |
 	ast := self parseMethod: '{ #other : 42, #category : #''instance creation'' } Foo class >> new [ ^ 1 ]'.
@@ -405,7 +405,7 @@ OCMethodParserTest >> testProtocolFromMetadataWithSeveralEntries [
 ]
 
 { #category : 'tests - tonel' }
-OCMethodParserTest >> testProtocolWithEscapedCharacters [
+OCFullMethodParserTest >> testProtocolWithEscapedCharacters [
 
 	| definition expected ast |
 	definition := String streamContents: [ :stream |
@@ -416,7 +416,7 @@ OCMethodParserTest >> testProtocolWithEscapedCharacters [
 ]
 
 { #category : 'tests - tonel' }
-OCMethodParserTest >> testProtocolWithEscapedQuotes [
+OCFullMethodParserTest >> testProtocolWithEscapedQuotes [
 
 	| ast |
 	ast := self parseMethod: '{ #category : ''drag\''n\''drop'' } Foo >> q [ ]'.
@@ -424,7 +424,7 @@ OCMethodParserTest >> testProtocolWithEscapedQuotes [
 ]
 
 { #category : 'tests - tonel' }
-OCMethodParserTest >> testSourceIsTheDefinition [
+OCFullMethodParserTest >> testSourceIsTheDefinition [
 
 	| source ast |
 	source := '{ #category : #a } Foo >> bar [ ^ 1 + 2 ]'.
@@ -433,7 +433,7 @@ OCMethodParserTest >> testSourceIsTheDefinition [
 ]
 
 { #category : 'tests - tonel' }
-OCMethodParserTest >> testTemporariesAndPragmas [
+OCFullMethodParserTest >> testTemporariesAndPragmas [
 
 	| ast |
 	ast := self parseMethod: 'Foo >> bar [ <foo: 1> | a | a := 1. ^ a ]'.
@@ -444,7 +444,7 @@ OCMethodParserTest >> testTemporariesAndPragmas [
 ]
 
 { #category : 'tests - tonel' }
-OCMethodParserTest >> testTraitClassSideMethod [
+OCFullMethodParserTest >> testTraitClassSideMethod [
 
 	| ast |
 	ast := self parseMethod: '{ #category : #a } TFoo classSide >> bar [ ^ 1 ]'.
@@ -454,7 +454,7 @@ OCMethodParserTest >> testTraitClassSideMethod [
 ]
 
 { #category : 'tests - tonel' }
-OCMethodParserTest >> testUnaryMethod [
+OCFullMethodParserTest >> testUnaryMethod [
 
 	| ast |
 	ast := self parseMethod: 'Foo >> bar [ ^ 1 ]'.
@@ -464,7 +464,7 @@ OCMethodParserTest >> testUnaryMethod [
 ]
 
 { #category : 'tests - tonel' }
-OCMethodParserTest >> testUnaryMethodNamedLikeALiteral [
+OCFullMethodParserTest >> testUnaryMethodNamedLikeALiteral [
 
 	| ast |
 	ast := self parseMethod: 'Foo >> true [ ^ 1 ]'.
@@ -473,13 +473,13 @@ OCMethodParserTest >> testUnaryMethodNamedLikeALiteral [
 ]
 
 { #category : 'tests - errors' }
-OCMethodParserTest >> testUnclosedMetadataRaisesError [
+OCFullMethodParserTest >> testUnclosedMetadataRaisesError [
 
 	self should: [ self parseMethod: '{ #category : #a Foo >> bar [ ^ 1 ]' ] raise: OCCodeError
 ]
 
 { #category : 'tests - errors' }
-OCMethodParserTest >> testUnclosedStringInMetadataRaisesError [
+OCFullMethodParserTest >> testUnclosedStringInMetadataRaisesError [
 
 	self should: [ self parseMethod: '{ #category : ''unclosed } Foo >> bar [ ^ 1 ]' ] raise: OCCodeError
 ]

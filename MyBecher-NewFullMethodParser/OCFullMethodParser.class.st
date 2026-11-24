@@ -35,7 +35,7 @@ An instance is mutable and keeps the state of the last parse; it can be reused b
 - The line ends of the definition are kept: they are not converted, as `TonelParser` does.
 "
 Class {
-	#name : 'OCMethodParser',
+	#name : 'OCFullMethodParser',
 	#superclass : 'Object',
 	#instVars : [
 		'parser',
@@ -56,7 +56,7 @@ Class {
 }
 
 { #category : 'examples' }
-OCMethodParser class >> exampleTonelDefinition [
+OCFullMethodParser class >> exampleTonelDefinition [
 	"A method parser ready to parse a class-side Tonel method definition: send it parseMethod"
 
 	<sampleInstance>
@@ -70,7 +70,7 @@ Counter class >> startingAt: anInteger [
 ]
 
 { #category : 'instance creation' }
-OCMethodParser class >> on: aParser [
+OCFullMethodParser class >> on: aParser [
 	"Answer a method parser decorating aParser, an OCParser or one of its subclasses"
 
 	^ self new
@@ -79,7 +79,7 @@ OCMethodParser class >> on: aParser [
 ]
 
 { #category : 'parsing' }
-OCMethodParser class >> parseFaultyMethod: aString [
+OCFullMethodParser class >> parseFaultyMethod: aString [
 	"Parse aString, a plain method or a Tonel method definition, even if it is invalid: the AST then holds error nodes"
 
 	^ self new
@@ -88,21 +88,21 @@ OCMethodParser class >> parseFaultyMethod: aString [
 ]
 
 { #category : 'parsing' }
-OCMethodParser class >> parseMethod: aString [
+OCFullMethodParser class >> parseMethod: aString [
 	"Parse aString, a plain method or a Tonel method definition, and answer its AST. Signal an OCCodeError when it is invalid"
 
 	^ self parseMethod: aString onError: nil
 ]
 
 { #category : 'parsing' }
-OCMethodParser class >> parseMethod: aString onError: aBlock [
+OCFullMethodParser class >> parseMethod: aString onError: aBlock [
 	"Parse aString, a plain method or a Tonel method definition, and answer its AST. When it is invalid, evaluate aBlock with the error message, position and AST, then signal an OCCodeError"
 
 	^ (self parseFaultyMethod: aString) checkFaulty: aBlock
 ]
 
 { #category : 'private - parsing' }
-OCMethodParser >> addTonelErrorTo: aMethodNode [
+OCFullMethodParser >> addTonelErrorTo: aMethodNode [
 	"Add an error node at the end of the body when a bracket of the body is missing and the decorated parser found nothing wrong"
 
 	| error statements |
@@ -121,7 +121,7 @@ OCMethodParser >> addTonelErrorTo: aMethodNode [
 ]
 
 { #category : 'private - parsing' }
-OCMethodParser >> addTonelPropertiesTo: aMethodNode [
+OCFullMethodParser >> addTonelPropertiesTo: aMethodNode [
 
 	aMethodNode
 		propertyAt: #className put: className;
@@ -132,14 +132,14 @@ OCMethodParser >> addTonelPropertiesTo: aMethodNode [
 ]
 
 { #category : 'testing' }
-OCMethodParser >> atEnd [
+OCFullMethodParser >> atEnd [
 	"Answer whether the decorated parser has read the whole source"
 
 	^ parser atEnd
 ]
 
 { #category : 'private - parsing' }
-OCMethodParser >> blankedSource [
+OCFullMethodParser >> blankedSource [
 	"Answer a copy of the source in which the header of the definition and the brackets of its body are spaces, line ends kept: a plain method whose positions are the ones of the definition"
 
 	| blanked |
@@ -151,14 +151,14 @@ OCMethodParser >> blankedSource [
 ]
 
 { #category : 'initialization' }
-OCMethodParser >> initialize [
+OCFullMethodParser >> initialize [
 
 	super initialize.
 	parser := OCParser new
 ]
 
 { #category : 'initialization' }
-OCMethodParser >> initializeParserWith: aString [
+OCFullMethodParser >> initializeParserWith: aString [
 	"Prepare the parsing of aString, as OCParser>>initializeParserWith: does"
 
 	source := aString.
@@ -166,14 +166,14 @@ OCMethodParser >> initializeParserWith: aString [
 ]
 
 { #category : 'private - scanning' }
-OCMethodParser >> isUnarySelectorToken [
+OCFullMethodParser >> isUnarySelectorToken [
 	"Answer whether the current token can be a unary selector. The scanner reads `true`, `false` and `nil` as literals, but they are valid selectors, as OCParser>>patchLiteralMessage knows"
 
 	^ token isIdentifier or: [ token isLiteralToken and: [ #( true false nil ) includes: token value ] ]
 ]
 
 { #category : 'parsing' }
-OCMethodParser >> parseMethod [
+OCFullMethodParser >> parseMethod [
 	"Parse the source with the decorated parser and answer its AST. A Tonel method definition is given to it with its header (metadata and class reference) and the brackets of its body replaced by spaces, so the nodes keep their positions in the definition, which becomes the source of the method node. The extra information of the definition is stored as the properties #className, #isClassSide and #protocol (the #category of the metadata) of the method node"
 
 	| ast |
@@ -187,19 +187,19 @@ OCMethodParser >> parseMethod [
 ]
 
 { #category : 'accessing' }
-OCMethodParser >> parser [
+OCFullMethodParser >> parser [
 
 	^ parser
 ]
 
 { #category : 'accessing' }
-OCMethodParser >> parser: aParser [
+OCFullMethodParser >> parser: aParser [
 
 	parser := aParser
 ]
 
 { #category : 'private - metadata' }
-OCMethodParser >> readMetadataEntryFrom: aStream into: aDictionary [
+OCFullMethodParser >> readMetadataEntryFrom: aStream into: aDictionary [
 	"Read one `key : value` entry of the metadata, and the separators after it, into aDictionary. Answer false when the entry is invalid"
 
 	| key |
@@ -214,7 +214,7 @@ OCMethodParser >> readMetadataEntryFrom: aStream into: aDictionary [
 ]
 
 { #category : 'private - metadata' }
-OCMethodParser >> readMetadataFrom: aStream [
+OCFullMethodParser >> readMetadataFrom: aStream [
 	"Read the metadata of a Tonel method definition, a STON dictionary such as `{ #category : 'accessing' }`, aStream being on its opening brace. Answer it, or nil when it is invalid. Only the STON values Tonel writes in method metadata are read: strings, symbols, numbers, true, false and nil"
 
 	| dictionary |
@@ -234,7 +234,7 @@ OCMethodParser >> readMetadataFrom: aStream [
 ]
 
 { #category : 'private - metadata' }
-OCMethodParser >> readStonEscapeFrom: aStream ifInvalid: aBlock [
+OCFullMethodParser >> readStonEscapeFrom: aStream ifInvalid: aBlock [
 	"Read the character escaped after a backslash in a STON string"
 
 	| char |
@@ -245,7 +245,7 @@ OCMethodParser >> readStonEscapeFrom: aStream ifInvalid: aBlock [
 ]
 
 { #category : 'private - metadata' }
-OCMethodParser >> readStonStringFrom: aStream ifInvalid: aBlock [
+OCFullMethodParser >> readStonStringFrom: aStream ifInvalid: aBlock [
 	"Read a STON string, aStream being on its opening quote. A backslash escapes the next character, as in `'drag\'n\'drop'`"
 
 	aStream next.
@@ -262,7 +262,7 @@ OCMethodParser >> readStonStringFrom: aStream ifInvalid: aBlock [
 ]
 
 { #category : 'private - metadata' }
-OCMethodParser >> readStonSymbolFrom: aStream ifInvalid: aBlock [
+OCFullMethodParser >> readStonSymbolFrom: aStream ifInvalid: aBlock [
 	"Read a STON symbol, `#accessing` or `#'instance creation'`, aStream being on its #"
 
 	| name |
@@ -274,7 +274,7 @@ OCMethodParser >> readStonSymbolFrom: aStream ifInvalid: aBlock [
 ]
 
 { #category : 'private - metadata' }
-OCMethodParser >> readStonUnicodeEscapeFrom: aStream ifInvalid: aBlock [
+OCFullMethodParser >> readStonUnicodeEscapeFrom: aStream ifInvalid: aBlock [
 	"Read the four hexadecimal digits of a `\u` escape in a STON string, and answer their character"
 
 	| hex |
@@ -284,7 +284,7 @@ OCMethodParser >> readStonUnicodeEscapeFrom: aStream ifInvalid: aBlock [
 ]
 
 { #category : 'private - metadata' }
-OCMethodParser >> readStonValueFrom: aStream ifInvalid: aBlock [
+OCFullMethodParser >> readStonValueFrom: aStream ifInvalid: aBlock [
 	"Read a STON string, symbol, number, true, false or nil. Answer the value of aBlock when there is none"
 
 	| char |
@@ -297,7 +297,7 @@ OCMethodParser >> readStonValueFrom: aStream ifInvalid: aBlock [
 ]
 
 { #category : 'private - metadata' }
-OCMethodParser >> readStonWordFrom: aStream [
+OCFullMethodParser >> readStonWordFrom: aStream [
 	"Read the characters STON allows in a symbol without quotes"
 
 	^ String streamContents: [ :word |
@@ -305,7 +305,7 @@ OCMethodParser >> readStonWordFrom: aStream [
 ]
 
 { #category : 'private - scanning' }
-OCMethodParser >> scanBody [
+OCFullMethodParser >> scanBody [
 	"Find the brackets of the body: the opening one right after the selector pattern, and the closing one as the last token of the source. Note where the error is when one of them is missing"
 
 	| last |
@@ -323,7 +323,7 @@ OCMethodParser >> scanBody [
 ]
 
 { #category : 'private - scanning' }
-OCMethodParser >> scanClassReference [
+OCFullMethodParser >> scanClassReference [
 	"Scan `Foo >>`, or `Foo class >>` and `TFoo classSide >>` (the class side of a trait, as Tonel writes it), note the class name and side, and answer whether the reference is valid"
 
 	token isIdentifier ifFalse: [ ^ false ].
@@ -338,7 +338,7 @@ OCMethodParser >> scanClassReference [
 ]
 
 { #category : 'private - scanning' }
-OCMethodParser >> scanSelectorPattern [
+OCFullMethodParser >> scanSelectorPattern [
 	"Scan the selector pattern and answer whether it is well formed and followed by the opening bracket of the body"
 
 	self isUnarySelectorToken ifTrue: [
@@ -358,7 +358,7 @@ OCMethodParser >> scanSelectorPattern [
 ]
 
 { #category : 'private - scanning' }
-OCMethodParser >> scanTonelHeader [
+OCFullMethodParser >> scanTonelHeader [
 	"Scan the start of the source and answer whether it is a Tonel method definition with valid metadata and class reference. Without metadata, a class-side reference must also be followed by a selector pattern and the opening bracket of the body, since `Foo class >> bar` alone is a valid plain method. Invalid metadata or class references are left to the decorated parser, for which the source is a faulty plain method. The metadata is STON, read by characters; the rest is read with the scanner of the decorated parser, from the end of the metadata"
 
 	| input hasMetadata |
@@ -378,13 +378,13 @@ OCMethodParser >> scanTonelHeader [
 ]
 
 { #category : 'private - scanning' }
-OCMethodParser >> step [
+OCFullMethodParser >> step [
 
 	token := scanner next
 ]
 
 { #category : 'private - metadata' }
-OCMethodParser >> stonConstants [
+OCFullMethodParser >> stonConstants [
 	"The STON constants, by their names"
 
 	^ Dictionary newFrom: {
@@ -394,7 +394,7 @@ OCMethodParser >> stonConstants [
 ]
 
 { #category : 'private - metadata' }
-OCMethodParser >> stonEscapes [
+OCFullMethodParser >> stonEscapes [
 	"The characters escaped by a backslash in a STON string, by the character following the backslash, except `u`"
 
 	^ Dictionary newFrom: {
