@@ -52,6 +52,12 @@ SmiTreeToStackVisitor >> send: aValue [
 ]
 
 { #category : 'initialization' }
+SmiTreeToStackVisitor >> storeVariable: aValue [
+
+	self pushInstruction: 'storeVariable ', aValue asString 
+]
+
+{ #category : 'initialization' }
 SmiTreeToStackVisitor >> visit: aNode [
 
 	aNode acceptVisitor: self
@@ -63,7 +69,7 @@ SmiTreeToStackVisitor >> visitAssignment: anAssignemnt [
 	"we can get an expression"
 	self visit: anAssignemnt value.
 	
-	self storeVariable: anAssignemnt name. 
+	self storeVariable: anAssignemnt variable value. 
 ]
 
 { #category : 'initialization' }
@@ -89,5 +95,5 @@ SmiTreeToStackVisitor >> visitNumber: aNumber [
 { #category : 'initialization' }
 SmiTreeToStackVisitor >> visitVariableRead: aVariable [
 
-	self pushVariable: aVariable name
+	self pushVariable: aVariable variable value
 ]

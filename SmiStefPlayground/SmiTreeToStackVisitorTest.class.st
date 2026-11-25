@@ -44,6 +44,28 @@ SmiTreeToStackVisitorTest >> testFunction1Plus2Mult [
 ]
 
 { #category : 'tests' }
+SmiTreeToStackVisitorTest >> testFunctionStore [
+
+	| ast vis |
+	ast := SmiParser parse: 'function store() {
+    a := 1;
+    b := a + 10;
+}'.
+	vis := SmiTreeToStackVisitor new.
+	vis visit: ast.
+	self 
+		assert: vis instructions asArray
+		equals: #( 
+			'push 1' 
+			'storeVariable a'
+			'pushVariable a'
+			'push 10'
+			'send +'
+			'storeVariable b'
+			)
+]
+
+{ #category : 'tests' }
 SmiTreeToStackVisitorTest >> testPositive [
 
 	| ast vis |
