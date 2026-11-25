@@ -6,11 +6,42 @@ Class {
 }
 
 { #category : 'tests' }
+SmiStefParserTest >> testAssignemnt [
+
+	| ast |
+	ast := SmiParser parse: 'function f() {
+    a := 1;
+    return a;
+}'.
+	self assert: ast functions first name value equals: 'f'.
+	self assert: ast functions first body statements first class equals: SmiAssignmentNode.
+	self assert: ast functions first body statements first variable value equals: 'a'.
+	
+	self assert: ast functions first body statements second expression class equals: SmiVariableReadNode.
+	
+]
+
+{ #category : 'tests' }
 SmiStefParserTest >> testFunction1Plus2 [
 
 	| ast |
 	ast := SmiParser parse: 'function answer() {
     return 1 + 2;
+}'.
+	self assert: ast functions first name value equals: 'answer'.
+	self assert: ast functions first body statements first class equals: SmiReturnNode.
+	
+	self assert: ast functions first body statements first expression class equals: SmiBinaryOperatorNode.
+	
+	
+]
+
+{ #category : 'tests' }
+SmiStefParserTest >> testFunction1Plus2Mult [
+
+	| ast |
+	ast := SmiParser parse: 'function answer() {
+    return 1 + 2 * 6;
 }'.
 	self assert: ast functions first name value equals: 'answer'.
 	self assert: ast functions first body statements first class equals: SmiReturnNode.
